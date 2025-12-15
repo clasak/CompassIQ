@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "baseURL": "http://localhost:3005",
+    "runs": 1,
+    "at": "2025-12-15T06:22:27.941Z",
+    "node": "v20.18.0"
+  },
+  "scenarios": [
+    {
+      "name": "/app → /app/sales (sidebar)",
+      "fromPath": "/app",
+      "destPath": "/app/sales",
+      "runs": 1,
+      "rendered": [
+        22.700000047683716
+      ],
+      "skeleton": [
+        9.100000023841858
+      ],
+      "summary": {
+        "rendered": {
+          "medianMs": 22.700000047683716,
+          "p95Ms": 22.700000047683716
+        },
+        "skeleton": {
+          "medianMs": 9.100000023841858,
+          "p95Ms": 9.100000023841858
+        }
+      }
+    },
+    {
+      "name": "/app → /app/ops (sidebar)",
+      "fromPath": "/app",
+      "destPath": "/app/ops",
+      "runs": 1,
+      "rendered": [
+        22.80000001192093
+      ],
+      "skeleton": [
+        9.100000023841858
+      ],
+      "summary": {
+        "rendered": {
+          "medianMs": 22.80000001192093,
+          "p95Ms": 22.80000001192093
+        },
+        "skeleton": {
+          "medianMs": 9.100000023841858,
+          "p95Ms": 9.100000023841858
+        }
+      }
+    },
+    {
+      "name": "/app/settings/org → /app/settings/branding (settings nav)",
+      "fromPath": "/app/settings/org",
+      "destPath": "/app/settings/branding",
+      "runs": 1,
+      "rendered": [
+        772.8000000119209
+      ],
+      "skeleton": [],
+      "summary": {
+        "rendered": {
+          "medianMs": 772.8000000119209,
+          "p95Ms": 772.8000000119209
+        },
+        "skeleton": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    },
+    {
+      "name": "KPI drilldown: Revenue MTD card",
+      "fromPath": "/app",
+      "destPath": "/app/finance?filter=revenue",
+      "runs": 1,
+      "rendered": [
+        97.39999997615814
+      ],
+      "skeleton": [
+        88.39999997615814
+      ],
+      "summary": {
+        "rendered": {
+          "medianMs": 97.39999997615814,
+          "p95Ms": 97.39999997615814
+        },
+        "skeleton": {
+          "medianMs": 88.39999997615814,
+          "p95Ms": 88.39999997615814
+        }
+      }
+    }
+  ]
+}

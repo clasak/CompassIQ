@@ -1,0 +1,80 @@
+{
+  "organizations": [
+    {
+      "id": "dev-demo-org",
+      "name": "Dev Demo Org",
+      "slug": "dev-demo",
+      "is_demo": true
+    }
+  ],
+  "accounts": [
+    {"id": "acc-1", "name": "Acme Corp", "segment": "Enterprise", "industry": "Technology", "status": "ACTIVE", "renewal_date": "2024-12-31", "health_override": 85},
+    {"id": "acc-2", "name": "TechStart Inc", "segment": "Mid-Market", "industry": "Healthcare", "status": "ACTIVE", "renewal_date": "2024-11-15", "health_override": 92},
+    {"id": "acc-3", "name": "Global Solutions", "segment": "Enterprise", "industry": "Finance", "status": "ACTIVE", "renewal_date": "2025-01-20", "health_override": 78},
+    {"id": "acc-4", "name": "Digital Dynamics", "segment": "SMB", "industry": "Retail", "status": "ACTIVE", "renewal_date": "2024-10-05", "health_override": 65},
+    {"id": "acc-5", "name": "Cloud Ventures", "segment": "Enterprise", "industry": "Technology", "status": "ACTIVE", "renewal_date": "2025-02-14", "health_override": 88}
+  ],
+  "opportunities": [
+    {"id": "opp-1", "account_id": "acc-1", "name": "Q4 Expansion Deal", "stage": "PROPOSAL", "amount": 125000, "close_date": "2024-12-15", "source": "Website"},
+    {"id": "opp-2", "account_id": "acc-2", "name": "Platform Upgrade", "stage": "NEGOTIATION", "amount": 85000, "close_date": "2024-11-30", "source": "Referral"},
+    {"id": "opp-3", "account_id": "acc-3", "name": "Enterprise License", "stage": "QUALIFIED", "amount": 200000, "close_date": "2025-01-10", "source": "Partner"},
+    {"id": "opp-4", "account_id": "acc-1", "name": "Add-on Services", "stage": "WON", "amount": 45000, "close_date": "2024-10-01", "source": "Website"},
+    {"id": "opp-5", "account_id": "acc-4", "name": "Starter Package", "stage": "LEAD", "amount": 25000, "close_date": "2024-12-20", "source": "Social Media"}
+  ],
+  "invoices": [
+    {"id": "inv-1", "account_id": "acc-1", "invoice_number": "INV-001", "issue_date": "2024-10-01", "due_date": "2024-10-31", "subtotal": 50000, "tax": 4000, "total": 54000, "status": "PAID"},
+    {"id": "inv-2", "account_id": "acc-2", "invoice_number": "INV-002", "issue_date": "2024-10-15", "due_date": "2024-11-14", "subtotal": 35000, "tax": 2800, "total": 37800, "status": "SENT"},
+    {"id": "inv-3", "account_id": "acc-3", "invoice_number": "INV-003", "issue_date": "2024-09-20", "due_date": "2024-10-20", "subtotal": 75000, "tax": 6000, "total": 81000, "status": "OVERDUE"},
+    {"id": "inv-4", "account_id": "acc-1", "invoice_number": "INV-004", "issue_date": "2024-11-01", "due_date": "2024-12-01", "subtotal": 50000, "tax": 4000, "total": 54000, "status": "SENT"},
+    {"id": "inv-5", "account_id": "acc-4", "invoice_number": "INV-005", "issue_date": "2024-10-10", "due_date": "2024-11-09", "subtotal": 18000, "tax": 1440, "total": 19440, "status": "PAID"}
+  ],
+  "payments": [
+    {"id": "pay-1", "invoice_id": "inv-1", "amount": 54000, "paid_at": "2024-10-05T10:00:00Z", "method": "ACH", "reference": "PAY-001"},
+    {"id": "pay-2", "invoice_id": "inv-5", "amount": 19440, "paid_at": "2024-10-15T14:30:00Z", "method": "CARD", "reference": "PAY-002"}
+  ],
+  "work_orders": [
+    {"id": "wo-1", "account_id": "acc-1", "title": "Platform Integration", "status": "DONE", "priority": "HIGH", "due_date": "2024-10-15", "completed_at": "2024-10-14T16:00:00Z"},
+    {"id": "wo-2", "account_id": "acc-2", "title": "Data Migration", "status": "IN_PROGRESS", "priority": "URGENT", "due_date": "2024-11-01"},
+    {"id": "wo-3", "account_id": "acc-3", "title": "Custom Configuration", "status": "PLANNED", "priority": "MEDIUM", "due_date": "2024-11-15"},
+    {"id": "wo-4", "account_id": "acc-1", "title": "Training Session", "status": "DONE", "priority": "LOW", "due_date": "2024-10-10", "completed_at": "2024-10-09T10:00:00Z"},
+    {"id": "wo-5", "account_id": "acc-4", "title": "API Setup", "status": "BLOCKED", "priority": "HIGH", "due_date": "2024-11-05", "blocker_reason": "Waiting on customer"}
+  ],
+  "tasks": [
+    {"id": "task-1", "title": "Follow up with Acme Corp", "status": "OPEN", "priority": "HIGH", "due_date": "2024-11-05", "related_type": "account", "related_id": "acc-1"},
+    {"id": "task-2", "title": "Prepare proposal for TechStart", "status": "IN_PROGRESS", "priority": "URGENT", "due_date": "2024-11-01", "related_type": "opportunity", "related_id": "opp-2"},
+    {"id": "task-3", "title": "Review contract terms", "status": "DONE", "priority": "MEDIUM", "due_date": "2024-10-25", "related_type": "opportunity", "related_id": "opp-1"},
+    {"id": "task-4", "title": "Schedule demo call", "status": "OPEN", "priority": "MEDIUM", "due_date": "2024-11-10", "related_type": "account", "related_id": "acc-3"}
+  ],
+  "tickets": [
+    {"id": "ticket-1", "account_id": "acc-1", "title": "Login issue", "status": "RESOLVED", "priority": "HIGH", "opened_at": "2024-10-15T09:00:00Z", "first_response_at": "2024-10-15T09:30:00Z", "resolved_at": "2024-10-15T11:00:00Z"},
+    {"id": "ticket-2", "account_id": "acc-2", "title": "Feature request", "status": "IN_PROGRESS", "priority": "MEDIUM", "opened_at": "2024-10-20T14:00:00Z", "first_response_at": "2024-10-20T15:00:00Z"},
+    {"id": "ticket-3", "account_id": "acc-3", "title": "Performance question", "status": "OPEN", "priority": "LOW", "opened_at": "2024-10-25T10:00:00Z"}
+  ],
+  "activities": [
+    {"id": "act-1", "account_id": "acc-1", "opportunity_id": "opp-1", "type": "CALL", "occurred_at": "2024-10-20T10:00:00Z", "notes": "Discussed expansion opportunities"},
+    {"id": "act-2", "account_id": "acc-2", "opportunity_id": "opp-2", "type": "MEETING", "occurred_at": "2024-10-22T14:00:00Z", "notes": "Platform demo completed"},
+    {"id": "act-3", "account_id": "acc-1", "type": "EMAIL", "occurred_at": "2024-10-25T09:00:00Z", "notes": "Sent proposal document"}
+  ],
+  "metric_catalog": [
+    {"id": "metric-1", "key": "revenue_mtd", "name": "Revenue MTD", "description": "Monthly revenue to date", "formula": "SUM(invoices.total WHERE status IN (SENT, PAID, OVERDUE))", "source": "Invoices", "cadence": "Daily"},
+    {"id": "metric-2", "key": "pipeline_30d", "name": "Pipeline 30 Days", "description": "Opportunities closing in next 30 days", "formula": "SUM(opportunities.amount WHERE close_date <= 30 days)", "source": "Opportunities", "cadence": "Daily"},
+    {"id": "metric-3", "key": "ar_outstanding", "name": "AR Outstanding", "description": "Total accounts receivable", "formula": "SUM(invoices.total - payments.amount)", "source": "Invoices/Payments", "cadence": "Daily"},
+    {"id": "metric-4", "key": "on_time_delivery", "name": "On-Time Delivery %", "description": "Percentage of work orders completed on time", "formula": "COUNT(work_orders WHERE completed_at <= due_date) / COUNT(work_orders WHERE status = DONE)", "source": "Work Orders", "cadence": "Daily"}
+  ],
+  "org_settings": {
+    "roi_defaults": {
+      "averageDealSize": 75000,
+      "monthlyLeads": 50,
+      "currentWinRate": 25,
+      "targetWinRate": 35,
+      "currentSalesCycleDays": 60,
+      "targetSalesCycleDays": 45,
+      "reportingHoursPerWeek": 8,
+      "hourlyFullyLoadedCost": 75,
+      "arDaysReductionTarget": 10,
+      "churnReductionTarget": 2
+    },
+    "alert_thresholds": {}
+  }
+}
+
