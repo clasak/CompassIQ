@@ -19,12 +19,12 @@ export function DefaultMark({
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="circleGradient" x1="256" y1="100" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+        <linearGradient id="circleGradient" x1="256" y1="56" x2="256" y2="456" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#00D9FF"/>
           <stop offset="50%" stopColor="#0080FF"/>
           <stop offset="100%" stopColor="#0040C0"/>
         </linearGradient>
-        <linearGradient id="arrowGradient" x1="256" y1="150" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+        <linearGradient id="arrowGradient" x1="256" y1="100" x2="380" y2="380" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#C0FF00"/>
           <stop offset="50%" stopColor="#00E676"/>
           <stop offset="100%" stopColor="#00BFA5"/>
@@ -32,13 +32,12 @@ export function DefaultMark({
       </defs>
 
       {/* Circular Ring */}
-      <circle cx="256" cy="306" r="180" stroke="url(#circleGradient)" strokeWidth="45" fill="none"/>
+      <circle cx="256" cy="256" r="180" stroke="url(#circleGradient)" strokeWidth="40" fill="none"/>
 
-      {/* Compass Needle/Arrow */}
+      {/* Compass Needle/Arrow pointing up-right */}
       <path
-        d="M 200 430 L 256 350 L 180 306 L 380 200 L 256 350 L 332 306 Z"
+        d="M 256 256 L 180 332 L 256 120 L 332 332 Z"
         fill="url(#arrowGradient)"
-        opacity="0.95"
       />
     </svg>
   )

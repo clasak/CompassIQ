@@ -33,7 +33,6 @@ const navigation = [
   { name: 'Success', href: '/app/success', icon: Users },
   { name: 'Data', href: '/app/data/metrics', icon: Database },
   { name: 'Actions', href: '/app/actions', icon: Zap },
-  { name: 'Construction', href: '/app/construction', icon: Hammer },
 ]
 
 const operateNavigation = [
@@ -56,7 +55,7 @@ const crmNavigation = [
 ]
 
 const constructionNavigation = [
-  { name: 'Command Center', href: '/app/construction' },
+  { name: 'Overview', href: '/app/construction' },
   { name: 'Projects', href: '/app/construction/projects' },
   { name: 'Cost', href: '/app/construction/cost' },
   { name: 'Schedule', href: '/app/construction/schedule' },
@@ -119,7 +118,7 @@ export const Sidebar = memo(function Sidebar() {
   return (
     <div className="flex h-full w-72 flex-col border-r border-border/50 bg-background">
       <div className="flex h-16 items-center gap-3 border-b border-border/50 px-6">
-        <BrandMark url={branding.mark_url} size={24} alt={branding.brand_name} />
+        <BrandMark url={branding.mark_url} size={32} alt={branding.brand_name} />
         <div className="min-w-0 leading-tight flex-1">
           <BrandWordmark
             brandName={branding.brand_name}
