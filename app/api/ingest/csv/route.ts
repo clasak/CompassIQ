@@ -11,12 +11,12 @@ const MAX_BYTES = 2 * 1024 * 1024
 function parseCsv(text: string) {
   const rows: string[][] = []
   let row: string[] = []
-  let field = ''
+  const chars: string[] = []  // Use array buffer instead of string concatenation
   let inQuotes = false
 
   const pushField = () => {
-    row.push(field)
-    field = ''
+    row.push(chars.join(''))  // Join once per field
+    chars.length = 0  // Clear array
   }
   const pushRow = () => {
     // ignore empty last line
@@ -31,13 +31,13 @@ function parseCsv(text: string) {
       if (c === '"') {
         const next = text[i + 1]
         if (next === '"') {
-          field += '"'
+          chars.push('"')
           i++
         } else {
           inQuotes = false
         }
       } else {
-        field += c
+        chars.push(c)
       }
       continue
     }
@@ -56,7 +56,7 @@ function parseCsv(text: string) {
       continue
     }
     if (c === '\r') continue
-    field += c
+    chars.push(c)
   }
   pushField()
   if (row.length) pushRow()
@@ -141,6 +141,10 @@ export async function POST(request: Request) {
     let rowsInvalid = 0
     let rowsIn = 0
 
+    // Collect all records first for batch insert
+    const rawEvents: any[] = []
+    const metricValues: any[] = []
+
     for (let idx = 0; idx < rows.length; idx++) {
       const rowVals = rows[idx]
       if (rowVals.length === 1 && rowVals[0] === '') continue
@@ -158,8 +162,8 @@ export async function POST(request: Request) {
         payload,
       })
 
-      // Store raw event
-      const { error: rawErr } = await service.from('raw_events').insert({
+      // Collect raw event
+      rawEvents.push({
         org_id: context.orgId,
         source_connection_id: connectionId,
         event_type: 'csv_row',
@@ -167,33 +171,46 @@ export async function POST(request: Request) {
         dedupe_hash: dedupeHash,
       })
 
+      // Process normalized metric value if mapping exists
+      if (mapping) {
+        const normalized = normalizeMetricValueFromPayload(mapping, payload)
+        if (normalized) {
+          metricValues.push({
+            org_id: context.orgId,
+            metric_key: normalized.metric_key,
+            value_num: normalized.value_num,
+            value_text: normalized.value_text,
+            occurred_on: normalized.occurred_on,
+            source: normalized.source,
+          })
+        }
+      }
+    }
+
+    // Batch insert raw events - single query instead of N queries
+    if (rawEvents.length > 0) {
+      const { error: rawErr } = await service.from('raw_events').insert(rawEvents)
       if (rawErr) {
-        rowsInvalid++
-        continue
+        // If batch insert fails, mark all as invalid
+        rowsInvalid = rowsIn
+        rowsValid = 0
+      } else {
+        // Batch insert metric values - single query instead of N queries
+        if (metricValues.length > 0) {
+          const { error: mvErr } = await service.from('metric_values').insert(metricValues)
+          if (mvErr) {
+            rowsInvalid = rowsIn
+            rowsValid = 0
+          } else {
+            rowsValid = metricValues.length
+            rowsInvalid = rowsIn - rowsValid
+          }
+        } else {
+          // No metric values to insert (no mapping or no valid normalized data)
+          rowsInvalid = rowsIn
+          rowsValid = 0
+        }
       }
-
-      if (!mapping) {
-        rowsInvalid++
-        continue
-      }
-
-      const normalized = normalizeMetricValueFromPayload(mapping, payload)
-      if (!normalized) {
-        rowsInvalid++
-        continue
-      }
-
-      const { error: mvErr } = await service.from('metric_values').insert({
-        org_id: context.orgId,
-        metric_key: normalized.metric_key,
-        value_num: normalized.value_num,
-        value_text: normalized.value_text,
-        occurred_on: normalized.occurred_on,
-        source: normalized.source,
-      })
-
-      if (mvErr) rowsInvalid++
-      else rowsValid++
     }
 
     await service.from('source_runs').update({
