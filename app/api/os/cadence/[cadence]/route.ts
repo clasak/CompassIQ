@@ -35,53 +35,115 @@ export async function GET(
     // Build agenda from rules + live data
     const agenda: any[] = []
 
+    // Collect all IDs and rules upfront to avoid N+1 queries
+    const osInstanceIds = (cadenceItems || [])
+      .map(item => (item.os_instances as any)?.id)
+      .filter(Boolean)
+
+    // Collect all unique severities and task states from all items
+    const allSeverities = new Set<string>()
+    const allTaskStates = new Set<string>()
+    let maxDueWithinDays = 0
+
+    for (const item of cadenceItems || []) {
+      const rules = item.rules_json
+      if (rules.include_alerts?.severity) {
+        rules.include_alerts.severity.forEach((s: string) => allSeverities.add(s))
+      }
+      if (rules.include_tasks) {
+        const taskStates = rules.include_tasks.state || ['open', 'in_progress']
+        taskStates.forEach((s: string) => allTaskStates.add(s))
+        if (rules.include_tasks.due_within_days) {
+          maxDueWithinDays = Math.max(maxDueWithinDays, rules.include_tasks.due_within_days)
+        }
+      }
+    }
+
+    // Single batch query for all alerts
+    let allAlerts: any[] = []
+    if (allSeverities.size > 0 && osInstanceIds.length > 0) {
+      const { data: alerts } = await supabase
+        .from('alerts')
+        .select('*')
+        .eq('org_id', context.orgId)
+        .in('os_instance_id', osInstanceIds)
+        .in('severity', Array.from(allSeverities))
+        .in('state', ['open', 'acknowledged', 'in_progress'])
+      
+      allAlerts = alerts || []
+    }
+
+    // Single batch query for all tasks
+    let allTasks: any[] = []
+    if (allTaskStates.size > 0) {
+      let taskQuery = supabase
+        .from('os_tasks')
+        .select('*')
+        .eq('org_id', context.orgId)
+        .in('state', Array.from(allTaskStates))
+
+      if (maxDueWithinDays > 0) {
+        const dueDate = new Date()
+        dueDate.setDate(dueDate.getDate() + maxDueWithinDays)
+        taskQuery = taskQuery.lte('due_at', dueDate.toISOString())
+      }
+
+      const { data: tasks } = await taskQuery
+      allTasks = tasks || []
+    }
+
+    // Group results in memory by instance_id
+    const alertsByInstance = new Map<string, any[]>()
+    allAlerts.forEach(alert => {
+      const instanceId = alert.os_instance_id
+      if (!alertsByInstance.has(instanceId)) {
+        alertsByInstance.set(instanceId, [])
+      }
+      alertsByInstance.get(instanceId)!.push(alert)
+    })
+
+    // Process each cadence item with pre-fetched data
     for (const item of cadenceItems || []) {
       const rules = item.rules_json
       const osInstanceId = (item.os_instances as any)?.id
 
-      // Get alerts based on rules
+      // Get alerts from pre-fetched data
       if (rules.include_alerts) {
         const alertSeverities = rules.include_alerts.severity || []
-        const { data: alerts } = await supabase
-          .from('alerts')
-          .select('*')
-          .eq('org_id', context.orgId)
-          .eq('os_instance_id', osInstanceId)
-          .in('severity', alertSeverities)
-          .in('state', ['open', 'acknowledged', 'in_progress'])
+        const instanceAlerts = alertsByInstance.get(osInstanceId) || []
+        const filteredAlerts = instanceAlerts.filter(a => 
+          alertSeverities.includes(a.severity)
+        )
 
-        if (alerts && alerts.length > 0) {
+        if (filteredAlerts.length > 0) {
           agenda.push({
             type: 'alerts',
             title: `Open ${alertSeverities.join('/')} Alerts`,
-            items: alerts
+            items: filteredAlerts
           })
         }
       }
 
-      // Get tasks based on rules
+      // Get tasks from pre-fetched data
       if (rules.include_tasks) {
         const taskStates = rules.include_tasks.state || ['open', 'in_progress']
         const dueWithinDays = rules.include_tasks.due_within_days
-        let taskQuery = supabase
-          .from('os_tasks')
-          .select('*')
-          .eq('org_id', context.orgId)
-          .in('state', taskStates)
-
+        
+        let filteredTasks = allTasks.filter(t => taskStates.includes(t.state))
+        
         if (dueWithinDays) {
           const dueDate = new Date()
           dueDate.setDate(dueDate.getDate() + dueWithinDays)
-          taskQuery = taskQuery.lte('due_at', dueDate.toISOString())
+          filteredTasks = filteredTasks.filter(t => 
+            !t.due_at || new Date(t.due_at) <= dueDate
+          )
         }
 
-        const { data: tasks } = await taskQuery
-
-        if (tasks && tasks.length > 0) {
+        if (filteredTasks.length > 0) {
           agenda.push({
             type: 'tasks',
             title: `Tasks (${taskStates.join('/')})`,
-            items: tasks
+            items: filteredTasks
           })
         }
       }
