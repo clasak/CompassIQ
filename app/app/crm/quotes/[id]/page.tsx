@@ -21,3 +21,4 @@ export default async function QuotePage({ params }: QuotePageProps) {
   return <QuoteBuilder quote={quote} accounts={accounts} />
 }
 
+

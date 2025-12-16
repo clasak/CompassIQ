@@ -74,3 +74,4 @@ export function DeleteQuoteDialog({ children, quoteId }: DeleteQuoteDialogProps)
   )
 }
 
+

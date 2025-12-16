@@ -77,7 +77,7 @@ export function OrgSwitcher() {
         .eq('user_id', user.id)
 
       if (error) {
-        console.error('Error loading orgs:', error)
+        // Avoid noisy console errors in client-ready builds; show empty state instead.
         setLoading(false)
         return
       }
@@ -111,7 +111,6 @@ export function OrgSwitcher() {
       }
       setLoading(false)
     } catch (error) {
-      console.error('Error loading orgs:', error)
       setLoading(false)
     }
   }

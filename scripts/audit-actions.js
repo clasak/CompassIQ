@@ -21,6 +21,24 @@ const allowedTriggerParents = new Set([
   'SheetTrigger',
 ])
 
+// Component wrappers that render a Trigger `asChild` internally (static audit can't see across files).
+const allowedTriggerWrapperParents = new Set([
+  'CreateLeadDialog',
+  'CreateAccountDialog',
+  'CreateOpportunityDialog',
+  'CreateQuoteDialog',
+  'CreateTaskDialog',
+  'EditLeadDialog',
+  'EditAccountDialog',
+  'EditOpportunityDialog',
+  'EditTaskDialog',
+  'DeleteLeadDialog',
+  'DeleteAccountDialog',
+  'DeleteOpportunityDialog',
+  'DeleteTaskDialog',
+  'DeleteQuoteDialog',
+])
+
 function fileExists(filePath) {
   try {
     fs.accessSync(filePath, fs.constants.R_OK)
@@ -116,6 +134,19 @@ function hasAsChildTriggerParent(node) {
   return false
 }
 
+function hasTriggerWrapperParent(node) {
+  let current = node.parent
+  while (current) {
+    if (ts.isJsxElement(current)) {
+      const parentName = getJsxTagName(current.openingElement.tagName)
+      if (!parentName) return false
+      if (allowedTriggerWrapperParents.has(parentName)) return true
+    }
+    current = current.parent
+  }
+  return false
+}
+
 function shouldFlagButton(openingElement) {
   const tagName = getJsxTagName(openingElement.tagName)
   if (!tagName) return false
@@ -127,6 +158,11 @@ function shouldFlagButton(openingElement) {
   if (hasSubmitType(openingElement)) return false
   if (isInsideForm(openingElement)) return false
   if (hasAsChildTriggerParent(openingElement)) return false
+  if (hasTriggerWrapperParent(openingElement)) return false
+  
+  // ActionButton components handle their own disabled/onClick logic internally
+  // They should not be flagged as dead buttons
+  if (tagName === 'ActionButton') return false
 
   return true
 }
@@ -181,4 +217,3 @@ function main() {
 }
 
 main()
-

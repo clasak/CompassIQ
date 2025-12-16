@@ -100,3 +100,4 @@ The app automatically detects dev demo mode when:
 
 When Supabase credentials are added, the app automatically switches to real Supabase mode with no code changes needed.
 
+

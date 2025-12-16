@@ -42,6 +42,8 @@ export async function createPreviewWorkspace(data: {
   kpis: string[]
   branding: PreviewBranding
   metricValues: Array<{ key: string; value: number }>
+  accountId?: string
+  opportunityId?: string
 }): Promise<CreatePreviewResult> {
   try {
     const context = await requireAdmin()
@@ -64,6 +66,8 @@ export async function createPreviewWorkspace(data: {
         industry: data.industry || null,
         pains: data.pains,
         kpis: data.kpis,
+        account_id: data.accountId || null,
+        opportunity_id: data.opportunityId || null,
         created_by: user?.id || null,
       })
       .select()
@@ -71,6 +75,25 @@ export async function createPreviewWorkspace(data: {
 
     if (workspaceError || !workspace) {
       return { success: false, error: normalizeError(workspaceError) }
+    }
+
+    // Create intake pack from preview data
+    const { createIntakePackFromPreview } = await import('./client-project-actions')
+    const intakeResult = await createIntakePackFromPreview({
+      accountId: data.accountId,
+      opportunityId: data.opportunityId,
+      previewWorkspaceId: workspace.id,
+      companyName: data.name,
+      industry: data.industry,
+      pains: data.pains,
+      kpis: data.kpis,
+      branding: data.branding,
+      metricValues: data.metricValues,
+    })
+
+    if (!intakeResult.success) {
+      // Log error but don't fail the preview creation
+      console.error('Failed to create intake pack:', intakeResult.error)
     }
 
     // Create preview-specific branding entry (separate from org branding)

@@ -2,10 +2,19 @@ import { Sidebar } from '@/components/app-shell/Sidebar'
 import { Topbar } from '@/components/app-shell/Topbar'
 import { ErrorBoundary } from '@/components/app-shell/ErrorBoundary'
 import { ModeBanner } from '@/components/app-shell/ModeBanner'
+import { PreviewBanner } from '@/components/app-shell/PreviewBanner'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { getActiveOrgIdOrFirst, hasAnyMemberships } from '@/lib/org'
 import { isDevDemoMode } from '@/lib/runtime'
+import { getBrandingForActiveOrg, getBrandingForOrgId } from '@/lib/branding/server'
+import { BRANDING_DEFAULTS } from '@/lib/branding'
+import { BrandProvider } from '@/components/branding/BrandProvider'
+import { getActivePreviewId } from '@/lib/preview'
+import { UiClickAudit } from '@/components/audit/UiClickAudit'
+import { DemoTour } from '@/components/demo/DemoTour'
+import { PerfNavCapture } from '@/components/perf/PerfNavCapture'
+import { serverPerf } from '@/lib/perf'
 import React from 'react'
 
 export default async function AppLayout({
@@ -15,19 +24,29 @@ export default async function AppLayout({
 }) {
   // Dev demo mode: skip auth checks
   if (isDevDemoMode()) {
+    const branding = BRANDING_DEFAULTS
+    const previewId = await getActivePreviewId()
     return (
-      <ErrorBoundary>
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <div className="flex flex-1 flex-col overflow-hidden">
-            <Topbar />
-            <main className="flex-1 overflow-y-auto p-6">
-              <ModeBanner />
-              {children}
-            </main>
+      <BrandProvider branding={branding}>
+        <ErrorBoundary>
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <div className="flex flex-1 flex-col overflow-hidden">
+              <Topbar />
+              <main className="flex-1 overflow-y-auto">
+                <div className="max-w-[1440px] mx-auto px-6 py-6">
+                  <PreviewBanner previewId={previewId} />
+                  <ModeBanner />
+                  {children}
+                  <UiClickAudit />
+                  <DemoTour />
+                  <PerfNavCapture />
+                </div>
+              </main>
+            </div>
           </div>
-        </div>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      </BrandProvider>
     )
   }
 
@@ -83,18 +102,29 @@ export default async function AppLayout({
     redirect('/app/onboarding')
   }
 
+  const branding = await serverPerf('layout:getBrandingForOrgId', () => getBrandingForOrgId(orgId))
+  const previewId = await getActivePreviewId()
+
   return (
-    <ErrorBoundary>
-      <div className="flex h-screen overflow-hidden">
-        <Sidebar />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <Topbar />
-          <main className="flex-1 overflow-y-auto p-6">
-            <ModeBanner />
-            {children}
-          </main>
+    <BrandProvider branding={branding}>
+      <ErrorBoundary>
+        <div className="flex h-screen overflow-hidden">
+          <Sidebar />
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <Topbar />
+            <main className="flex-1 overflow-y-auto">
+              <div className="max-w-[1440px] mx-auto px-6 py-6">
+                <PreviewBanner previewId={previewId} />
+                <ModeBanner />
+                {children}
+                <UiClickAudit />
+                <DemoTour />
+                <PerfNavCapture />
+              </div>
+            </main>
+          </div>
         </div>
-      </div>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </BrandProvider>
   )
 }

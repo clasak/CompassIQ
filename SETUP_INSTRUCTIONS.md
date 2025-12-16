@@ -65,3 +65,4 @@ npm run dev
 - **"Invalid API key" error**: Check that API keys in `.env.local` are correct and not duplicated
 - **"relation does not exist" error**: Migrations haven't been applied yet - complete Step 1
 - **Connection errors**: Verify `NEXT_PUBLIC_SUPABASE_URL` is correct
+

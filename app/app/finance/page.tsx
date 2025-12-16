@@ -117,6 +117,7 @@ export default async function FinancePage({
   const now = new Date()
   const filter = typeof searchParams?.filter === 'string' ? searchParams.filter : null
   const status = typeof searchParams?.status === 'string' ? searchParams.status : null
+  const search = typeof searchParams?.search === 'string' ? searchParams.search : null
 
   const totalRevenue = invoices.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0)
   const totalOutstanding = invoices.reduce((sum, inv) => sum + (inv.outstanding_amount || 0), 0)
@@ -135,10 +136,21 @@ export default async function FinancePage({
         })
       : filter === 'ar'
         ? invoices.filter((inv) => (inv.outstanding_amount || 0) > 0)
-        : invoices
+        : filter === 'overdue'
+          ? invoices.filter((inv) => inv.status === 'OVERDUE')
+          : invoices
 
-  if (status) {
+  if (status && status !== 'all') {
     filteredInvoices = filteredInvoices.filter((inv) => inv.status === status)
+  }
+
+  if (search) {
+    const searchLower = search.toLowerCase()
+    filteredInvoices = filteredInvoices.filter(
+      (inv) =>
+        inv.invoice_number.toLowerCase().includes(searchLower) ||
+        (inv.accounts && typeof inv.accounts === 'object' && 'name' in inv.accounts && inv.accounts.name.toLowerCase().includes(searchLower))
+    )
   }
 
   const tableTitle =
@@ -146,7 +158,9 @@ export default async function FinancePage({
       ? 'Invoices (Revenue MTD)'
       : filter === 'ar'
         ? 'Invoices (AR Outstanding)'
-        : 'Invoices'
+        : filter === 'overdue'
+          ? 'Invoices (Overdue)'
+          : 'Invoices'
 
   return (
     <div className="space-y-6">

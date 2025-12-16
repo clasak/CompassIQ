@@ -1,0 +1,957 @@
+{
+  "meta": {
+    "baseURL": "http://localhost:3000",
+    "at": "2025-12-16T03:49:39.704Z"
+  },
+  "nonDemo": {
+    "org": {
+      "name": "QA Non-Demo Org",
+      "slug": "qa-non-demo-org",
+      "orgId": "bb27a2c0-61af-45ce-b9e3-73f55788e6e8"
+    },
+    "instance": {
+      "id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+      "name": "QA Instance 2025-12-16T03-50-07-346Z"
+    },
+    "network": {
+      "createInstance": {
+        "method": "POST",
+        "path": "/api/os/instances",
+        "status": 200,
+        "body": {
+          "instance": {
+            "id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "name": "QA Instance 2025-12-16T03-50-07-346Z",
+            "status": "draft",
+            "org_id": "bb27a2c0-61af-45ce-b9e3-73f55788e6e8",
+            "template_id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+            "created_at": "2025-12-16T03:50:13.557315+00:00"
+          }
+        }
+      },
+      "publishInstance": {
+        "method": "POST",
+        "path": "/api/os/instances/5fe15105-b084-45c0-96e6-a5f1edf67039/publish",
+        "status": 200,
+        "body": {
+          "success": true,
+          "instanceId": "5fe15105-b084-45c0-96e6-a5f1edf67039"
+        }
+      },
+      "publishAgain": {
+        "method": "POST",
+        "path": "/api/os/instances/5fe15105-b084-45c0-96e6-a5f1edf67039/publish",
+        "status": 200,
+        "body": {
+          "success": true,
+          "instanceId": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+          "message": "Instance already published"
+        }
+      },
+      "alertsForInstance": {
+        "status": 200,
+        "count": 6,
+        "firstId": "05751b93-a3fd-4975-9efb-c0e8f1ba2361"
+      },
+      "alertAssignOwner": {
+        "method": "PATCH",
+        "path": "/api/os/alerts/ae1663ba-51b2-404f-bd61-e4db475b0b60",
+        "status": 200,
+        "body": {
+          "alert": {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": null,
+            "resolved_at": null
+          }
+        }
+      },
+      "alertSetDueDate": {
+        "method": "PATCH",
+        "path": "/api/os/alerts/ae1663ba-51b2-404f-bd61-e4db475b0b60",
+        "status": 200,
+        "body": {
+          "alert": {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-23T03:50:23.256+00:00",
+            "resolved_at": null
+          }
+        }
+      },
+      "alertAcknowledge": {
+        "method": "PATCH",
+        "path": "/api/os/alerts/ae1663ba-51b2-404f-bd61-e4db475b0b60",
+        "status": 200,
+        "body": {
+          "alert": {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "state": "acknowledged"
+          }
+        }
+      },
+      "alertResolve": {
+        "method": "PATCH",
+        "path": "/api/os/alerts/ae1663ba-51b2-404f-bd61-e4db475b0b60",
+        "status": 200,
+        "body": {
+          "alert": {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "state": "resolved",
+            "resolved_at": "2025-12-16T03:50:25.088+00:00"
+          }
+        }
+      },
+      "createTask": {
+        "method": "POST",
+        "path": "/api/os/tasks",
+        "status": 200,
+        "body": {
+          "task": {
+            "id": "adadfce7-0f12-4dda-a544-46bf93c12741",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-19T00:00:00+00:00",
+            "title": "QA Task 2025-12-16T03-50-31-499Z"
+          }
+        }
+      },
+      "createdTaskId": "adadfce7-0f12-4dda-a544-46bf93c12741",
+      "taskDoneWithProof": {
+        "method": "PATCH",
+        "path": "/api/os/tasks/adadfce7-0f12-4dda-a544-46bf93c12741",
+        "status": 200,
+        "body": {
+          "task": {
+            "id": "adadfce7-0f12-4dda-a544-46bf93c12741",
+            "state": "done",
+            "completed_at": "2025-12-16T03:50:33.739+00:00",
+            "proof": {
+              "notes": "Proof captured 2025-12-16T03:50:32.957Z",
+              "timestamp": "2025-12-16T03:50:32.957Z"
+            }
+          }
+        }
+      },
+      "cadenceWeekly": {
+        "status": 200,
+        "cadence": "weekly",
+        "agenda": [
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 1
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 1
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 1
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 1
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          }
+        ]
+      },
+      "execPacketExport": {
+        "method": "POST",
+        "path": "/api/os/exec-packets",
+        "status": 200,
+        "body": {
+          "packet": {
+            "id": "464e29c4-d949-4427-ab23-50f5dbd23024",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "period_start": "2025-12-09T03:50:44.483+00:00",
+            "period_end": "2025-12-16T03:50:44.483+00:00",
+            "created_at": "2025-12-16T03:50:45.462334+00:00"
+          }
+        }
+      }
+    },
+    "db": {
+      "publishIdempotency": {
+        "before": {
+          "alerts_count": 6,
+          "cadence_items_count": 3
+        },
+        "after": {
+          "alerts_count": 6,
+          "cadence_items_count": 3
+        }
+      },
+      "alertAfterUpdates": {
+        "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+        "state": "resolved",
+        "owner": "demo.admin@example.com",
+        "due_at": "2025-12-23T03:50:23.256Z",
+        "resolved_at": "2025-12-16T03:50:25.088Z"
+      },
+      "taskAfterUpdates": {
+        "id": "adadfce7-0f12-4dda-a544-46bf93c12741",
+        "state": "done",
+        "completed_at": "2025-12-16T03:50:33.739Z",
+        "proof": {
+          "notes": "Proof captured 2025-12-16T03:50:32.957Z",
+          "timestamp": "2025-12-16T03:50:32.957Z"
+        }
+      },
+      "instanceRow": {
+        "id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+        "status": "published",
+        "published_at": "2025-12-16T03:50:15.111Z",
+        "created_at": "2025-12-16T03:50:13.557Z"
+      },
+      "instanceStatusCounts": [
+        {
+          "status": "draft",
+          "instances": 2
+        },
+        {
+          "status": "published",
+          "instances": 4
+        }
+      ],
+      "alertStateCounts": [
+        {
+          "state": "acknowledged",
+          "alerts": 2
+        },
+        {
+          "state": "open",
+          "alerts": 18
+        },
+        {
+          "state": "resolved",
+          "alerts": 4
+        }
+      ],
+      "taskStateCounts": [
+        {
+          "state": "done",
+          "tasks": 2
+        },
+        {
+          "state": "open",
+          "tasks": 1
+        }
+      ],
+      "cadenceItemsCount": [
+        {
+          "cadence_items": 12
+        }
+      ],
+      "execPacketsCount": [
+        {
+          "exec_packets": 2
+        }
+      ],
+      "latestExecPacket": {
+        "id": "464e29c4-d949-4427-ab23-50f5dbd23024",
+        "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+        "period_start": "2025-12-09T03:50:44.483Z",
+        "period_end": "2025-12-16T03:50:44.483Z",
+        "created_at": "2025-12-16T03:50:45.462Z"
+      }
+    },
+    "ui": [
+      "Created instance via /app/build/instances/create and redirected to /app/build/instances",
+      "Alerts updates persisted after refresh (owner/due/state)",
+      "Task proof persisted after refresh",
+      "Exec packet download: exec-packet-2025-12-16.json"
+    ]
+  },
+  "demo": {
+    "org": {
+      "slug": "demo",
+      "orgId": "8db35fd1-bf6d-4173-9260-8554f8b02450"
+    },
+    "network": {
+      "demoCreateInstance": {
+        "method": "POST",
+        "path": "/api/os/instances",
+        "status": 403,
+        "body": {
+          "error": "Demo org is read-only",
+          "code": "DEMO_READ_ONLY"
+        }
+      }
+    }
+  },
+  "orgIsolation": {
+    "qa": {
+      "instances": {
+        "status": 200,
+        "count": 6,
+        "ids": [
+          "5fe15105-b084-45c0-96e6-a5f1edf67039",
+          "7ad616ae-7870-4a77-8ebd-4d4923e77453",
+          "4de0b370-ccc3-4699-8ad4-5aaa71eef4da"
+        ]
+      },
+      "alerts": {
+        "status": 200,
+        "count": 24,
+        "ids": [
+          "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+          "949e422d-4be3-4d40-8914-5fd033d8e68a",
+          "ae1663ba-51b2-404f-bd61-e4db475b0b60"
+        ]
+      },
+      "tasks": {
+        "status": 200,
+        "count": 3,
+        "ids": [
+          "adadfce7-0f12-4dda-a544-46bf93c12741",
+          "6fea42b2-2903-4572-8f13-d4ce014ae443",
+          "be7f359d-6b05-4966-abba-f70b347b3610"
+        ]
+      }
+    },
+    "db": {
+      "qa": {
+        "instances": 6,
+        "alerts": 24,
+        "tasks": 3
+      },
+      "demo": {
+        "instances": 1,
+        "alerts": 3,
+        "tasks": 3
+      }
+    },
+    "demo": {
+      "instances": {
+        "status": 200,
+        "count": 1,
+        "ids": [
+          "24a72565-ff8c-4bea-9ae9-fa9eb70c72a0"
+        ]
+      },
+      "alerts": {
+        "status": 200,
+        "count": 3,
+        "ids": [
+          "2f3c2d75-d655-40c6-8cd9-fa1a018a97e5",
+          "6733405c-dbff-4c32-88d2-be9f95a0ad48",
+          "8eba0cff-8dcc-4037-a1b0-03c1a74c4065"
+        ]
+      },
+      "tasks": {
+        "status": 200,
+        "count": 3,
+        "ids": [
+          "5a193892-161d-45da-ae63-0ed0512fa5e4",
+          "95c22edd-6adc-4ff9-a2fd-86265b857c3e",
+          "58ec41e7-9b69-4b60-aa87-f9dbc2f77bb1"
+        ]
+      }
+    },
+    "qaAfter": {
+      "status": 200,
+      "count": 6,
+      "ids": [
+        "5fe15105-b084-45c0-96e6-a5f1edf67039",
+        "7ad616ae-7870-4a77-8ebd-4d4923e77453",
+        "4de0b370-ccc3-4699-8ad4-5aaa71eef4da"
+      ]
+    }
+  },
+  "tracked": [
+    {
+      "method": "POST",
+      "path": "/api/os/instances",
+      "status": 200,
+      "body": {
+        "instance": {
+          "id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+          "name": "QA Instance 2025-12-16T03-50-07-346Z",
+          "status": "draft",
+          "org_id": "bb27a2c0-61af-45ce-b9e3-73f55788e6e8",
+          "template_id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+          "created_at": "2025-12-16T03:50:13.557315+00:00"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/instances/5fe15105-b084-45c0-96e6-a5f1edf67039/publish",
+      "status": 200,
+      "body": {
+        "success": true,
+        "instanceId": "5fe15105-b084-45c0-96e6-a5f1edf67039"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/instances/5fe15105-b084-45c0-96e6-a5f1edf67039/publish",
+      "status": 200,
+      "body": {
+        "success": true,
+        "instanceId": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+        "message": "Instance already published"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts?os_instance_id=5fe15105-b084-45c0-96e6-a5f1edf67039",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "05751b93-a3fd-4975-9efb-c0e8f1ba2361",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "high",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Below Target"
+          },
+          {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "On-Time Completion Rate Declining"
+          }
+        ],
+        "count": 6
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "On-Time Completion Rate Declining"
+          },
+          {
+            "id": "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "low",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Low Equipment Utilization"
+          }
+        ],
+        "count": 24
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "On-Time Completion Rate Declining"
+          },
+          {
+            "id": "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "low",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Low Equipment Utilization"
+          }
+        ],
+        "count": 24
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "On-Time Completion Rate Declining"
+          },
+          {
+            "id": "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "low",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Low Equipment Utilization"
+          }
+        ],
+        "count": 24
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/alerts/ae1663ba-51b2-404f-bd61-e4db475b0b60",
+      "status": 200,
+      "body": {
+        "alert": {
+          "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+          "state": "open",
+          "owner": "demo.admin@example.com",
+          "due_at": null,
+          "resolved_at": null
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "medium",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": null,
+            "title": "On-Time Completion Rate Declining"
+          },
+          {
+            "id": "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "low",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Low Equipment Utilization"
+          }
+        ],
+        "count": 24
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/alerts/ae1663ba-51b2-404f-bd61-e4db475b0b60",
+      "status": 200,
+      "body": {
+        "alert": {
+          "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+          "state": "open",
+          "owner": "demo.admin@example.com",
+          "due_at": "2025-12-23T03:50:23.256+00:00",
+          "resolved_at": null
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "medium",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-23T03:50:23.256+00:00",
+            "title": "On-Time Completion Rate Declining"
+          },
+          {
+            "id": "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "low",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Low Equipment Utilization"
+          }
+        ],
+        "count": 24
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "medium",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-23T03:50:23.256+00:00",
+            "title": "On-Time Completion Rate Declining"
+          },
+          {
+            "id": "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "low",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Low Equipment Utilization"
+          }
+        ],
+        "count": 24
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/alerts/ae1663ba-51b2-404f-bd61-e4db475b0b60",
+      "status": 200,
+      "body": {
+        "alert": {
+          "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+          "state": "acknowledged",
+          "owner": "demo.admin@example.com",
+          "due_at": "2025-12-23T03:50:23.256+00:00",
+          "resolved_at": null
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/alerts/ae1663ba-51b2-404f-bd61-e4db475b0b60",
+      "status": 200,
+      "body": {
+        "alert": {
+          "id": "ae1663ba-51b2-404f-bd61-e4db475b0b60",
+          "state": "resolved",
+          "owner": "demo.admin@example.com",
+          "due_at": "2025-12-23T03:50:23.256+00:00",
+          "resolved_at": "2025-12-16T03:50:25.088+00:00"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "low",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Low Equipment Utilization"
+          },
+          {
+            "id": "949e422d-4be3-4d40-8914-5fd033d8e68a",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "critical",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Safety Incident Detected"
+          }
+        ],
+        "count": 24
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/tasks",
+      "status": 200,
+      "body": {
+        "task": {
+          "id": "adadfce7-0f12-4dda-a544-46bf93c12741",
+          "state": "open",
+          "owner": "demo.admin@example.com",
+          "due_at": "2025-12-19T00:00:00+00:00",
+          "title": "QA Task 2025-12-16T03-50-31-499Z"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/tasks/adadfce7-0f12-4dda-a544-46bf93c12741",
+      "status": 200,
+      "body": {
+        "task": {
+          "id": "adadfce7-0f12-4dda-a544-46bf93c12741",
+          "state": "done",
+          "completed_at": "2025-12-16T03:50:33.739+00:00",
+          "proof": {
+            "notes": "Proof captured 2025-12-16T03:50:32.957Z",
+            "timestamp": "2025-12-16T03:50:32.957Z"
+          }
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/cadence/weekly",
+      "status": 200,
+      "body": {
+        "cadence": "weekly",
+        "agenda": [
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 1
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 1
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 1
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 1
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          }
+        ]
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts?severity=critical&state=open",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "949e422d-4be3-4d40-8914-5fd033d8e68a",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "critical",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Safety Incident Detected"
+          },
+          {
+            "id": "cac18df3-6f68-47e8-989f-4b635e37033a",
+            "os_instance_id": "7ad616ae-7870-4a77-8ebd-4d4923e77453",
+            "severity": "critical",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Safety Incident Detected"
+          }
+        ],
+        "count": 4
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts?severity=critical&state=open",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "949e422d-4be3-4d40-8914-5fd033d8e68a",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "critical",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Safety Incident Detected"
+          },
+          {
+            "id": "cac18df3-6f68-47e8-989f-4b635e37033a",
+            "os_instance_id": "7ad616ae-7870-4a77-8ebd-4d4923e77453",
+            "severity": "critical",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Safety Incident Detected"
+          }
+        ],
+        "count": 4
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/exec-packets",
+      "status": 200,
+      "body": {
+        "packet": {
+          "id": "464e29c4-d949-4427-ab23-50f5dbd23024",
+          "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+          "period_start": "2025-12-09T03:50:44.483+00:00",
+          "period_end": "2025-12-16T03:50:44.483+00:00",
+          "created_at": "2025-12-16T03:50:45.462334+00:00"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "3059c079-f9b3-4e22-a1eb-adfe9e11003d",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "low",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Low Equipment Utilization"
+          },
+          {
+            "id": "949e422d-4be3-4d40-8914-5fd033d8e68a",
+            "os_instance_id": "5fe15105-b084-45c0-96e6-a5f1edf67039",
+            "severity": "critical",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Safety Incident Detected"
+          }
+        ],
+        "count": 24
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "2f3c2d75-d655-40c6-8cd9-fa1a018a97e5",
+            "os_instance_id": "24a72565-ff8c-4bea-9ae9-fa9eb70c72a0",
+            "severity": "high",
+            "state": "open",
+            "owner": null,
+            "due_at": "2025-12-23T02:52:40.204+00:00",
+            "title": "Project Margin Below Target"
+          },
+          {
+            "id": "6733405c-dbff-4c32-88d2-be9f95a0ad48",
+            "os_instance_id": "24a72565-ff8c-4bea-9ae9-fa9eb70c72a0",
+            "severity": "critical",
+            "state": "acknowledged",
+            "owner": "demo@example.com",
+            "due_at": "2025-12-17T02:52:40.205+00:00",
+            "title": "Safety Incident Detected"
+          }
+        ],
+        "count": 3
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/instances",
+      "status": 403,
+      "body": {
+        "instance": {}
+      }
+    }
+  ]
+}

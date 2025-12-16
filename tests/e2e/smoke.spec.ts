@@ -168,3 +168,4 @@ test('App shell structure exists', async ({ page }) => {
   await expect(page).toHaveURL(/.*login/)
 })
 
+

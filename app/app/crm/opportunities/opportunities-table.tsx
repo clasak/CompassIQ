@@ -61,14 +61,28 @@ export function OpportunitiesTable({ opportunities, accounts }: OpportunitiesTab
         return date ? formatDate(date) : '-'
       },
     },
-    {
-      accessorKey: 'created_at',
-      header: 'Created',
-      cell: ({ row }) => {
-        const date = row.getValue('created_at') as string
-        return formatDate(date)
-      },
+  {
+    accessorKey: 'created_at',
+    header: 'Created',
+    cell: ({ row }) => {
+      const date = row.getValue('created_at') as string
+      return formatDate(date)
     },
+  },
+  {
+    id: 'data_origin',
+    header: 'Origin',
+    cell: ({ row }) => {
+      const opp = row.original
+      const origin = (opp as any).metadata?.data_origin || 'seeded'
+      const labels: Record<string, string> = {
+        manual: 'Manual',
+        imported: 'Imported',
+        seeded: 'Seeded (demo)',
+      }
+      return <Badge variant="outline">{labels[origin] || origin}</Badge>
+    },
+  },
     {
       id: 'actions',
       cell: ({ row }) => {
@@ -110,7 +124,15 @@ export function OpportunitiesTable({ opportunities, accounts }: OpportunitiesTab
       searchKey="name"
       searchPlaceholder="Search opportunities..."
       exportFilename="opportunities.csv"
+      emptyStateTitle="No opportunities yet"
+      emptyStateDescription="Deals and sales opportunities will appear here. Create your first opportunity to start tracking your pipeline."
+      emptyStateAction={
+        <Button asChild>
+          <a href="/app/crm/opportunities">Create Opportunity</a>
+        </Button>
+      }
     />
   )
 }
+
 

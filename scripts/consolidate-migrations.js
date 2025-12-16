@@ -27,3 +27,4 @@ const outputPath = path.join(process.cwd(), 'db', 'migrations_consolidated.sql')
 fs.writeFileSync(outputPath, allSQL);
 
 console.log(`✅ Consolidated SQL file created at ${outputPath}`);
+

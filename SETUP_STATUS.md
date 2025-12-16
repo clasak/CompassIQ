@@ -88,3 +88,4 @@ npm run test:e2e
 - Check for syntax errors in SQL output
 - Ensure you're applying all migrations in order (consolidated file handles this)
 - Verify you have proper database permissions
+

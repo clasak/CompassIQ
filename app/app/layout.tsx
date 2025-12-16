@@ -10,10 +10,10 @@ import React from 'react'
 import { UiClickAudit } from '@/components/audit/UiClickAudit'
 import { DemoTour } from '@/components/demo/DemoTour'
 import { getBrandingForActiveOrg, getBrandingForOrgId } from '@/lib/branding/server'
+import { BRANDING_DEFAULTS } from '@/lib/branding'
 import { BrandProvider } from '@/components/branding/BrandProvider'
 import { PreviewBanner } from '@/components/app-shell/PreviewBanner'
 import { PerfNavCapture } from '@/components/perf/PerfNavCapture'
-import { PageTiming } from '@/components/app-shell/PageTiming'
 import { serverPerf } from '@/lib/perf'
 import { getActivePreviewId } from '@/lib/preview'
 
@@ -24,7 +24,8 @@ export default async function AppLayout({
 }) {
   // Dev demo mode: skip auth checks
   if (isDevDemoMode()) {
-    const branding = await serverPerf('layout:getBrandingForActiveOrg(devDemo)', getBrandingForActiveOrg)
+    // In dev demo mode, use default branding (don't try to fetch from DB)
+    const branding = BRANDING_DEFAULTS
     const previewId = await getActivePreviewId()
     return (
       <BrandProvider branding={branding}>
@@ -34,7 +35,6 @@ export default async function AppLayout({
             <div className="flex flex-1 flex-col overflow-hidden">
               <Topbar />
               <main className="flex-1 overflow-y-auto p-6">
-                <PageTiming />
                 <PreviewBanner previewId={previewId} />
                 <ModeBanner />
                 {children}
@@ -97,7 +97,6 @@ export default async function AppLayout({
           <div className="flex flex-1 flex-col overflow-hidden">
             <Topbar />
             <main className="flex-1 overflow-y-auto p-6">
-              <PageTiming />
               <PreviewBanner previewId={previewId} />
               <ModeBanner />
               {children}

@@ -1,0 +1,1320 @@
+{
+  "meta": {
+    "baseURL": "http://localhost:3000",
+    "at": "2025-12-16T05:35:44.755Z"
+  },
+  "nonDemo": {
+    "org": {
+      "name": "QA Non-Demo Org",
+      "slug": "qa-non-demo-org",
+      "orgId": "bb27a2c0-61af-45ce-b9e3-73f55788e6e8"
+    },
+    "instance": {
+      "id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+      "name": "QA Instance 2025-12-16T05-36-16-994Z"
+    },
+    "network": {
+      "templates": {
+        "status": 200,
+        "count": 3
+      },
+      "createInstance": {
+        "method": "POST",
+        "path": "/api/os/instances",
+        "status": 200,
+        "body": {
+          "instance": {
+            "id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "name": "QA Instance 2025-12-16T05-36-16-994Z",
+            "status": "draft",
+            "org_id": "bb27a2c0-61af-45ce-b9e3-73f55788e6e8",
+            "template_id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+            "created_at": "2025-12-16T05:36:22.398166+00:00"
+          }
+        }
+      },
+      "publishInstance": {
+        "method": "POST",
+        "path": "/api/os/instances/615db7d6-8e49-43c7-8435-d1b163b8ef79/publish",
+        "status": 200,
+        "body": {
+          "success": true,
+          "instanceId": "615db7d6-8e49-43c7-8435-d1b163b8ef79"
+        }
+      },
+      "publishAgain": {
+        "method": "POST",
+        "path": "/api/os/instances/615db7d6-8e49-43c7-8435-d1b163b8ef79/publish",
+        "status": 200,
+        "body": {
+          "success": true,
+          "instanceId": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+          "message": "Instance already published"
+        }
+      },
+      "alertsForInstance": {
+        "status": 200,
+        "count": 6,
+        "first": {
+          "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+          "title": "Project Margin Below Target"
+        }
+      },
+      "alertSetDueDate": {
+        "method": "PATCH",
+        "path": "/api/os/alerts/021f09f1-4b3d-4249-9524-e563c587661e",
+        "status": 200,
+        "body": {
+          "alert": {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-23T05:36:32.894+00:00",
+            "resolved_at": null
+          }
+        }
+      },
+      "alertAcknowledge": {
+        "method": "PATCH",
+        "path": "/api/os/alerts/021f09f1-4b3d-4249-9524-e563c587661e",
+        "status": 200,
+        "body": {
+          "alert": {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "state": "acknowledged"
+          }
+        }
+      },
+      "alertResolve": {
+        "method": "PATCH",
+        "path": "/api/os/alerts/021f09f1-4b3d-4249-9524-e563c587661e",
+        "status": 200,
+        "body": {
+          "alert": {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "state": "resolved",
+            "resolved_at": "2025-12-16T05:36:34.626+00:00"
+          }
+        }
+      },
+      "createTask": {
+        "method": "POST",
+        "path": "/api/os/tasks",
+        "status": 200,
+        "body": {
+          "task": {
+            "id": "801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-19T00:00:00+00:00",
+            "title": "QA Task 2025-12-16T05-36-40-545Z"
+          }
+        }
+      },
+      "createdTaskId": "801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+      "taskDoneWithProof": {
+        "method": "PATCH",
+        "path": "/api/os/tasks/801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+        "status": 200,
+        "body": {
+          "task": {
+            "id": "801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+            "state": "done",
+            "completed_at": "2025-12-16T05:36:43.052+00:00",
+            "proof": {
+              "notes": "Proof captured 2025-12-16T05:36:42.297Z",
+              "timestamp": "2025-12-16T05:36:42.322Z"
+            }
+          }
+        }
+      },
+      "cadenceWeekly": {
+        "status": 200,
+        "cadence": "weekly",
+        "agenda": [
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 5
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 5
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          }
+        ]
+      },
+      "execPacketExportCadence": {
+        "method": "POST",
+        "path": "/api/os/exec-packets",
+        "status": 200,
+        "body": {
+          "packet": {
+            "id": "01233ed6-bc18-41a3-b913-e4f14a3828cc",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "period_start": "2025-12-09T05:36:49.068+00:00",
+            "period_end": "2025-12-16T05:36:49.068+00:00",
+            "created_at": "2025-12-16T05:36:49.978672+00:00"
+          },
+          "packet_json_summary": {
+            "keys": [
+              "period",
+              "os_instance",
+              "kpis",
+              "top_alerts",
+              "commitments",
+              "generated_at"
+            ],
+            "kpis_count": 5,
+            "top_alerts_count": 5,
+            "commitments_count": 0
+          }
+        }
+      },
+      "execPacketExport": {
+        "method": "POST",
+        "path": "/api/os/exec-packets",
+        "status": 200,
+        "body": {
+          "packet": {
+            "id": "4d466917-48dc-4d8f-83b4-4356d4f5c5d0",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "period_start": "2025-12-09T05:36:55.093+00:00",
+            "period_end": "2025-12-16T05:36:55.093+00:00",
+            "created_at": "2025-12-16T05:36:55.733423+00:00"
+          },
+          "packet_json_summary": {
+            "keys": [
+              "period",
+              "os_instance",
+              "kpis",
+              "top_alerts",
+              "commitments",
+              "generated_at"
+            ],
+            "kpis_count": 5,
+            "top_alerts_count": 5,
+            "commitments_count": 0
+          }
+        }
+      }
+    },
+    "db": {
+      "publishIdempotency": {
+        "before": {
+          "alerts_count": 6,
+          "cadence_items_count": 3
+        },
+        "after": {
+          "alerts_count": 6,
+          "cadence_items_count": 3
+        }
+      },
+      "alertAfterUpdates": {
+        "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+        "state": "resolved",
+        "owner": "demo.admin@example.com",
+        "due_at": "2025-12-23T05:36:32.894Z",
+        "resolved_at": "2025-12-16T05:36:34.626Z"
+      },
+      "taskAfterUpdates": {
+        "id": "801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+        "state": "done",
+        "completed_at": "2025-12-16T05:36:43.052Z",
+        "proof": {
+          "notes": "Proof captured 2025-12-16T05:36:42.297Z",
+          "timestamp": "2025-12-16T05:36:42.322Z"
+        }
+      },
+      "instanceRow": {
+        "id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+        "status": "published",
+        "published_at": "2025-12-16T05:36:24.564Z",
+        "created_at": "2025-12-16T05:36:22.398Z"
+      },
+      "instanceStatusCounts": [
+        {
+          "status": "draft",
+          "instances": 2
+        },
+        {
+          "status": "published",
+          "instances": 14
+        }
+      ],
+      "alertStateCounts": [
+        {
+          "state": "acknowledged",
+          "alerts": 3
+        },
+        {
+          "state": "open",
+          "alerts": 69
+        },
+        {
+          "state": "resolved",
+          "alerts": 12
+        }
+      ],
+      "taskStateCounts": [
+        {
+          "state": "done",
+          "tasks": 5
+        },
+        {
+          "state": "open",
+          "tasks": 9
+        }
+      ],
+      "cadenceItemsCount": [
+        {
+          "cadence_items": 42
+        }
+      ],
+      "execPacketsCount": [
+        {
+          "exec_packets": 8
+        }
+      ],
+      "latestExecPacket": {
+        "id": "4d466917-48dc-4d8f-83b4-4356d4f5c5d0",
+        "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+        "period_start": "2025-12-09T05:36:55.093Z",
+        "period_end": "2025-12-16T05:36:55.093Z",
+        "created_at": "2025-12-16T05:36:55.733Z"
+      }
+    },
+    "ui": [
+      "Loaded /app/build/templates (OS Templates visible)",
+      "Created instance via /app/build/instances/create and redirected to /app/build/instances",
+      "Loaded /app/execute/alerts (table + filters visible)",
+      "Alerts updates persisted after refresh (owner/due/state)",
+      "Loaded /app/execute/tasks (table + create task action visible)",
+      "Task proof persisted after refresh",
+      "Loaded /app/cadence (Meeting Mode tabs visible)",
+      "Meeting mode exec packet download: exec-packet-weekly-2025-12-16.json",
+      "Loaded /app/operate (Founder Command Center visible)",
+      "Operate panels visible: Top Risks This Week, Commitments, Data Trust",
+      "Exec packet download: exec-packet-2025-12-16.json"
+    ]
+  },
+  "demo": {
+    "org": {
+      "slug": "demo",
+      "orgId": "8db35fd1-bf6d-4173-9260-8554f8b02450"
+    },
+    "network": {
+      "demoCreateInstance": {
+        "method": "POST",
+        "path": "/api/os/instances",
+        "status": 403,
+        "body": {
+          "error": "Demo org is read-only",
+          "code": "DEMO_READ_ONLY"
+        }
+      }
+    },
+    "ui": [
+      "Loaded /app/build/templates in demo org (read-only banner visible, Create OS disabled=true)"
+    ]
+  },
+  "orgIsolation": {
+    "qa": {
+      "instances": {
+        "status": 200,
+        "count": 16,
+        "ids": [
+          "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+          "b34d6c4a-6735-482c-8058-10079a3808ca",
+          "27eb0528-c6df-407e-82c6-d2c4e69f0d53"
+        ]
+      },
+      "alerts": {
+        "status": 200,
+        "count": 84,
+        "ids": [
+          "2fc1e8a5-e38e-43dc-a4e3-69884d7e6c26",
+          "021f09f1-4b3d-4249-9524-e563c587661e",
+          "af8bc7d1-e6fc-4930-afc6-70a558631e7a"
+        ]
+      },
+      "tasks": {
+        "status": 200,
+        "count": 14,
+        "ids": [
+          "801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+          "f3276f05-348b-4ee0-b42e-4d471d109a0d",
+          "42466977-3339-4884-810c-96112efc6950"
+        ]
+      }
+    },
+    "db": {
+      "qa": {
+        "instances": 16,
+        "alerts": 84,
+        "tasks": 14
+      },
+      "demo": {
+        "instances": 1,
+        "alerts": 3,
+        "tasks": 3
+      }
+    },
+    "demo": {
+      "instances": {
+        "status": 200,
+        "count": 1,
+        "ids": [
+          "24a72565-ff8c-4bea-9ae9-fa9eb70c72a0"
+        ]
+      },
+      "alerts": {
+        "status": 200,
+        "count": 3,
+        "ids": [
+          "2f3c2d75-d655-40c6-8cd9-fa1a018a97e5",
+          "6733405c-dbff-4c32-88d2-be9f95a0ad48",
+          "8eba0cff-8dcc-4037-a1b0-03c1a74c4065"
+        ]
+      },
+      "tasks": {
+        "status": 200,
+        "count": 3,
+        "ids": [
+          "5a193892-161d-45da-ae63-0ed0512fa5e4",
+          "95c22edd-6adc-4ff9-a2fd-86265b857c3e",
+          "58ec41e7-9b69-4b60-aa87-f9dbc2f77bb1"
+        ]
+      }
+    },
+    "qaAfter": {
+      "status": 200,
+      "count": 16,
+      "ids": [
+        "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+        "b34d6c4a-6735-482c-8058-10079a3808ca",
+        "27eb0528-c6df-407e-82c6-d2c4e69f0d53"
+      ]
+    }
+  },
+  "tracked": [
+    {
+      "method": "GET",
+      "path": "/api/os/templates",
+      "status": 200,
+      "body": {
+        "count": 3,
+        "first": {
+          "id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+          "key": "construction_ops",
+          "name": "Construction Ops OS",
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/templates",
+      "status": 200,
+      "body": {
+        "count": 3,
+        "first": {
+          "id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+          "key": "construction_ops",
+          "name": "Construction Ops OS",
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/templates",
+      "status": 200,
+      "body": {
+        "count": 3,
+        "first": {
+          "id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+          "key": "construction_ops",
+          "name": "Construction Ops OS",
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/instances",
+      "status": 200,
+      "body": {
+        "instance": {
+          "id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+          "name": "QA Instance 2025-12-16T05-36-16-994Z",
+          "status": "draft",
+          "org_id": "bb27a2c0-61af-45ce-b9e3-73f55788e6e8",
+          "template_id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+          "created_at": "2025-12-16T05:36:22.398166+00:00"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/instances/615db7d6-8e49-43c7-8435-d1b163b8ef79/publish",
+      "status": 200,
+      "body": {
+        "success": true,
+        "instanceId": "615db7d6-8e49-43c7-8435-d1b163b8ef79"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/instances/615db7d6-8e49-43c7-8435-d1b163b8ef79/publish",
+      "status": 200,
+      "body": {
+        "success": true,
+        "instanceId": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+        "message": "Instance already published"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts?os_instance_id=615db7d6-8e49-43c7-8435-d1b163b8ef79",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Below Target"
+          },
+          {
+            "id": "8f3748ac-3fa0-444f-a130-16267990d9ee",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "On-Time Completion Rate Declining"
+          }
+        ],
+        "count": 6
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Below Target"
+          },
+          {
+            "id": "2fc1e8a5-e38e-43dc-a4e3-69884d7e6c26",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Trend Negative"
+          }
+        ],
+        "count": 84
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Below Target"
+          },
+          {
+            "id": "2fc1e8a5-e38e-43dc-a4e3-69884d7e6c26",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Trend Negative"
+          }
+        ],
+        "count": 84
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/alerts/021f09f1-4b3d-4249-9524-e563c587661e",
+      "status": 200,
+      "body": {
+        "alert": {
+          "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+          "state": "open",
+          "owner": "demo.admin@example.com",
+          "due_at": null,
+          "resolved_at": null
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": null,
+            "title": "Project Margin Below Target"
+          },
+          {
+            "id": "af8bc7d1-e6fc-4930-afc6-70a558631e7a",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Labor Cost Over Budget"
+          }
+        ],
+        "count": 84
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/alerts/021f09f1-4b3d-4249-9524-e563c587661e",
+      "status": 200,
+      "body": {
+        "alert": {
+          "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+          "state": "open",
+          "owner": "demo.admin@example.com",
+          "due_at": "2025-12-23T05:36:32.894+00:00",
+          "resolved_at": null
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "open",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-23T05:36:32.894+00:00",
+            "title": "Project Margin Below Target"
+          },
+          {
+            "id": "af8bc7d1-e6fc-4930-afc6-70a558631e7a",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Labor Cost Over Budget"
+          }
+        ],
+        "count": 84
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/alerts/021f09f1-4b3d-4249-9524-e563c587661e",
+      "status": 200,
+      "body": {
+        "alert": {
+          "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+          "state": "acknowledged",
+          "owner": "demo.admin@example.com",
+          "due_at": "2025-12-23T05:36:32.894+00:00",
+          "resolved_at": null
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/alerts/021f09f1-4b3d-4249-9524-e563c587661e",
+      "status": 200,
+      "body": {
+        "alert": {
+          "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+          "state": "resolved",
+          "owner": "demo.admin@example.com",
+          "due_at": "2025-12-23T05:36:32.894+00:00",
+          "resolved_at": "2025-12-16T05:36:34.626+00:00"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "2fc1e8a5-e38e-43dc-a4e3-69884d7e6c26",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Trend Negative"
+          },
+          {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "resolved",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-23T05:36:32.894+00:00",
+            "title": "Project Margin Below Target"
+          }
+        ],
+        "count": 84
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/tasks",
+      "status": 200,
+      "body": {
+        "task": {
+          "id": "801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+          "state": "open",
+          "owner": "demo.admin@example.com",
+          "due_at": "2025-12-19T00:00:00+00:00",
+          "title": "QA Task 2025-12-16T05-36-40-545Z"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/os/tasks/801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+      "status": 200,
+      "body": {
+        "task": {
+          "id": "801c9fe9-d019-49e1-8d1c-bdcb22a97ef8",
+          "state": "done",
+          "completed_at": "2025-12-16T05:36:43.052+00:00",
+          "proof": {
+            "notes": "Proof captured 2025-12-16T05:36:42.297Z",
+            "timestamp": "2025-12-16T05:36:42.322Z"
+          }
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/cadence/weekly",
+      "status": 200,
+      "body": {
+        "cadence": "weekly",
+        "agenda": [
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 5
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 5
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          },
+          {
+            "type": "alerts",
+            "title": "Open critical/high/medium Alerts",
+            "count": 4
+          },
+          {
+            "type": "tasks",
+            "title": "Tasks (open/in_progress)",
+            "count": 9
+          },
+          {
+            "type": "kpis",
+            "title": "KPIs Requiring Attention",
+            "count": 0
+          }
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/exec-packets",
+      "status": 200,
+      "body": {
+        "packet": {
+          "id": "01233ed6-bc18-41a3-b913-e4f14a3828cc",
+          "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+          "period_start": "2025-12-09T05:36:49.068+00:00",
+          "period_end": "2025-12-16T05:36:49.068+00:00",
+          "created_at": "2025-12-16T05:36:49.978672+00:00"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts?state=open",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "8f3748ac-3fa0-444f-a130-16267990d9ee",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "On-Time Completion Rate Declining"
+          },
+          {
+            "id": "2fc1e8a5-e38e-43dc-a4e3-69884d7e6c26",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Trend Negative"
+          }
+        ],
+        "count": 69
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts?state=open",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "8f3748ac-3fa0-444f-a130-16267990d9ee",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "On-Time Completion Rate Declining"
+          },
+          {
+            "id": "2fc1e8a5-e38e-43dc-a4e3-69884d7e6c26",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Trend Negative"
+          }
+        ],
+        "count": 69
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/os/exec-packets",
+      "status": 200,
+      "body": {
+        "packet": {
+          "id": "4d466917-48dc-4d8f-83b4-4356d4f5c5d0",
+          "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+          "period_start": "2025-12-09T05:36:55.093+00:00",
+          "period_end": "2025-12-16T05:36:55.093+00:00",
+          "created_at": "2025-12-16T05:36:55.733423+00:00"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "2fc1e8a5-e38e-43dc-a4e3-69884d7e6c26",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "medium",
+            "state": "open",
+            "owner": null,
+            "due_at": null,
+            "title": "Project Margin Trend Negative"
+          },
+          {
+            "id": "021f09f1-4b3d-4249-9524-e563c587661e",
+            "os_instance_id": "615db7d6-8e49-43c7-8435-d1b163b8ef79",
+            "severity": "high",
+            "state": "resolved",
+            "owner": "demo.admin@example.com",
+            "due_at": "2025-12-23T05:36:32.894+00:00",
+            "title": "Project Margin Below Target"
+          }
+        ],
+        "count": 84
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/templates",
+      "status": 200,
+      "body": {
+        "count": 3,
+        "first": {
+          "id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+          "key": "construction_ops",
+          "name": "Construction Ops OS",
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/templates",
+      "status": 200,
+      "body": {
+        "count": 3,
+        "first": {
+          "id": "6e1ee368-017a-4fe5-8d7c-780189b05d2a",
+          "key": "construction_ops",
+          "name": "Construction Ops OS",
+          "version": 1
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/api/os/alerts",
+      "status": 200,
+      "body": {
+        "alerts": [
+          {
+            "id": "2f3c2d75-d655-40c6-8cd9-fa1a018a97e5",
+            "os_instance_id": "24a72565-ff8c-4bea-9ae9-fa9eb70c72a0",
+            "severity": "high",
+            "state": "open",
+            "owner": null,
+            "due_at": "2025-12-23T02:52:40.204+00:00",
+            "title": "Project Margin Below Target"
+          },
+          {
+            "id": "6733405c-dbff-4c32-88d2-be9f95a0ad48",
+            "os_instance_id": "24a72565-ff8c-4bea-9ae9-fa9eb70c72a0",
+            "severity": "critical",
+            "state": "acknowledged",
+            "owner": "demo@example.com",
+            "due_at": "2025-12-17T02:52:40.205+00:00",
+            "title": "Safety Incident Detected"
+          }
+        ],
+        "count": 3
+      }
+    }
+  ]
+}

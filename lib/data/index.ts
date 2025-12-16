@@ -6,13 +6,39 @@
 import { isDevDemoMode } from '../runtime'
 import * as devDemo from './devDemo'
 import * as supabase from './supabase'
+import type { KPIData, KPIMetric } from './devDemo'
+
+// Helper to normalize flat KPI format to KPIData format
+function normalizeKPIs(flatKPIs: any): KPIData {
+  const now = new Date()
+  const createMetric = (value: number, previousValue?: number): KPIMetric => ({
+    value,
+    previousValue,
+    trend: previousValue !== undefined && previousValue > 0 
+      ? ((value - previousValue) / previousValue) * 100 
+      : undefined,
+    historicalData: undefined, // Can be populated later if needed
+    lastUpdated: now,
+  })
+
+  return {
+    revenueMTD: createMetric(flatKPIs.revenueMTD || 0),
+    pipeline30: createMetric(flatKPIs.pipeline30 || 0),
+    pipeline60: createMetric(flatKPIs.pipeline60 || 0),
+    pipeline90: createMetric(flatKPIs.pipeline90 || 0),
+    arOutstanding: createMetric(flatKPIs.arOutstanding || 0),
+    onTimeDelivery: createMetric(flatKPIs.onTimeDelivery || 0),
+    churnRisk: createMetric(flatKPIs.churnRisk || 0),
+  }
+}
 
 // KPI and Alert functions
-export async function getKPIs(startDate?: Date, endDate?: Date) {
+export async function getKPIs(startDate?: Date, endDate?: Date): Promise<KPIData> {
   if (isDevDemoMode()) {
     return devDemo.getKPIs()
   }
-  return supabase.getKPIs(startDate, endDate)
+  const flatKPIs = await supabase.getKPIs(startDate, endDate)
+  return normalizeKPIs(flatKPIs)
 }
 
 export async function getAlerts() {

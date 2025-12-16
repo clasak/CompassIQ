@@ -21,6 +21,7 @@ export interface Lead {
   notes: string | null
   created_at: string
   updated_at: string
+  metadata?: Record<string, any>
 }
 
 export interface ListLeadsResult {
@@ -54,6 +55,37 @@ export async function listLeads(): Promise<ListLeadsResult> {
     return { success: true, leads: data || [] }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to list leads' }
+  }
+}
+
+export interface GetLeadResult {
+  success: boolean
+  lead?: Lead
+  error?: string
+}
+
+export async function getLead(id: string): Promise<GetLeadResult> {
+  try {
+    const context = await requireOrgContext()
+    if (!context) {
+      return { success: false, error: 'No organization context' }
+    }
+
+    const supabase = await createClient()
+    const { data: lead, error } = await supabase
+      .from('leads')
+      .select('*')
+      .eq('id', id)
+      .eq('org_id', context.orgId)
+      .single()
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    return { success: true, lead }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to get lead' }
   }
 }
 
@@ -91,6 +123,7 @@ export async function createLead(data: {
         source: data.source || null,
         status: data.status || 'new',
         notes: data.notes || null,
+        metadata: { data_origin: 'manual' },
       })
       .select()
       .single()
@@ -199,6 +232,7 @@ export interface Account {
   notes: string | null
   created_at: string
   updated_at: string
+  metadata?: Record<string, any>
 }
 
 export interface ListAccountsResult {
@@ -228,6 +262,37 @@ export async function listAccounts(): Promise<ListAccountsResult> {
     return { success: true, accounts: data || [] }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to list accounts' }
+  }
+}
+
+export interface GetAccountResult {
+  success: boolean
+  account?: Account
+  error?: string
+}
+
+export async function getAccount(id: string): Promise<GetAccountResult> {
+  try {
+    const context = await requireOrgContext()
+    if (!context) {
+      return { success: false, error: 'No organization context' }
+    }
+
+    const supabase = await createClient()
+    const { data: account, error } = await supabase
+      .from('accounts')
+      .select('*')
+      .eq('id', id)
+      .eq('org_id', context.orgId)
+      .single()
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    return { success: true, account }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to get account' }
   }
 }
 
@@ -263,6 +328,7 @@ export async function createAccount(data: {
         website: data.website || null,
         status: data.status || 'ACTIVE',
         notes: data.notes || null,
+        metadata: { data_origin: 'manual' },
       })
       .select()
       .single()
@@ -366,9 +432,11 @@ export interface Opportunity {
   amount: number
   close_date: string | null
   source: string | null
+  owner_user_id: string | null
   owner_id: string | null
   created_at: string
   updated_at: string
+  metadata?: Record<string, any>
 }
 
 export interface ListOpportunitiesResult {
@@ -398,6 +466,37 @@ export async function listOpportunities(): Promise<ListOpportunitiesResult> {
     return { success: true, opportunities: data || [] }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to list opportunities' }
+  }
+}
+
+export interface GetOpportunityResult {
+  success: boolean
+  opportunity?: Opportunity
+  error?: string
+}
+
+export async function getOpportunity(id: string): Promise<GetOpportunityResult> {
+  try {
+    const context = await requireOrgContext()
+    if (!context) {
+      return { success: false, error: 'No organization context' }
+    }
+
+    const supabase = await createClient()
+    const { data: opportunity, error } = await supabase
+      .from('opportunities')
+      .select('*')
+      .eq('id', id)
+      .eq('org_id', context.orgId)
+      .single()
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    return { success: true, opportunity }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to get opportunity' }
   }
 }
 
@@ -436,6 +535,7 @@ export async function createOpportunity(data: {
         source: data.source || null,
         owner_id: data.owner_id || null,
         owner_user_id: data.owner_id || null, // Keep both for compatibility
+        metadata: { data_origin: 'manual' },
       })
       .select()
       .single()
@@ -561,6 +661,7 @@ export interface Quote {
   recurring_total: number
   created_at: string
   updated_at: string
+  metadata?: Record<string, any>
 }
 
 export interface QuoteWithLineItems extends Quote {
@@ -677,6 +778,7 @@ export async function createQuote(data: {
         currency: data.currency || 'USD',
         one_time_total: 0,
         recurring_total: 0,
+        metadata: { data_origin: 'manual' },
       })
       .select()
       .single()
@@ -861,4 +963,240 @@ export async function deleteQuote(id: string): Promise<DeleteQuoteResult> {
     return { success: false, error: err.message || 'Failed to delete quote' }
   }
 }
+
+// ============================================================
+// TASKS
+// ============================================================
+
+export interface Task {
+  id: string
+  org_id: string
+  title: string
+  status: 'OPEN' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED'
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
+  due_date: string | null
+  assigned_user_id: string | null
+  related_type: string | null
+  related_id: string | null
+  created_at: string
+  updated_at: string
+  metadata?: Record<string, any>
+}
+
+export interface ListTasksResult {
+  success: boolean
+  tasks?: Task[]
+  error?: string
+}
+
+export async function listTasks(): Promise<ListTasksResult> {
+  try {
+    const context = await requireOrgContext()
+    if (!context) {
+      return { success: false, error: 'No organization context' }
+    }
+
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('org_id', context.orgId)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    return { success: true, tasks: data || [] }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to list tasks' }
+  }
+}
+
+export interface GetTaskResult {
+  success: boolean
+  task?: Task
+  error?: string
+}
+
+export async function getTask(id: string): Promise<GetTaskResult> {
+  try {
+    const context = await requireOrgContext()
+    if (!context) {
+      return { success: false, error: 'No organization context' }
+    }
+
+    const supabase = await createClient()
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('id', id)
+      .eq('org_id', context.orgId)
+      .single()
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    return { success: true, task }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to get task' }
+  }
+}
+
+export interface CreateTaskResult {
+  success: boolean
+  task?: Task
+  error?: string
+}
+
+export async function createTask(data: {
+  title: string
+  status?: 'OPEN' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED'
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
+  due_date?: string
+  assigned_user_id?: string
+  account_id?: string
+  opportunity_id?: string
+  metadata?: Record<string, any>
+}): Promise<CreateTaskResult> {
+  try {
+    const context = await requireAdmin()
+
+    if (context.isDemo) {
+      return { success: false, error: 'DEMO_READ_ONLY' }
+    }
+
+    const supabase = await createClient()
+    
+    // Determine related_type and related_id
+    let related_type: string | null = null
+    let related_id: string | null = null
+    if (data.opportunity_id) {
+      related_type = 'opportunity'
+      related_id = data.opportunity_id
+    } else if (data.account_id) {
+      related_type = 'account'
+      related_id = data.account_id
+    }
+
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .insert({
+        org_id: context.orgId,
+        title: data.title,
+        status: data.status || 'OPEN',
+        priority: data.priority || 'MEDIUM',
+        due_date: data.due_date || null,
+        assigned_user_id: data.assigned_user_id || null,
+        related_type,
+        related_id,
+        metadata: data.metadata || { data_origin: 'manual' },
+      })
+      .select()
+      .single()
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    revalidatePath('/app/crm/tasks')
+    return { success: true, task }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to create task' }
+  }
+}
+
+export interface UpdateTaskResult {
+  success: boolean
+  task?: Task
+  error?: string
+}
+
+export async function updateTask(
+  id: string,
+  data: Partial<{
+    title: string
+    status: 'OPEN' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED'
+    priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
+    due_date: string
+    assigned_user_id: string
+    account_id: string
+    opportunity_id: string
+    metadata: Record<string, any>
+  }>
+): Promise<UpdateTaskResult> {
+  try {
+    const context = await requireAdmin()
+
+    if (context.isDemo) {
+      return { success: false, error: 'DEMO_READ_ONLY' }
+    }
+
+    const supabase = await createClient()
+    
+    const updateData: any = { ...data }
+    
+    // Handle related_type/related_id if account_id or opportunity_id is provided
+    if (data.opportunity_id !== undefined) {
+      updateData.related_type = data.opportunity_id ? 'opportunity' : null
+      updateData.related_id = data.opportunity_id || null
+      delete updateData.opportunity_id
+    } else if (data.account_id !== undefined) {
+      updateData.related_type = data.account_id ? 'account' : null
+      updateData.related_id = data.account_id || null
+      delete updateData.account_id
+    }
+
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .update(updateData)
+      .eq('id', id)
+      .eq('org_id', context.orgId)
+      .select()
+      .single()
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    revalidatePath('/app/crm/tasks')
+    revalidatePath(`/app/crm/tasks/${id}`)
+    return { success: true, task }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to update task' }
+  }
+}
+
+export interface DeleteTaskResult {
+  success: boolean
+  error?: string
+}
+
+export async function deleteTask(id: string): Promise<DeleteTaskResult> {
+  try {
+    const context = await requireAdmin()
+
+    if (context.isDemo) {
+      return { success: false, error: 'DEMO_READ_ONLY' }
+    }
+
+    const supabase = await createClient()
+    const { error } = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', id)
+      .eq('org_id', context.orgId)
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    revalidatePath('/app/crm/tasks')
+    return { success: true }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to delete task' }
+  }
+}
+
 

@@ -69,3 +69,4 @@ export function calculateROI(defaults: ROIDefaults): ROIResult {
     totalAnnualImpact: Math.round(totalAnnualImpact),
   }
 }
+

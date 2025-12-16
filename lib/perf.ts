@@ -266,99 +266,6 @@ export function record(name: string, durationMs: number, meta?: Record<string, a
 }
 
 /**
- * Flush performance data to JSON file (server-side only)
- */
-export async function flushJson(path: string): Promise<void> {
-  if (typeof window !== 'undefined') return
-  if (!isPerfServerEnabled()) return
-  try {
-    const fs = await import('fs/promises')
-    await fs.writeFile(path, JSON.stringify(perfRecord.events, null, 2))
-    perfRecord.events = []
-  } catch (error) {
-    console.error('[perf] Failed to flush JSON:', error)
-  }
-}
-
-/**
- * Flush performance data to markdown report
- */
-export async function flushMarkdown(path: string): Promise<void> {
-  if (typeof window !== 'undefined') {
-    // Client-side: write to localStorage and console
-    if (!isPerfClientEnabled()) return
-    const summary = generateMarkdownSummary()
-    try {
-      localStorage.setItem('COMPASS_PERF_REPORT', summary)
-      console.log('[perf] Report saved to localStorage.COMPASS_PERF_REPORT')
-    } catch {
-      // Ignore localStorage errors
-    }
-    return
-  }
-
-  // Server-side: write to file
-  if (!isPerfServerEnabled()) return
-  try {
-    const fs = await import('fs/promises')
-    const summary = generateMarkdownSummary()
-    await fs.writeFile(path, summary)
-    perfRecord.events = []
-  } catch (error) {
-    console.error('[perf] Failed to flush markdown:', error)
-  }
-}
-
-function generateMarkdownSummary(): string {
-  const events = perfRecord.events
-  if (events.length === 0) {
-    return '# Performance Report\n\nNo events recorded.\n'
-  }
-
-  // Group by name
-  const byName = new Map<string, number[]>()
-  for (const event of events) {
-    const list = byName.get(event.name) || []
-    list.push(event.durationMs)
-    byName.set(event.name, list)
-  }
-
-  // Calculate stats
-  const rows = Array.from(byName.entries())
-    .map(([name, durations]) => {
-      const sorted = durations.slice().sort((a, b) => a - b)
-      const count = sorted.length
-      const min = sorted[0]
-      const max = sorted[sorted.length - 1]
-      const sum = sorted.reduce((a, b) => a + b, 0)
-      const avg = sum / count
-      const med = median(sorted)
-      const p95 = p95Value(sorted)
-      return { name, count, min, max, avg, med, p95, total: sum }
-    })
-    .sort((a, b) => b.total - a.total) // Sort by total time
-
-  let md = '# Performance Report\n\n'
-  md += `Generated: ${new Date().toISOString()}\n`
-  md += `Total Events: ${events.length}\n\n`
-  md += '## Summary by Operation\n\n'
-  md += '| Operation | Count | Min (ms) | Max (ms) | Avg (ms) | Median (ms) | P95 (ms) | Total (ms) |\n'
-  md += '|-----------|-------|----------|----------|----------|-------------|----------|------------|\n'
-  for (const row of rows) {
-    md += `| ${row.name} | ${row.count} | ${row.min.toFixed(1)} | ${row.max.toFixed(1)} | ${row.avg.toFixed(1)} | ${row.med.toFixed(1)} | ${row.p95.toFixed(1)} | ${row.total.toFixed(1)} |\n`
-  }
-
-  return md
-}
-
-function p95Value(values: number[]): number {
-  if (values.length === 0) return 0
-  const sorted = values.slice().sort((a, b) => a - b)
-  const idx = Math.min(sorted.length - 1, Math.floor(sorted.length * 0.95))
-  return sorted[idx]
-}
-
-/**
  * Get all recorded events (for client-side access)
  */
 export function getPerfEvents(): PerfEvent[] {
@@ -372,4 +279,3 @@ export function clearPerfEvents(): void {
   perfRecord.events = []
   perfRecord.marks.clear()
 }
-

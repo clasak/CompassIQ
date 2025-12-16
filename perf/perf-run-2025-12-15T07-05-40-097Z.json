@@ -1,0 +1,128 @@
+{
+  "meta": {
+    "baseURL": "http://localhost:3005",
+    "runs": 10,
+    "mode": "warm",
+    "warmupEnabled": false,
+    "at": "2025-12-15T07:05:45.524Z",
+    "node": "v20.18.0"
+  },
+  "scenarios": [
+    {
+      "name": "/app → /app/sales (sidebar)",
+      "fromPath": "/app",
+      "destPath": "/app/sales",
+      "runs": 10,
+      "rendered": [
+        808,
+        22.19999998807907,
+        24,
+        23,
+        22.900000035762787,
+        23.5,
+        23.30000001192093,
+        23.19999998807907,
+        23.5,
+        23.600000023841858
+      ],
+      "skeleton": [],
+      "summary": {
+        "rendered": {
+          "medianMs": 23.400000005960464,
+          "p95Ms": 808
+        },
+        "skeleton": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    },
+    {
+      "name": "/app → /app/ops (sidebar)",
+      "fromPath": "/app",
+      "destPath": "/app/ops",
+      "runs": 10,
+      "rendered": [
+        774.6999999880791,
+        22.30000001192093,
+        23.600000023841858,
+        23.80000001192093,
+        23.100000023841858,
+        23.399999976158142,
+        23.5,
+        23.899999976158142,
+        22.599999964237213,
+        23.30000001192093
+      ],
+      "skeleton": [],
+      "summary": {
+        "rendered": {
+          "medianMs": 23.44999998807907,
+          "p95Ms": 774.6999999880791
+        },
+        "skeleton": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    },
+    {
+      "name": "/app/settings/org → /app/settings/branding (settings nav)",
+      "fromPath": "/app/settings/org",
+      "destPath": "/app/settings/branding",
+      "runs": 10,
+      "rendered": [
+        714,
+        73.90000003576279,
+        19.900000035762787,
+        23.899999976158142,
+        23.5,
+        23.700000047683716,
+        23.69999998807907,
+        21.30000001192093,
+        24.19999998807907,
+        21.80000001192093
+      ],
+      "skeleton": [],
+      "summary": {
+        "rendered": {
+          "medianMs": 23.700000017881393,
+          "p95Ms": 714
+        },
+        "skeleton": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    },
+    {
+      "name": "KPI drilldown: Revenue MTD card",
+      "fromPath": "/app",
+      "destPath": "/app/finance?filter=revenue",
+      "runs": 10,
+      "rendered": [
+        686.6999999880791,
+        24.099999964237213,
+        23.5,
+        23.30000001192093,
+        23.69999998807907,
+        22.200000047683716,
+        22.400000035762787,
+        25.19999998807907,
+        23.599999964237213,
+        23.599999964237213
+      ],
+      "skeleton": [],
+      "summary": {
+        "rendered": {
+          "medianMs": 23.599999964237213,
+          "p95Ms": 686.6999999880791
+        },
+        "skeleton": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    }
+  ]
+}

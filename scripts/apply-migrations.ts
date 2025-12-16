@@ -30,7 +30,14 @@ async function applyAllMigrations() {
     '004_invites_and_org_admin.sql',
     '005_org_settings_and_roi.sql',
     '006_branding.sql',
-    '007_ingestion.sql'
+    '007_ingestion.sql',
+    '008_crm_core.sql',
+    '009_preview_workspaces.sql',
+    '010_os_generator.sql',
+    '011_add_data_origin_metadata.sql',
+    '012_construction_vertical.sql',
+    '013_construction_data_model.sql',
+    '014_construction_rls.sql'
   ]
   
   let allSQL = ''
@@ -72,3 +79,4 @@ async function applyAllMigrations() {
 }
 
 applyAllMigrations().catch(console.error)
+

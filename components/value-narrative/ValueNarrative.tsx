@@ -6,57 +6,101 @@ import { calculateROI } from '@/lib/roi-calc'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Info } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, formatNumber } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 
 interface ValueNarrativeProps {
   className?: string
 }
 
+interface ValueMetric {
+  label: string
+  value: string
+  description: string
+  isEstimate: boolean
+}
+
 export function ValueNarrative({ className }: ValueNarrativeProps) {
-  const [narrative, setNarrative] = useState<string | null>(null)
+  const [valueMetrics, setValueMetrics] = useState<ValueMetric[]>([])
   const [totalImpact, setTotalImpact] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadNarrative()
+    loadValueMetrics()
   }, [])
 
-  async function loadNarrative() {
+  async function loadValueMetrics() {
     try {
       const result = await getROIDefaultsAction()
       if (result.success && result.defaults) {
-        const roiResult = calculateROI(result.defaults)
+        const defaults = result.defaults
+        const roiResult = calculateROI(defaults)
         setTotalImpact(roiResult.totalAnnualImpact)
 
-        // Generate narrative based on available data
-        const parts: string[] = []
-        if (roiResult.incrementalRevenuePerYear > 0) {
-          parts.push(`incremental revenue of ${formatCurrency(roiResult.incrementalRevenuePerYear)}/year`)
+        // Calculate monthly values (divide annual by 12)
+        const monthlyMetrics: ValueMetric[] = []
+
+        // Hours saved (monthly from reporting time savings)
+        if (roiResult.timeSavingsPerYear > 0 && defaults.reportingHoursPerWeek) {
+          const monthlyHours = (defaults.reportingHoursPerWeek * 4 * 0.3) // 30% reduction assumption
+          monthlyMetrics.push({
+            label: 'Hours Saved',
+            value: `${Math.round(monthlyHours)}h`,
+            description: 'Reduced manual reporting tasks',
+            isEstimate: true,
+          })
         }
-        if (roiResult.timeSavingsPerYear > 0) {
-          parts.push(`time savings of ${formatCurrency(roiResult.timeSavingsPerYear)}/year`)
+
+        // Margin protected (example: 0.5-1.5 pts flagged risks)
+        if (defaults.averageDealSize && defaults.monthlyLeads) {
+          const marginProtected = defaults.averageDealSize * defaults.monthlyLeads * 0.01 // 1% assumption
+          if (marginProtected > 0) {
+            monthlyMetrics.push({
+              label: 'Margin Protected',
+              value: formatCurrency(marginProtected / 12), // Monthly
+              description: 'Example: 0.5-1.5 pts flagged risks',
+              isEstimate: true,
+            })
+          }
         }
-        if (parts.length > 0) {
-          setNarrative(
-            `Based on your ROI settings, CompassIQ can deliver ${parts.join(' and ')}, ` +
-            `resulting in an estimated total annual impact of ${formatCurrency(roiResult.totalAnnualImpact)}.`
-          )
-        } else {
-          setNarrative(
-            'Configure the ROI Calculator to see your estimated annual value.'
-          )
+
+        // Cash acceleration (DSO improvement estimate)
+        if (defaults.arDaysReductionTarget && defaults.averageDealSize && defaults.monthlyLeads) {
+          // Simplified calculation - assume 1M monthly revenue, 10 day reduction = ~333k accelerated
+          const monthlyRevenue = (defaults.averageDealSize * defaults.monthlyLeads) / 12
+          const cashAccelerated = (monthlyRevenue * defaults.arDaysReductionTarget) / 30
+          monthlyMetrics.push({
+            label: 'Cash Accelerated',
+            value: formatCurrency(cashAccelerated),
+            description: 'DSO improvement estimate',
+            isEstimate: true,
+          })
         }
-      } else {
-        setNarrative('Configure the ROI Calculator to see your estimated annual value.')
+
+        // Fire drills avoided (alerts caught early) - estimate based on alerts
+        const fireDrillsAvoided = 3 // Conservative estimate
+        monthlyMetrics.push({
+          label: 'Fire Drills Avoided',
+          value: formatNumber(fireDrillsAvoided),
+          description: 'Alerts caught early',
+          isEstimate: true,
+        })
+
+        setValueMetrics(monthlyMetrics)
       }
     } catch (error) {
-      setNarrative(null)
+      console.error('Error loading value metrics:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  if (loading || !narrative) {
+  if (loading) {
+    return null
+  }
+
+  // Don't show if no metrics
+  if (valueMetrics.length === 0 && !totalImpact) {
     return null
   }
 
@@ -64,7 +108,12 @@ export function ValueNarrative({ className }: ValueNarrativeProps) {
     <Card className={className}>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Value Narrative</CardTitle>
+          <div>
+            <CardTitle className="text-lg">Value This Month</CardTitle>
+            <CardDescription className="mt-1">
+              Estimated value delivered (typical / example metrics)
+            </CardDescription>
+          </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -72,9 +121,9 @@ export function ValueNarrative({ className }: ValueNarrativeProps) {
               </TooltipTrigger>
               <TooltipContent className="max-w-sm">
                 <p className="text-sm">
-                  This estimate is based on your ROI Calculator settings. Values are calculated from:
-                  incremental revenue from improved win rates, time savings from reduced reporting,
-                  cash acceleration from AR improvements, and churn reduction value.
+                  These are example estimates based on typical ROI assumptions. Values are calculated from:
+                  time savings from reduced reporting, margin protection from early risk detection,
+                  cash acceleration from AR improvements, and proactive issue resolution.
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -82,16 +131,44 @@ export function ValueNarrative({ className }: ValueNarrativeProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">{narrative}</p>
+        {valueMetrics.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            {valueMetrics.map((metric, idx) => (
+              <div key={idx} className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">{metric.value}</span>
+                  {metric.isEstimate && (
+                    <Badge variant="outline" className="text-xs">
+                      Estimate
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-sm font-medium">{metric.label}</p>
+                <p className="text-xs text-muted-foreground">{metric.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        
         {totalImpact !== null && totalImpact > 0 && (
-          <div className="mt-4 pt-4 border-t">
-            <div className="text-2xl font-bold text-primary">
-              {formatCurrency(totalImpact)}
+          <div className="pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-2xl font-bold text-primary">
+                  {formatCurrency(totalImpact / 12)}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">Estimated Monthly Impact</div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-semibold text-muted-foreground">
+                  {formatCurrency(totalImpact)} annually
+                </div>
+              </div>
             </div>
-            <div className="text-xs text-muted-foreground mt-1">Estimated Annual Impact</div>
           </div>
         )}
       </CardContent>
     </Card>
   )
 }
+

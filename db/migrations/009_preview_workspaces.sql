@@ -67,21 +67,21 @@ CREATE POLICY "preview_workspaces_select" ON preview_workspaces
 CREATE POLICY "preview_workspaces_insert" ON preview_workspaces
     FOR INSERT WITH CHECK (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "preview_workspaces_update" ON preview_workspaces
     FOR UPDATE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "preview_workspaces_delete" ON preview_workspaces
     FOR DELETE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
@@ -92,21 +92,21 @@ CREATE POLICY "preview_alerts_select" ON preview_alerts
 CREATE POLICY "preview_alerts_insert" ON preview_alerts
     FOR INSERT WITH CHECK (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "preview_alerts_update" ON preview_alerts
     FOR UPDATE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "preview_alerts_delete" ON preview_alerts
     FOR DELETE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 

@@ -55,6 +55,20 @@ const columns: ColumnDef<Lead>[] = [
     },
   },
   {
+    id: 'data_origin',
+    header: 'Origin',
+    cell: ({ row }) => {
+      const lead = row.original
+      const origin = (lead as any).metadata?.data_origin || 'seeded'
+      const labels: Record<string, string> = {
+        manual: 'Manual',
+        imported: 'Imported',
+        seeded: 'Seeded (demo)',
+      }
+      return <Badge variant="outline">{labels[origin] || origin}</Badge>
+    },
+  },
+  {
     id: 'actions',
     cell: ({ row }) => {
       const lead = row.original
@@ -100,6 +114,13 @@ export function LeadsTable({ leads }: LeadsTableProps) {
       searchKey="name"
       searchPlaceholder="Search leads..."
       exportFilename="leads.csv"
+      emptyStateTitle="No leads yet"
+      emptyStateDescription="Sales leads and contacts will appear here. Create your first lead to get started."
+      emptyStateAction={
+        <Button asChild>
+          <a href="/app/crm/leads">Create Lead</a>
+        </Button>
+      }
     />
   )
 }

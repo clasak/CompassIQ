@@ -74,6 +74,7 @@ async function runNavScenario(page, scenario) {
   const skeleton = []
 
   for (let i = 0; i < scenario.runs; i += 1) {
+    // "Cold" run: reload the fromPath each iteration.
     await page.goto(scenario.fromPath, { waitUntil: 'domcontentloaded' })
     if (scenario.fromReadySelector) {
       await page.waitForSelector(scenario.fromReadySelector, { timeout: 30000 })
@@ -102,6 +103,68 @@ async function runNavScenario(page, scenario) {
 
     if (typeof timings.renderedMs === 'number') rendered.push(timings.renderedMs)
     if (typeof timings.skeletonMs === 'number') skeleton.push(timings.skeletonMs)
+  }
+
+  return {
+    name: scenario.name,
+    fromPath: scenario.fromPath,
+    destPath: scenario.destPath,
+    runs: scenario.runs,
+    rendered,
+    skeleton,
+    summary: {
+      rendered: {
+        medianMs: median(rendered),
+        p95Ms: percentile(rendered, 0.95),
+      },
+      skeleton: {
+        medianMs: median(skeleton),
+        p95Ms: percentile(skeleton, 0.95),
+      },
+    },
+  }
+}
+
+async function runNavScenarioWarm(page, scenario) {
+  const rendered = []
+  const skeleton = []
+
+  // Navigate to start page once.
+  await page.goto(scenario.fromPath, { waitUntil: 'domcontentloaded' })
+  if (scenario.fromReadySelector) {
+    await page.waitForSelector(scenario.fromReadySelector, { timeout: 30000 })
+  }
+  await page.waitForFunction(() => window.__COMPASSIQ_PERF_NAV_CAPTURE_READY__ === true, { timeout: 30000 })
+
+  for (let i = 0; i < scenario.runs; i += 1) {
+    // Ensure we're on fromPath (navigate back via UI if needed).
+    await page.waitForURL((url) => url.pathname + url.search === scenario.fromPath, { timeout: 30000 }).catch(() => {})
+
+    await clearPerfEvents(page)
+    await page.waitForSelector(scenario.clickSelector, { timeout: 30000 })
+
+    const startEpoch = Date.now()
+    await page.click(scenario.clickSelector)
+
+    await page.waitForURL((url) => url.pathname + url.search === scenario.destPath, { timeout: 30000 })
+    if (scenario.destReadySelector) {
+      await page.waitForSelector(scenario.destReadySelector, { timeout: 30000 })
+    }
+
+    await waitForRenderedEvent(page, scenario.destPath, startEpoch)
+    const timings = await getLastNavTimings(page, scenario.destPath)
+    if (typeof timings.renderedMs === 'number') rendered.push(timings.renderedMs)
+    if (typeof timings.skeletonMs === 'number') skeleton.push(timings.skeletonMs)
+
+    // Navigate back for the next iteration (no measurement).
+    if (scenario.resetClickSelector) {
+      await page.waitForSelector(scenario.resetClickSelector, { timeout: 30000 })
+      await page.click(scenario.resetClickSelector)
+      await page.waitForURL((url) => url.pathname + url.search === scenario.fromPath, { timeout: 30000 })
+      if (scenario.fromReadySelector) {
+        await page.waitForSelector(scenario.fromReadySelector, { timeout: 30000 })
+      }
+    }
   }
 
   return {
@@ -188,6 +251,8 @@ async function warmUp(page, routes) {
 async function main() {
   const baseURL = process.env.PERF_BASE_URL || 'http://localhost:3005'
   const runs = Number.parseInt(process.env.PERF_RUNS || '10', 10)
+  const mode = process.env.PERF_MODE || 'cold'
+  const warmupEnabled = process.env.PERF_WARMUP !== '0'
 
   const email =
     process.env.PERF_TEST_EMAIL ||
@@ -224,8 +289,10 @@ async function main() {
 
   await login(page, { email, passwordCandidates })
 
-  // Warm routes to avoid first-hit compilation skewing medians.
-  await warmUp(page, ['/app', '/app/sales', '/app/ops', '/app/settings/org', '/app/settings/branding'])
+  if (warmupEnabled) {
+    // Warm routes to avoid first-hit compilation skewing medians.
+    await warmUp(page, ['/app', '/app/sales', '/app/ops', '/app/settings/org', '/app/settings/branding'])
+  }
 
   const scenarios = [
     {
@@ -235,6 +302,7 @@ async function main() {
       clickSelector: 'a[href="/app/sales"]',
       destPath: '/app/sales',
       destReadySelector: 'text=Revenue Engine',
+      resetClickSelector: 'a[href="/app"]',
       runs,
     },
     {
@@ -244,6 +312,7 @@ async function main() {
       clickSelector: 'a[href="/app/ops"]',
       destPath: '/app/ops',
       destReadySelector: 'text=Ops Control Tower',
+      resetClickSelector: 'a[href="/app"]',
       runs,
     },
     {
@@ -253,6 +322,7 @@ async function main() {
       clickSelector: 'a[href="/app/settings/branding"]',
       destPath: '/app/settings/branding',
       destReadySelector: 'text=Branding',
+      resetClickSelector: 'a[href="/app/settings/org"]:not([data-settings-link])',
       runs,
     },
     {
@@ -262,6 +332,7 @@ async function main() {
       clickSelector: 'a[href="/app/finance?filter=revenue"]',
       destPath: '/app/finance?filter=revenue',
       destReadySelector: 'text=Finance',
+      resetClickSelector: 'a[href="/app"]',
       runs,
     },
   ]
@@ -270,6 +341,8 @@ async function main() {
     meta: {
       baseURL,
       runs,
+      mode,
+      warmupEnabled,
       at: new Date().toISOString(),
       node: process.version,
     },
@@ -278,7 +351,10 @@ async function main() {
 
   for (const scenario of scenarios) {
     // eslint-disable-next-line no-await-in-loop
-    const r = await runNavScenario(page, scenario)
+    const r =
+      mode === 'warm'
+        ? await runNavScenarioWarm(page, scenario)
+        : await runNavScenario(page, scenario)
     results.scenarios.push(r)
   }
 
@@ -286,6 +362,7 @@ async function main() {
 
   const lines = []
   lines.push(`Wrote ${outPath}`)
+  lines.push(`Mode: ${mode}`)
   for (const s of results.scenarios) {
     lines.push(
       `${s.name}: rendered median ${s.summary.rendered.medianMs.toFixed(0)}ms, p95 ${s.summary.rendered.p95Ms.toFixed(

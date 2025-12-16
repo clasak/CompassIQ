@@ -4,48 +4,120 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* BI Sleek Design System - Color Tokens */
+    --bg: 0 0% 100%;
+    --surface: 0 0% 100%;
+    --surface-2: 210 40% 98%;
+    --text: 222.2 84% 4.9%;
+    --muted: 215.4 16.3% 46.9%;
+    --border: 214.3 31.8% 91.4%;
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --accent: 210 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --danger: 0 84.2% 60.2%;
+    --danger-foreground: 210 40% 98%;
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222.2 84% 4.9%;
+    
+    /* Legacy shim for existing components */
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--surface);
+    --card-foreground: var(--text);
+    --popover: var(--surface);
+    --popover-foreground: var(--text);
+    --secondary: var(--surface-2);
+    --secondary-foreground: var(--text);
+    --muted-foreground: var(--muted);
+    --accent-foreground: var(--text);
+    --destructive: var(--danger);
+    --destructive-foreground: var(--danger-foreground);
+    --input: var(--border);
+    --ring: var(--primary);
     --radius: 0.5rem;
+    
+    /* Typography Scale */
+    --font-size-title: 1.75rem; /* 28px */
+    --font-size-title-sm: 1.5rem; /* 24px */
+    --font-size-section: 0.875rem; /* 14px */
+    --font-size-section-sm: 0.8125rem; /* 13px */
+    --font-size-body: 0.875rem; /* 14px */
+    --font-size-body-sm: 0.8125rem; /* 13px */
+    --font-size-table: 0.8125rem; /* 13px */
+    --font-size-table-sm: 0.75rem; /* 12px */
+    --font-weight-semibold: 600;
+    --font-weight-medium: 500;
+    --font-weight-regular: 400;
+    
+    /* Spacing System */
+    --spacing-page: 1.5rem;
+    --spacing-section: 1.5rem;
+    --spacing-card: 1.5rem;
+    --spacing-grid: 1rem;
+    
+    /* Elevation (2-3 levels max) */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Layout */
+    --content-max-width: 1440px;
+    --sidebar-width: 18rem; /* 288px */
+    --topbar-height: 4rem; /* 64px */
+    
+    /* Branding CSS Variables (set by BrandProvider) */
+    --brand-primary: #0A192F;
+    --brand-accent: #007BFF;
+    --brand-primary-hsl: 210 100% 10%;
+    --brand-accent-hsl: 210 100% 50%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    /* BI Sleek Design System - Dark Mode */
+    --bg: 222.2 84% 4.9%;
+    --surface: 217.2 32.6% 12%;
+    --surface-2: 217.2 32.6% 17.5%;
+    --text: 210 40% 98%;
+    --muted: 215 20.2% 65.1%;
+    --border: 217.2 32.6% 17.5%;
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --accent: 210 100% 60%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --danger: 0 62.8% 50%;
+    --danger-foreground: 210 40% 98%;
+    --success: 142 76% 45%;
+    --success-foreground: 210 40% 98%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 222.2 84% 4.9%;
+    
+    /* Legacy shim */
+    --background: var(--bg);
+    --foreground: var(--text);
+    --card: var(--surface);
+    --card-foreground: var(--text);
+    --popover: var(--surface);
+    --popover-foreground: var(--text);
+    --secondary: var(--surface-2);
+    --secondary-foreground: var(--text);
+    --muted-foreground: var(--muted);
+    --accent-foreground: var(--text);
+    --destructive: var(--danger);
+    --destructive-foreground: var(--danger-foreground);
+    --input: var(--border);
     --ring: 212.7 26.8% 83.9%;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   }
 }
 
@@ -55,6 +127,201 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-size: var(--font-size-body);
+    line-height: 1.5;
+  }
+  
+  /* Typography System */
+  h1, .text-title {
+    font-size: var(--font-size-title);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  
+  h2, .text-title-sm {
+    font-size: var(--font-size-title-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  
+  h3, .text-section {
+    font-size: var(--font-size-section);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .text-section-sm {
+    font-size: var(--font-size-section-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.4;
+  }
+  
+  .text-body {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+  }
+  
+  .text-body-sm {
+    font-size: var(--font-size-body-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+  }
+  
+  .text-table {
+    font-size: var(--font-size-table);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.4;
+  }
+  
+  .text-table-sm {
+    font-size: var(--font-size-table-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.4;
+  }
+}
+
+@layer components {
+  /* BI Sleek Card Styles - Minimal borders, more spacing */
+  .card-standard {
+    @apply rounded-lg bg-card text-card-foreground;
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-base);
+  }
+  
+  .card-standard:hover:has(button, a) {
+    box-shadow: var(--shadow-md);
+  }
+  
+  /* Page Container with Max Width */
+  .page-container {
+    @apply space-y-6;
+    padding: var(--spacing-page);
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+  }
+  
+  /* Standardized page header - BI Sleek style */
+  .page-header {
+    @apply flex items-start justify-between gap-4;
+    margin-bottom: var(--spacing-section);
+  }
+  
+  .page-header-content {
+    @apply space-y-1;
+  }
+  
+  .page-header-title {
+    font-size: var(--font-size-title);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  
+  .page-header-description {
+    font-size: var(--font-size-body-sm);
+    color: hsl(var(--muted));
+  }
+  
+  /* BI Sleek Table Styles - Sticky header, zebra, compact */
+  .table-standard {
+    @apply w-full;
+    font-size: var(--font-size-table);
+  }
+  
+  .table-standard thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: hsl(var(--surface));
+    border-bottom: 1px solid hsl(var(--border));
+  }
+  
+  .table-standard thead th {
+    font-size: var(--font-size-section-sm);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(var(--muted));
+    padding: 0.75rem 1rem;
+    height: 2.5rem;
+  }
+  
+  .table-standard tbody tr {
+    border-bottom: 1px solid hsl(var(--border) / 0.5);
+    transition: background-color var(--transition-fast);
+  }
+  
+  .table-standard tbody tr:nth-child(even) {
+    background: hsl(var(--surface-2) / 0.3);
+  }
+  
+  .table-standard tbody tr:hover {
+    background: hsl(var(--surface-2) / 0.6);
+  }
+  
+  .table-standard tbody td {
+    padding: 0.625rem 1rem;
+    height: 2.5rem;
+    font-size: var(--font-size-table);
+  }
+  
+  /* Numeric alignment utility */
+  .text-numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+  
+  /* Subtle transitions for interactive elements */
+  .transition-interactive {
+    transition: all var(--transition-base);
+  }
+  
+  /* Focus rings - consistent across all interactive elements */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+    transition: outline-offset var(--transition-fast);
+  }
+  
+  /* Loading skeleton - holds layout */
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
+  }
+  
+  /* KPI Card - BI style */
+  .kpi-card {
+    @apply rounded-lg bg-card border border-border/50;
+    padding: 1.25rem;
+    transition: box-shadow var(--transition-base), border-color var(--transition-base);
+  }
+  
+  .kpi-card:hover {
+    box-shadow: var(--shadow-sm);
+    border-color: hsl(var(--border));
+  }
+  
+  /* Timeframe chip */
+  .timeframe-chip {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+    background: hsl(var(--surface-2));
+    color: hsl(var(--muted));
+  }
+  
+  /* Form help text */
+  .form-help-text {
+    @apply text-table-sm text-muted-foreground mt-1;
+  }
+  
+  /* Form error text */
+  .form-error-text {
+    @apply text-table-sm text-destructive mt-1;
   }
 }
 
@@ -99,4 +366,5 @@ html[data-ui-audit='1'] button:disabled,
 html[data-ui-audit='1'] [aria-disabled='true'] {
   outline-color: hsl(var(--muted-foreground) / 0.35);
 }
+
 

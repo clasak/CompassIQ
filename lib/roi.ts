@@ -177,3 +177,4 @@ export async function getLiveKPIsForROI(): Promise<{
     averageARDays: averageARDays ? Math.round(averageARDays) : undefined,
   }
 }
+

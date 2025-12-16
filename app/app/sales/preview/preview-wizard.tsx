@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -44,6 +44,9 @@ const KPI_LABELS: Record<string, string> = {
 
 export function PreviewWizard() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const accountId = searchParams.get('accountId')
+  const opportunityId = searchParams.get('opportunityId')
   const [step, setStep] = useState(1)
   const [generating, setGenerating] = useState(false)
 
@@ -228,6 +231,8 @@ export function PreviewWizard() {
         kpis: selectedKPIs,
         branding,
         metricValues,
+        accountId: accountId || undefined,
+        opportunityId: opportunityId || undefined,
       })
 
       if (result.error) {

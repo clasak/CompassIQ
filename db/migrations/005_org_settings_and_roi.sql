@@ -58,3 +58,4 @@ CREATE POLICY "org_settings_delete" ON org_settings
         NOT is_demo_org(org_id)
     );
 
+

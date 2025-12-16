@@ -137,47 +137,73 @@ export function BrandingSettings({
 
       <Card>
         <CardHeader>
-          <CardTitle>Preview</CardTitle>
-          <CardDescription>Quick check before you save</CardDescription>
+          <CardTitle>Live Preview</CardTitle>
+          <CardDescription>See how your branding appears across the app</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-3">
-            <BrandMark url={previews.mark_url} size={28} alt={previews.brand_name} />
-            <div className="min-w-0">
-              <BrandWordmark
-                brandName={previews.brand_name}
-                logoLightUrl={previews.logo_light_url}
-                logoDarkUrl={previews.logo_dark_url}
-                height={22}
-              />
-              <div className="text-xs text-muted-foreground truncate">
-                {previews.tagline || '—'}
+        <CardContent className="space-y-6">
+          {/* Topbar Preview */}
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Topbar</div>
+            <div className="rounded-lg border bg-background p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BrandMark url={previews.mark_url} size={20} alt={previews.brand_name} />
+                <span className="text-sm font-semibold">{previews.brand_name}</span>
+              </div>
+              <div className="h-8 w-20 rounded bg-primary/10 border border-primary/20" />
+            </div>
+          </div>
+
+          {/* Sidebar Preview */}
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Sidebar</div>
+            <div className="rounded-lg border bg-background p-3">
+              <div className="flex items-center gap-3 mb-3">
+                <BrandMark url={previews.mark_url} size={26} alt={previews.brand_name} />
+                <div className="min-w-0">
+                  <BrandWordmark
+                    brandName={previews.brand_name}
+                    logoLightUrl={previews.logo_light_url}
+                    logoDarkUrl={previews.logo_dark_url}
+                    height={18}
+                  />
+                  {previews.tagline && (
+                    <div className="text-[10px] text-muted-foreground truncate">{previews.tagline}</div>
+                  )}
+                </div>
+              </div>
+              <div className="h-8 rounded bg-primary/10 border border-primary/20" />
+            </div>
+          </div>
+
+          {/* Color Preview */}
+          <div className="space-y-2">
+            <div className="text-sm font-medium">Colors</div>
+            <div className="flex items-center gap-4">
+              <div className="space-y-1.5">
+                <div className="text-xs text-muted-foreground">Primary</div>
+                <div
+                  className="h-10 w-20 rounded-md border shadow-sm"
+                  style={{ backgroundColor: previews.primary_color }}
+                />
+                <div className="font-mono text-xs">{previews.primary_color}</div>
+              </div>
+              <div className="space-y-1.5">
+                <div className="text-xs text-muted-foreground">Accent</div>
+                <div
+                  className="h-10 w-20 rounded-md border shadow-sm"
+                  style={{ backgroundColor: previews.accent_color }}
+                />
+                <div className="font-mono text-xs">{previews.accent_color}</div>
               </div>
             </div>
+            <p className="text-xs text-muted-foreground">
+              Colors apply to buttons, links, and interactive elements throughout the app.
+            </p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="space-y-1">
-              <div className="text-xs text-muted-foreground">Primary</div>
-              <div
-                className="h-8 w-16 rounded border"
-                style={{ backgroundColor: previews.primary_color }}
-              />
-              <div className="font-mono text-xs">{previews.primary_color}</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-muted-foreground">Accent</div>
-              <div
-                className="h-8 w-16 rounded border"
-                style={{ backgroundColor: previews.accent_color }}
-              />
-              <div className="font-mono text-xs">{previews.accent_color}</div>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2 border-t">
             <Button onClick={save} disabled={saving || readOnly} {...readOnlyProps(readOnly, reason)}>
-              {saving ? 'Saving…' : 'Save'}
+              {saving ? 'Saving…' : 'Save Changes'}
             </Button>
             <Button
               variant="outline"

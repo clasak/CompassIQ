@@ -3,6 +3,7 @@ import path from 'path'
 import dotenv from 'dotenv'
 import { Client } from 'pg'
 
+// Load environment variables (no secrets printed)
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 
 const requiredTables = [
@@ -17,6 +18,12 @@ const requiredTables = [
   'raw_events',
   'field_mappings',
   'metric_values',
+  'leads',
+  'accounts',
+  'opportunities',
+  'tasks',
+  'quotes',
+  'preview_workspaces',
 ]
 
 const requiredFunctions = [
@@ -140,6 +147,22 @@ async function verifyFunctions(client: Client) {
   return requiredFunctions.filter((fn) => !existing.has(fn))
 }
 
+async function verifyMetadataColumns(client: Client) {
+  const tablesWithMetadata = ['leads', 'accounts', 'opportunities', 'tasks', 'quotes']
+  const { rows } = await client.query<{ table_name: string; column_name: string }>(
+    `
+      select table_name, column_name
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = any($1::text[])
+        and column_name = 'metadata'
+    `,
+    [tablesWithMetadata],
+  )
+  const existing = new Set(rows.map((r) => r.table_name))
+  return tablesWithMetadata.filter((table) => !existing.has(table))
+}
+
 async function main() {
   if (!connectionString) {
     console.error('❌ Missing SUPABASE_DB_URL in .env.local')
@@ -203,7 +226,15 @@ async function main() {
       process.exit(1)
     }
 
-    console.log('✅ Verification complete — required tables and functions are present')
+    console.log('🔍 Verifying metadata columns (migration 011)...')
+    const missingMetadataColumns = await verifyMetadataColumns(client)
+    if (missingMetadataColumns.length) {
+      console.error(`❌ Missing metadata columns on tables: ${missingMetadataColumns.join(', ')}`)
+      console.error(`   Migration 011 should have added these. Check if migration was applied correctly.`)
+      process.exit(1)
+    }
+
+    console.log('✅ Verification complete — required tables, functions, and metadata columns are present')
   } catch (wrapped: any) {
     console.error('❌ Migration failed')
     if (wrapped?.filename) console.error(`While applying: ${wrapped.filename}`)

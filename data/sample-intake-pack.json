@@ -1,0 +1,96 @@
+{
+  "company": {
+    "name": "Acme Manufacturing",
+    "industry": "Manufacturing",
+    "website": "https://acme-manufacturing.com",
+    "locations": [
+      {
+        "name": "Headquarters",
+        "address1": "123 Industrial Blvd",
+        "city": "Chicago",
+        "state": "IL",
+        "postal": "60601",
+        "country": "USA"
+      }
+    ],
+    "primary_contact": {
+      "name": "John Smith",
+      "email": "john.smith@acme-manufacturing.com",
+      "phone": "+1-312-555-0100",
+      "title": "VP Operations"
+    }
+  },
+  "branding": {
+    "name": "Acme Manufacturing",
+    "primary_color": "#1E3A8A",
+    "accent_color": "#3B82F6"
+  },
+  "pains": [
+    "Manual reporting takes 8+ hours per week",
+    "No real-time visibility into operations",
+    "Data scattered across multiple systems",
+    "Difficult to identify bottlenecks"
+  ],
+  "kpis": [
+    {
+      "key": "revenue_mtd",
+      "label": "Revenue MTD",
+      "unit": "USD",
+      "baseline_value": 1250000,
+      "target_value": 1500000,
+      "cadence": "Daily"
+    },
+    {
+      "key": "pipeline_30",
+      "label": "Pipeline 30 Days",
+      "unit": "USD",
+      "baseline_value": 450000,
+      "target_value": 600000,
+      "cadence": "Daily"
+    },
+    {
+      "key": "ar_outstanding",
+      "label": "AR Outstanding",
+      "unit": "USD",
+      "baseline_value": 320000,
+      "target_value": 250000,
+      "cadence": "Daily"
+    },
+    {
+      "key": "on_time_delivery",
+      "label": "On-Time Delivery %",
+      "unit": "%",
+      "baseline_value": 78,
+      "target_value": 92,
+      "cadence": "Daily"
+    }
+  ],
+  "optional_entities": {
+    "accounts": [
+      {
+        "name": "Acme Manufacturing",
+        "site_count": 3,
+        "region": "Midwest",
+        "tags": ["Enterprise", "Manufacturing"]
+      }
+    ],
+    "opportunities": [
+      {
+        "name": "Q1 Expansion Project",
+        "stage": "PROPOSAL",
+        "amount": 250000,
+        "close_date": "2025-03-31",
+        "notes": "Expanding operations to new facility"
+      }
+    ],
+    "tasks": [
+      {
+        "title": "Review Q1 metrics dashboard",
+        "owner_email": "john.smith@acme-manufacturing.com",
+        "due_date": "2025-01-15",
+        "priority": "HIGH"
+      }
+    ]
+  },
+  "mode": "preview_only"
+}

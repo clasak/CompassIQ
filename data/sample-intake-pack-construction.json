@@ -1,0 +1,206 @@
+{
+  "company": {
+    "name": "Acme Construction Co",
+    "industry": "Construction",
+    "website": "https://acmeconstruction.com"
+  },
+  "branding": {
+    "name": "Acme Construction",
+    "primary_color": "#1a472a",
+    "accent_color": "#ff6b35"
+  },
+  "pains": [
+    "Cost overruns on projects",
+    "Change orders not being billed timely",
+    "AR aging over 60 days",
+    "Schedule slippage on critical milestones",
+    "Low equipment utilization"
+  ],
+  "kpis": [
+    {
+      "key": "backlog_total",
+      "label": "Total Backlog",
+      "unit": "$",
+      "baseline_value": 15000000,
+      "target_value": 20000000,
+      "cadence": "Weekly"
+    },
+    {
+      "key": "gross_margin_pct",
+      "label": "Gross Margin %",
+      "unit": "%",
+      "baseline_value": 12.5,
+      "target_value": 15.0,
+      "cadence": "Weekly"
+    },
+    {
+      "key": "change_order_aging_days",
+      "label": "Change Order Aging",
+      "unit": "days",
+      "baseline_value": 25,
+      "target_value": 14,
+      "cadence": "Weekly"
+    },
+    {
+      "key": "ar_over_60_days",
+      "label": "AR Over 60 Days",
+      "unit": "$",
+      "baseline_value": 450000,
+      "target_value": 200000,
+      "cadence": "Weekly"
+    },
+    {
+      "key": "schedule_variance_days",
+      "label": "Schedule Variance",
+      "unit": "days",
+      "baseline_value": -8,
+      "target_value": 0,
+      "cadence": "Weekly"
+    }
+  ],
+  "optional_entities": {
+    "construction": {
+      "projects": [
+        {
+          "name": "Downtown Office Complex",
+          "job_number": "JOB-2024-001",
+          "customer_name": "Metro Development",
+          "status": "ACTIVE",
+          "start_date": "2024-01-15",
+          "end_date": "2024-12-31",
+          "pm_name": "John Smith",
+          "superintendent": "Mike Johnson",
+          "region": "Northeast",
+          "contract_value": 5000000
+        },
+        {
+          "name": "Highway Bridge Renovation",
+          "job_number": "JOB-2024-002",
+          "customer_name": "State DOT",
+          "status": "ACTIVE",
+          "start_date": "2024-03-01",
+          "end_date": "2025-06-30",
+          "pm_name": "Sarah Williams",
+          "superintendent": "Tom Brown",
+          "region": "Southeast",
+          "contract_value": 8500000
+        }
+      ],
+      "costSnapshots": [
+        {
+          "project_name": "Downtown Office Complex",
+          "snapshot_date": "2024-11-01",
+          "cost_code": "01-100",
+          "budget": 500000,
+          "committed": 480000,
+          "actual_cost": 520000,
+          "percent_complete": 85,
+          "earned_value": 425000
+        },
+        {
+          "project_name": "Highway Bridge Renovation",
+          "snapshot_date": "2024-11-01",
+          "cost_code": "02-200",
+          "budget": 1200000,
+          "committed": 1150000,
+          "actual_cost": 1180000,
+          "percent_complete": 60,
+          "earned_value": 720000
+        }
+      ],
+      "milestones": [
+        {
+          "project_name": "Downtown Office Complex",
+          "name": "Foundation Complete",
+          "baseline_date": "2024-04-15",
+          "forecast_date": "2024-04-20",
+          "actual_date": "2024-04-18",
+          "status": "COMPLETE"
+        },
+        {
+          "project_name": "Downtown Office Complex",
+          "name": "Structural Steel",
+          "baseline_date": "2024-08-01",
+          "forecast_date": "2024-08-15",
+          "status": "PENDING"
+        },
+        {
+          "project_name": "Highway Bridge Renovation",
+          "name": "Demolition Complete",
+          "baseline_date": "2024-05-01",
+          "forecast_date": "2024-05-10",
+          "actual_date": "2024-05-08",
+          "status": "COMPLETE"
+        }
+      ],
+      "changeOrders": [
+        {
+          "project_name": "Downtown Office Complex",
+          "number": "CO-001",
+          "title": "Additional Site Prep",
+          "status": "APPROVED",
+          "amount": 75000,
+          "submitted_date": "2024-09-15",
+          "approved_date": "2024-09-20",
+          "billed_date": null
+        },
+        {
+          "project_name": "Downtown Office Complex",
+          "number": "CO-002",
+          "title": "Upgraded HVAC System",
+          "status": "PENDING",
+          "amount": 125000,
+          "submitted_date": "2024-10-01",
+          "approved_date": null,
+          "billed_date": null
+        }
+      ],
+      "laborEntries": [
+        {
+          "project_name": "Downtown Office Complex",
+          "work_date": "2024-11-01",
+          "crew": "Crew A",
+          "trade": "Carpentry",
+          "hours": 160,
+          "cost": 6400,
+          "units_completed": 800,
+          "cost_code": "03-300"
+        }
+      ],
+      "equipmentLogs": [
+        {
+          "project_name": "Downtown Office Complex",
+          "equipment_name": "Excavator #5",
+          "date": "2024-11-01",
+          "hours_used": 8,
+          "idle_hours": 2,
+          "location": "Site A",
+          "cost": 1200
+        }
+      ],
+      "invoices": [
+        {
+          "project_name": "Downtown Office Complex",
+          "invoice_number": "INV-2024-001",
+          "customer": "Metro Development",
+          "invoice_date": "2024-10-01",
+          "due_date": "2024-10-31",
+          "amount": 250000,
+          "balance": 250000,
+          "status": "OVERDUE"
+        },
+        {
+          "project_name": "Highway Bridge Renovation",
+          "invoice_number": "INV-2024-002",
+          "customer": "State DOT",
+          "invoice_date": "2024-10-15",
+          "due_date": "2024-11-14",
+          "amount": 400000,
+          "balance": 400000,
+          "status": "SENT"
+        }
+      ]
+    }
+  },
+  "mode": "seed_preview_and_crm"
+}

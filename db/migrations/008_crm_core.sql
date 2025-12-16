@@ -125,21 +125,21 @@ CREATE POLICY "leads_select" ON leads
 CREATE POLICY "leads_insert" ON leads
     FOR INSERT WITH CHECK (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "leads_update" ON leads
     FOR UPDATE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "leads_delete" ON leads
     FOR DELETE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
@@ -152,21 +152,21 @@ CREATE POLICY "quotes_select" ON quotes
 CREATE POLICY "quotes_insert" ON quotes
     FOR INSERT WITH CHECK (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "quotes_update" ON quotes
     FOR UPDATE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "quotes_delete" ON quotes
     FOR DELETE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
@@ -179,21 +179,22 @@ CREATE POLICY "quote_line_items_select" ON quote_line_items
 CREATE POLICY "quote_line_items_insert" ON quote_line_items
     FOR INSERT WITH CHECK (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "quote_line_items_update" ON quote_line_items
     FOR UPDATE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
 
 CREATE POLICY "quote_line_items_delete" ON quote_line_items
     FOR DELETE USING (
         is_member(org_id) 
-        AND current_role(org_id) IN ('OWNER', 'ADMIN')
+        AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
+
 

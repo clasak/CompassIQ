@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
   // Dev demo mode: allow /app routes without auth
   const devDemoMode = isDevDemoMode()
   if (devDemoMode) {
-    // Allow all routes in dev demo mode
+    // Allow all routes in dev demo mode (no redirect)
     return supabaseResponse
   }
 
@@ -148,6 +148,13 @@ export async function middleware(request: NextRequest) {
       url.searchParams.set('id', previewId)
       return NextResponse.redirect(url)
     }
+  }
+
+  // Redirect /app to /app/operate (must happen after auth checks)
+  if (request.nextUrl.pathname === '/app' && user) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/app/operate'
+    return NextResponse.redirect(url)
   }
 
   return supabaseResponse

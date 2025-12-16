@@ -90,6 +90,20 @@ export function QuotesTable({ quotes, accounts }: QuotesTableProps) {
       },
     },
     {
+      id: 'data_origin',
+      header: 'Origin',
+      cell: ({ row }) => {
+        const quote = row.original
+        const origin = (quote as any).metadata?.data_origin || 'seeded'
+        const labels: Record<string, string> = {
+          manual: 'Manual',
+          imported: 'Imported',
+          seeded: 'Seeded (demo)',
+        }
+        return <Badge variant="outline">{labels[origin] || origin}</Badge>
+      },
+    },
+    {
       id: 'actions',
       cell: ({ row }) => {
         const quote = row.original
@@ -130,7 +144,15 @@ export function QuotesTable({ quotes, accounts }: QuotesTableProps) {
       searchKey="name"
       searchPlaceholder="Search quotes..."
       exportFilename="quotes.csv"
+      emptyStateTitle="No quotes yet"
+      emptyStateDescription="Sales quotes and proposals will appear here. Create your first quote to get started."
+      emptyStateAction={
+        <Button asChild>
+          <a href="/app/crm/quotes">Create Quote</a>
+        </Button>
+      }
     />
   )
 }
+
 

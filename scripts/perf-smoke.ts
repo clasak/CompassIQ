@@ -79,7 +79,7 @@ function p95(values: number[]): number {
 }
 
 async function runSmokeTest() {
-  console.log(`\n🚀 Performance Smoke Test`)
+  console.log(`\nPerformance Smoke Test`)
   console.log(`Base URL: ${BASE_URL}\n`)
 
   const results: RouteResult[] = []
@@ -89,19 +89,19 @@ async function runSmokeTest() {
     const result = await measureRoute(route)
     results.push(result)
     if (result.error) {
-      console.log(`  ❌ ${result.statusCode} ${result.durationMs}ms - ${result.error}`)
-    } else if (result.statusCode >= 200 && result.statusCode < 300) {
-      console.log(`  ✅ ${result.statusCode} ${result.durationMs}ms`)
+      console.log(`  FAIL ${result.statusCode} ${result.durationMs}ms - ${result.error}`)
+    } else if (result.statusCode >= 200 && result.statusCode < 400) {
+      console.log(`  OK ${result.statusCode} ${result.durationMs}ms`)
     } else {
-      console.log(`  ⚠️  ${result.statusCode} ${result.durationMs}ms`)
+      console.log(`  WARN ${result.statusCode} ${result.durationMs}ms`)
     }
   }
 
   // Summary
-  const successful = results.filter((r) => r.statusCode >= 200 && r.statusCode < 300 && !r.error)
+  const successful = results.filter((r) => r.statusCode >= 200 && r.statusCode < 400 && !r.error)
   const durations = successful.map((r) => r.durationMs)
 
-  console.log(`\n📊 Summary`)
+  console.log(`\nSummary`)
   console.log(`Successful: ${successful.length}/${ROUTES.length}`)
   if (durations.length > 0) {
     const med = median(durations)
@@ -112,12 +112,12 @@ async function runSmokeTest() {
     // PASS/FAIL
     const medPass = med < 300
     const p95Pass = p95Val < 800
-    console.log(`\n🎯 Results:`)
-    console.log(`  Median < 300ms: ${medPass ? '✅ PASS' : '❌ FAIL'} (${med.toFixed(1)}ms)`)
-    console.log(`  P95 < 800ms: ${p95Pass ? '✅ PASS' : '❌ FAIL'} (${p95Val.toFixed(1)}ms)`)
-    console.log(`\nOverall: ${medPass && p95Pass ? '✅ PASS' : '❌ FAIL'}`)
+    console.log(`\nResults:`)
+    console.log(`  Median < 300ms: ${medPass ? 'PASS' : 'FAIL'} (${med.toFixed(1)}ms)`)
+    console.log(`  P95 < 800ms: ${p95Pass ? 'PASS' : 'FAIL'} (${p95Val.toFixed(1)}ms)`)
+    console.log(`\nOverall: ${medPass && p95Pass ? 'PASS' : 'FAIL'}`)
   } else {
-    console.log(`\n❌ No successful requests`)
+    console.log(`\nNo successful requests`)
   }
 
   process.exit(successful.length === ROUTES.length ? 0 : 1)

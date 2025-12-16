@@ -65,7 +65,6 @@ export function DemoToggle() {
       setDemoOrgId(demoOrg?.id || null)
       setLoading(false)
     } catch (error) {
-      console.error('Error checking demo mode:', error)
       setLoading(false)
     }
   }
@@ -107,7 +106,6 @@ export function DemoToggle() {
           }
         }
       } catch (error) {
-        console.error('Error switching org:', error)
         toast.error('Failed to switch organization')
       }
     } else {

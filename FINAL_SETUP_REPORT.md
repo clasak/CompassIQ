@@ -92,3 +92,4 @@ The keys provided have an unusual signature structure, but if they're what's sho
 - ⏳ Migrations need manual application (browser automation limitation)
 - ⏳ Seed script pending migrations
 - ⏳ Testing pending setup completion
+

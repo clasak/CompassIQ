@@ -23,56 +23,78 @@ export async function getKPIs(startDate?: Date, endDate?: Date) {
     const start = startDate || new Date(new Date().getFullYear(), new Date().getMonth(), 1)
     const end = endDate || new Date()
 
-    const { data: revenueData } = await supabase
-      .from('invoices')
-      .select('total')
-      .eq('org_id', orgId)
-      .in('status', ['SENT', 'PAID', 'OVERDUE'])
-      .gte('issue_date', start.toISOString().split('T')[0])
-      .lte('issue_date', end.toISOString().split('T')[0])
-
-    const revenueMTD = revenueData?.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0) || 0
-
     const now = new Date()
     const day30 = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
     const day60 = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000)
     const day90 = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000)
 
-    const { data: pipeline30 } = await supabase
-      .from('opportunities')
-      .select('amount')
-      .eq('org_id', orgId)
-      .not('stage', 'in', '(WON,LOST)')
-      .lte('close_date', day30.toISOString().split('T')[0])
+    // Parallelize independent queries
+    const [
+      { data: revenueData },
+      { data: pipeline30 },
+      { data: pipeline60 },
+      { data: pipeline90 },
+      { data: invoices },
+      { data: payments },
+    ] = await Promise.all([
+      serverPerf('data:getKPIs:revenue', async () => {
+        const result = await supabase
+          .from('invoices')
+          .select('total')
+          .eq('org_id', orgId)
+          .in('status', ['SENT', 'PAID', 'OVERDUE'])
+          .gte('issue_date', start.toISOString().split('T')[0])
+          .lte('issue_date', end.toISOString().split('T')[0])
+        return result
+      }),
+      serverPerf('data:getKPIs:pipeline30', async () => {
+        const result = await supabase
+          .from('opportunities')
+          .select('amount')
+          .eq('org_id', orgId)
+          .not('stage', 'in', '(WON,LOST)')
+          .lte('close_date', day30.toISOString().split('T')[0])
+        return result
+      }),
+      serverPerf('data:getKPIs:pipeline60', async () => {
+        const result = await supabase
+          .from('opportunities')
+          .select('amount')
+          .eq('org_id', orgId)
+          .not('stage', 'in', '(WON,LOST)')
+          .lte('close_date', day60.toISOString().split('T')[0])
+        return result
+      }),
+      serverPerf('data:getKPIs:pipeline90', async () => {
+        const result = await supabase
+          .from('opportunities')
+          .select('amount')
+          .eq('org_id', orgId)
+          .not('stage', 'in', '(WON,LOST)')
+          .lte('close_date', day90.toISOString().split('T')[0])
+        return result
+      }),
+      serverPerf('data:getKPIs:invoices', async () => {
+        const result = await supabase
+          .from('invoices')
+          .select('id, total, status')
+          .eq('org_id', orgId)
+          .not('status', 'eq', 'VOID')
+        return result
+      }),
+      serverPerf('data:getKPIs:payments', async () => {
+        const result = await supabase
+          .from('payments')
+          .select('invoice_id, amount')
+          .eq('org_id', orgId)
+        return result
+      }),
+    ])
 
-    const { data: pipeline60 } = await supabase
-      .from('opportunities')
-      .select('amount')
-      .eq('org_id', orgId)
-      .not('stage', 'in', '(WON,LOST)')
-      .lte('close_date', day60.toISOString().split('T')[0])
-
-    const { data: pipeline90 } = await supabase
-      .from('opportunities')
-      .select('amount')
-      .eq('org_id', orgId)
-      .not('stage', 'in', '(WON,LOST)')
-      .lte('close_date', day90.toISOString().split('T')[0])
-
+    const revenueMTD = revenueData?.reduce((sum, inv) => sum + (Number(inv.total) || 0), 0) || 0
     const pipeline30Sum = pipeline30?.reduce((sum, opp) => sum + (Number(opp.amount) || 0), 0) || 0
     const pipeline60Sum = pipeline60?.reduce((sum, opp) => sum + (Number(opp.amount) || 0), 0) || 0
     const pipeline90Sum = pipeline90?.reduce((sum, opp) => sum + (Number(opp.amount) || 0), 0) || 0
-
-    const { data: invoices } = await supabase
-      .from('invoices')
-      .select('id, total, status')
-      .eq('org_id', orgId)
-      .not('status', 'eq', 'VOID')
-
-    const { data: payments } = await supabase
-      .from('payments')
-      .select('invoice_id, amount')
-      .eq('org_id', orgId)
 
     const invoiceTotals = new Map<string, number>()
     invoices?.forEach((inv) => {
@@ -93,11 +115,38 @@ export async function getKPIs(startDate?: Date, endDate?: Date) {
       }
     })
 
-    const { data: workOrders } = await supabase
-      .from('work_orders')
-      .select('status, completed_at, due_date')
-      .eq('org_id', orgId)
-      .eq('status', 'DONE')
+    const renewalThreshold = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000)
+
+    // Parallelize remaining queries
+    const [
+      { data: workOrders },
+      { data: accounts },
+      { data: overdueInvoices },
+    ] = await Promise.all([
+      serverPerf('data:getKPIs:workOrders', async () => {
+        const result = await supabase
+          .from('work_orders')
+          .select('status, completed_at, due_date')
+          .eq('org_id', orgId)
+          .eq('status', 'DONE')
+        return result
+      }),
+      serverPerf('data:getKPIs:accounts', async () => {
+        const result = await supabase
+          .from('accounts')
+          .select('id, renewal_date, health_override')
+          .eq('org_id', orgId)
+        return result
+      }),
+      serverPerf('data:getKPIs:overdueInvoices', async () => {
+        const result = await supabase
+          .from('invoices')
+          .select('account_id')
+          .eq('org_id', orgId)
+          .eq('status', 'OVERDUE')
+        return result
+      }),
+    ])
 
     const onTime =
       workOrders?.filter((wo) => {
@@ -106,18 +155,6 @@ export async function getKPIs(startDate?: Date, endDate?: Date) {
       }).length || 0
     const total = workOrders?.length || 0
     const onTimeDelivery = total > 0 ? onTime / total : 0
-
-    const renewalThreshold = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000)
-    const { data: accounts } = await supabase
-      .from('accounts')
-      .select('id, renewal_date, health_override')
-      .eq('org_id', orgId)
-
-    const { data: overdueInvoices } = await supabase
-      .from('invoices')
-      .select('account_id')
-      .eq('org_id', orgId)
-      .eq('status', 'OVERDUE')
 
     const overdueAccountIds = new Set(overdueInvoices?.map((inv) => inv.account_id) || [])
 
@@ -236,97 +273,117 @@ export async function getAlerts() {
 
     const alerts: any[] = []
 
-  const { data: overdueInvoices } = await supabase
-    .from('invoices')
-    .select('id, invoice_number, account_id, accounts(name)')
-    .eq('org_id', orgId)
-    .eq('status', 'OVERDUE')
+    const today = new Date().toISOString().split('T')[0]
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
-  if (overdueInvoices && overdueInvoices.length > 0) {
-    alerts.push({
-      id: 'overdue-invoices',
-      title: 'Overdue Invoices',
-      description: `${overdueInvoices.length} invoice(s) are overdue`,
-      severity: 'high' as const,
-      count: overdueInvoices.length,
-    })
-  }
+    const [
+      { data: overdueInvoices },
+      { data: overdueTasks },
+      { data: oldTickets },
+      { data: blockedWorkOrders },
+      { data: dataSources },
+    ] = await Promise.all([
+      serverPerf('data:getAlerts:overdueInvoices', async () => {
+        const result = await supabase
+          .from('invoices')
+          .select('id, invoice_number, account_id, accounts(name)')
+          .eq('org_id', orgId)
+          .eq('status', 'OVERDUE')
+        return result
+      }),
+      serverPerf('data:getAlerts:overdueTasks', async () => {
+        const result = await supabase
+          .from('tasks')
+          .select('id')
+          .eq('org_id', orgId)
+          .in('status', ['OPEN', 'IN_PROGRESS'])
+          .lt('due_date', today)
+        return result
+      }),
+      serverPerf('data:getAlerts:oldTickets', async () => {
+        const result = await supabase
+          .from('tickets')
+          .select('id')
+          .eq('org_id', orgId)
+          .in('status', ['OPEN', 'IN_PROGRESS'])
+          .lt('opened_at', sevenDaysAgo)
+        return result
+      }),
+      serverPerf('data:getAlerts:blockedWorkOrders', async () => {
+        const result = await supabase
+          .from('work_orders')
+          .select('id')
+          .eq('org_id', orgId)
+          .eq('status', 'BLOCKED')
+        return result
+      }),
+      serverPerf('data:getAlerts:dataSources', async () => {
+        const result = await supabase
+          .from('data_sources')
+          .select('name, last_sync_at, cadence')
+          .eq('org_id', orgId)
+        return result
+      }),
+    ])
 
-  const today = new Date().toISOString().split('T')[0]
-  const { data: overdueTasks } = await supabase
-    .from('tasks')
-    .select('id')
-    .eq('org_id', orgId)
-    .in('status', ['OPEN', 'IN_PROGRESS'])
-    .lt('due_date', today)
+    if (overdueInvoices && overdueInvoices.length > 0) {
+      alerts.push({
+        id: 'overdue-invoices',
+        title: 'Overdue Invoices',
+        description: `${overdueInvoices.length} invoice(s) are overdue`,
+        severity: 'high' as const,
+        count: overdueInvoices.length,
+      })
+    }
 
-  if (overdueTasks && overdueTasks.length > 0) {
-    alerts.push({
-      id: 'overdue-tasks',
-      title: 'Overdue Tasks',
-      description: `${overdueTasks.length} task(s) are past due`,
-      severity: 'medium' as const,
-      count: overdueTasks.length,
-    })
-  }
+    if (overdueTasks && overdueTasks.length > 0) {
+      alerts.push({
+        id: 'overdue-tasks',
+        title: 'Overdue Tasks',
+        description: `${overdueTasks.length} task(s) are past due`,
+        severity: 'medium' as const,
+        count: overdueTasks.length,
+      })
+    }
 
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-  const { data: oldTickets } = await supabase
-    .from('tickets')
-    .select('id')
-    .eq('org_id', orgId)
-    .in('status', ['OPEN', 'IN_PROGRESS'])
-    .lt('opened_at', sevenDaysAgo)
+    if (oldTickets && oldTickets.length > 0) {
+      alerts.push({
+        id: 'old-tickets',
+        title: 'Stale Tickets',
+        description: `${oldTickets.length} ticket(s) open for more than 7 days`,
+        severity: 'medium' as const,
+        count: oldTickets.length,
+      })
+    }
 
-  if (oldTickets && oldTickets.length > 0) {
-    alerts.push({
-      id: 'old-tickets',
-      title: 'Stale Tickets',
-      description: `${oldTickets.length} ticket(s) open for more than 7 days`,
-      severity: 'medium' as const,
-      count: oldTickets.length,
-    })
-  }
+    if (blockedWorkOrders && blockedWorkOrders.length > 0) {
+      alerts.push({
+        id: 'blocked-work-orders',
+        title: 'Blocked Work Orders',
+        description: `${blockedWorkOrders.length} work order(s) are blocked`,
+        severity: 'high' as const,
+        count: blockedWorkOrders.length,
+      })
+    }
 
-  const { data: blockedWorkOrders } = await supabase
-    .from('work_orders')
-    .select('id')
-    .eq('org_id', orgId)
-    .eq('status', 'BLOCKED')
+    const staleSources =
+      dataSources?.filter((ds) => {
+        if (!ds.last_sync_at) return true
+        const lastSync = new Date(ds.last_sync_at)
+        const hoursSinceSync = (Date.now() - lastSync.getTime()) / (1000 * 60 * 60)
+        const cadenceHours = ds.cadence ? parseInt(ds.cadence) : 24
+        return hoursSinceSync > cadenceHours
+      }) || []
 
-  if (blockedWorkOrders && blockedWorkOrders.length > 0) {
-    alerts.push({
-      id: 'blocked-work-orders',
-      title: 'Blocked Work Orders',
-      description: `${blockedWorkOrders.length} work order(s) are blocked`,
-      severity: 'high' as const,
-      count: blockedWorkOrders.length,
-    })
-  }
-
-  const { data: dataSources } = await supabase
-    .from('data_sources')
-    .select('name, last_sync_at, cadence')
-    .eq('org_id', orgId)
-
-  const staleSources =
-    dataSources?.filter((ds) => {
-      if (!ds.last_sync_at) return true
-      const lastSync = new Date(ds.last_sync_at)
-      const hoursSinceSync = (Date.now() - lastSync.getTime()) / (1000 * 60 * 60)
-      const cadenceHours = ds.cadence ? parseInt(ds.cadence) : 24
-      return hoursSinceSync > cadenceHours
-    }) || []
-
-  if (staleSources.length > 0) {
-    alerts.push({
-      id: 'stale-data',
-      title: 'Stale Data Sources',
-      description: `${staleSources.length} data source(s) are stale`,
-      severity: 'low' as const,
-      count: staleSources.length,
-    })
-  }
+    if (staleSources.length > 0) {
+      alerts.push({
+        id: 'stale-data',
+        title: 'Stale Data Sources',
+        description: `${staleSources.length} data source(s) are stale`,
+        severity: 'low' as const,
+        count: staleSources.length,
+      })
+    }
 
     return alerts
   })
@@ -467,4 +524,3 @@ export async function getOrgSettings() {
     return data || { roi_defaults: {}, alert_thresholds: {}, metadata: {} }
   })
 }
-

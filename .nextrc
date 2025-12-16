@@ -1,0 +1,5 @@
+# Next.js configuration to prevent chunk file issues
+# This file ensures .next directory is properly managed
+
+# Auto-clear on dev server start if chunks are missing
+# This is handled by the dev:clean script

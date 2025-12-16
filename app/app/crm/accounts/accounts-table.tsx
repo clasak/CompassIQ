@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { EditAccountDialog } from './edit-account-dialog'
 import { DeleteAccountDialog } from './delete-account-dialog'
 import { Button } from '@/components/ui/button'
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { MoreHorizontal, Pencil, Trash2, Building2 } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,6 +43,20 @@ const columns: ColumnDef<Account>[] = [
     cell: ({ row }) => {
       const date = row.getValue('created_at') as string
       return formatDate(date)
+    },
+  },
+  {
+    id: 'data_origin',
+    header: 'Origin',
+    cell: ({ row }) => {
+      const account = row.original
+      const origin = (account as any).metadata?.data_origin || 'seeded'
+      const labels: Record<string, string> = {
+        manual: 'Manual',
+        imported: 'Imported',
+        seeded: 'Seeded (demo)',
+      }
+      return <Badge variant="outline">{labels[origin] || origin}</Badge>
     },
   },
   {
@@ -91,7 +105,18 @@ export function AccountsTable({ accounts }: AccountsTableProps) {
       searchKey="name"
       searchPlaceholder="Search accounts..."
       exportFilename="accounts.csv"
+      emptyStateTitle="No accounts yet"
+      emptyStateDescription="Companies you work with will appear here. Create your first account to get started."
+      emptyStateAction={
+        <Button asChild>
+          <a href="/app/crm/accounts">
+            <Building2 className="h-4 w-4 mr-2" />
+            Create Account
+          </a>
+        </Button>
+      }
     />
   )
 }
+
 
