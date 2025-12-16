@@ -12,34 +12,33 @@ export function DefaultMark({
 }) {
   return (
     <svg
-      viewBox="0 0 48 48"
+      viewBox="0 0 512 512"
       role="img"
       aria-label={title}
-      className={cn('h-6 w-6', className)}
+      className={cn('h-8 w-8', className)}
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="brandGradient" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="hsl(var(--brand-accent-hsl, var(--primary)))" />
-          <stop offset="1" stopColor="hsl(var(--brand-primary-hsl, var(--foreground)))" />
+        <linearGradient id="circleGradient" x1="256" y1="100" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#00D9FF"/>
+          <stop offset="50%" stopColor="#0080FF"/>
+          <stop offset="100%" stopColor="#0040C0"/>
+        </linearGradient>
+        <linearGradient id="arrowGradient" x1="256" y1="150" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#C0FF00"/>
+          <stop offset="50%" stopColor="#00E676"/>
+          <stop offset="100%" stopColor="#00BFA5"/>
         </linearGradient>
       </defs>
-      <rect x="4" y="4" width="40" height="40" rx="12" fill="url(#brandGradient)" opacity="0.95" />
+
+      {/* Circular Ring */}
+      <circle cx="256" cy="306" r="180" stroke="url(#circleGradient)" strokeWidth="45" fill="none"/>
+
+      {/* Compass Needle/Arrow */}
       <path
-        d="M16 30c2.5 2.5 6.5 2.5 9 0l7-7"
-        stroke="white"
-        strokeWidth="4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <path
-        d="M16 18h8"
-        stroke="white"
-        strokeWidth="4"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.9"
+        d="M 200 430 L 256 350 L 180 306 L 380 200 L 256 350 L 332 306 Z"
+        fill="url(#arrowGradient)"
+        opacity="0.95"
       />
     </svg>
   )
@@ -47,9 +46,9 @@ export function DefaultMark({
 
 export function BrandMark({
   url,
-  size = 24,
+  size = 32,
   className,
-  alt = 'Brand mark',
+  alt = 'CompassIQ',
 }: {
   url?: string | null
   size?: number
@@ -63,11 +62,10 @@ export function BrandMark({
         alt={alt}
         width={size}
         height={size}
-        className={cn('shrink-0', className)}
+        className={cn('shrink-0 object-contain', className)}
         style={{ width: size, height: size }}
       />
     )
   }
   return <DefaultMark className={className} title={alt} />
 }
-

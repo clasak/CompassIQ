@@ -16,13 +16,16 @@ interface BarChartBasicProps {
   colors?: string[]
 }
 
-// BI Sleek color palette: primary for current, neutral for baseline, accent for emphasis
+// BI Sleek Enhanced Color Palette - Professional Data Viz
 const defaultColors = [
-  'hsl(var(--primary))',      // Primary color
-  'hsl(var(--accent))',        // Accent color
-  'hsl(var(--muted))',         // Neutral/baseline
-  'hsl(var(--success))',        // Success
-  'hsl(var(--warning))',        // Warning
+  'hsl(var(--chart-1))',  // Primary Blue
+  'hsl(var(--chart-2))',  // Cyan
+  'hsl(var(--chart-3))',  // Green
+  'hsl(var(--chart-4))',  // Purple
+  'hsl(var(--chart-5))',  // Orange
+  'hsl(var(--chart-6))',  // Pink
+  'hsl(var(--chart-7))',  // Teal
+  'hsl(var(--chart-8))',  // Coral
 ]
 
 export const BarChartBasic = memo(function BarChartBasic({
@@ -33,43 +36,63 @@ export const BarChartBasic = memo(function BarChartBasic({
 }: BarChartBasicProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-        <CartesianGrid 
-          strokeDasharray="3 3" 
+      <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
+        <CartesianGrid
+          strokeDasharray="3 3"
           stroke="hsl(var(--border))"
-          opacity={0.3}
+          opacity={0.2}
+          vertical={false}
         />
-        <XAxis 
-          dataKey="name" 
-          tick={{ fill: 'hsl(var(--muted))', fontSize: 12 }}
-          axisLine={{ stroke: 'hsl(var(--border))', opacity: 0.3 }}
+        <XAxis
+          dataKey="name"
+          tick={{ fill: 'hsl(var(--text-secondary))', fontSize: 12 }}
+          axisLine={{ stroke: 'hsl(var(--border))' }}
+          tickLine={false}
         />
-        <YAxis 
-          tick={{ fill: 'hsl(var(--muted))', fontSize: 12 }}
-          axisLine={{ stroke: 'hsl(var(--border))', opacity: 0.3 }}
+        <YAxis
+          tick={{ fill: 'hsl(var(--text-secondary))', fontSize: 12 }}
+          axisLine={false}
+          tickLine={false}
         />
-        <Tooltip 
+        <Tooltip
           contentStyle={{
             backgroundColor: 'hsl(var(--surface))',
             border: '1px solid hsl(var(--border))',
-            borderRadius: '6px',
+            borderRadius: '8px',
             fontSize: '12px',
-            padding: '8px 12px',
+            padding: '12px',
+            boxShadow: 'var(--shadow-lg)',
           }}
-          labelStyle={{ color: 'hsl(var(--text))', fontWeight: 600, marginBottom: '4px' }}
+          labelStyle={{
+            color: 'hsl(var(--text))',
+            fontWeight: 600,
+            marginBottom: '6px'
+          }}
+          cursor={{ fill: 'hsl(var(--surface-hover))', opacity: 0.15 }}
         />
-        <Legend 
-          wrapperStyle={{ fontSize: '12px', color: 'hsl(var(--muted))' }}
+        <Legend
+          wrapperStyle={{
+            fontSize: '12px',
+            color: 'hsl(var(--text-secondary))',
+            paddingTop: '16px'
+          }}
         />
-        <Bar dataKey={dataKey} name={name} radius={[4, 4, 0, 0]}>
-          {data.map((entry) => (
-            <Cell key={entry.name} fill={colors[data.indexOf(entry) % colors.length]} />
+        <Bar
+          dataKey={dataKey}
+          name={name}
+          radius={[6, 6, 0, 0]}
+          animationDuration={800}
+          animationEasing="ease-out"
+        >
+          {data.map((entry, index) => (
+            <Cell
+              key={`cell-${entry.name}-${index}`}
+              fill={colors[index % colors.length]}
+              opacity={0.9}
+            />
           ))}
         </Bar>
       </BarChart>
     </ResponsiveContainer>
   )
 })
-
-
-

@@ -3,25 +3,36 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 
+export function DefaultWordmark({ className, brandName = 'CompassIQ' }: { className?: string, brandName?: string }) {
+  return (
+    <span className={cn('inline-flex items-center font-bold text-xl tracking-tight', className)}>
+      <span className="text-foreground">Compass</span>
+      <span className="text-[#00BFA5]">IQ</span>
+    </span>
+  )
+}
+
 export function BrandWordmark({
-  brandName,
+  brandName = 'CompassIQ',
   logoLightUrl,
   logoDarkUrl,
-  height = 22,
+  height = 32,
   className,
 }: {
-  brandName: string
+  brandName?: string
   logoLightUrl?: string | null
   logoDarkUrl?: string | null
   height?: number
   className?: string
 }) {
   const hasAny = Boolean(logoLightUrl || logoDarkUrl)
+
   if (!hasAny) {
-    return <span className={cn('font-semibold tracking-tight', className)}>{brandName}</span>
+    return <DefaultWordmark className={className} brandName={brandName} />
   }
 
-  const imgClass = cn('max-w-[180px] object-contain', className)
+  const imgClass = cn('max-w-[200px] h-auto object-contain', className)
+
   return (
     <span className="inline-flex items-center">
       {logoLightUrl && (
@@ -59,4 +70,3 @@ export function BrandWordmark({
     </span>
   )
 }
-
