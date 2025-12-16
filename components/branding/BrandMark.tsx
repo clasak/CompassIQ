@@ -12,14 +12,14 @@ export function DefaultMark({
 }) {
   return (
     <svg
-      viewBox="0 0 512 512"
+      viewBox="40 90 432 432"
       role="img"
       aria-label={title}
       className={cn('h-8 w-8', className)}
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="ciq-ring" x1="256" y1="100" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+        <linearGradient id="ciq-ring" x1="256" y1="90" x2="256" y2="522" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#00D9FF"/>
           <stop offset="50%" stopColor="#0080FF"/>
           <stop offset="100%" stopColor="#0040C0"/>
