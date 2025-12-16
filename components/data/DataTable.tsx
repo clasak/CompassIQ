@@ -11,7 +11,7 @@ import {
   SortingState,
   ColumnFiltersState,
 } from '@tanstack/react-table'
-import { useState } from 'react'
+import { useState, memo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -39,7 +39,7 @@ interface DataTableProps<TData, TValue> {
   loading?: boolean
 }
 
-export function DataTable<TData, TValue>({
+export const DataTable = memo(function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
@@ -71,16 +71,16 @@ export function DataTable<TData, TValue>({
     },
   })
 
-  const escapeCsvValue = (value: unknown) => {
+  const escapeCsvValue = useCallback((value: unknown) => {
     if (value === null || value === undefined) return ''
     const str = String(value)
     if (/[",\n]/.test(str)) {
       return `"${str.replace(/"/g, '""')}"`
     }
     return str
-  }
+  }, [])
 
-  const handleExport = () => {
+  const handleExport = useCallback(() => {
     const exportColumns = table
       .getAllLeafColumns()
       .filter((col) => col.id !== 'actions')
@@ -98,7 +98,7 @@ export function DataTable<TData, TValue>({
 
     const csv = [headerRow, ...dataRows].join('\n')
     downloadCSV(csv, exportFilename)
-  }
+  }, [table, exportFilename, escapeCsvValue])
 
   const hasData = data.length > 0
   const hasFilteredData = table.getFilteredRowModel().rows.length > 0
@@ -227,4 +227,4 @@ export function DataTable<TData, TValue>({
       )}
     </div>
   )
-}
+}) as <TData, TValue>(props: DataTableProps<TData, TValue>) => JSX.Element
