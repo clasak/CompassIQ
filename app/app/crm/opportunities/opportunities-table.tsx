@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '@/components/data/DataTable'
 import { Opportunity, Account } from '@/lib/actions/crm-actions'
@@ -21,10 +22,13 @@ interface OpportunitiesTableProps {
   accounts: Account[]
 }
 
-export function OpportunitiesTable({ opportunities, accounts }: OpportunitiesTableProps) {
-  const accountMap = new Map(accounts.map((a) => [a.id, a.name]))
+export const OpportunitiesTable = memo(function OpportunitiesTable({ opportunities, accounts }: OpportunitiesTableProps) {
+  const accountMap = useMemo(() =>
+    new Map(accounts.map((a) => [a.id, a.name])),
+    [accounts]
+  )
 
-  const columns: ColumnDef<Opportunity>[] = [
+  const columns: ColumnDef<Opportunity>[] = useMemo(() => [
     {
       accessorKey: 'name',
       header: 'Name',
@@ -115,7 +119,7 @@ export function OpportunitiesTable({ opportunities, accounts }: OpportunitiesTab
         )
       },
     },
-  ]
+  ], [accountMap, accounts])
 
   return (
     <DataTable
@@ -133,6 +137,6 @@ export function OpportunitiesTable({ opportunities, accounts }: OpportunitiesTab
       }
     />
   )
-}
+})
 
 

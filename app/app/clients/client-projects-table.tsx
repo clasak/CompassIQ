@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '@/components/data/DataTable'
 import { ClientProject } from '@/lib/actions/client-project-actions'
@@ -152,7 +153,7 @@ interface ClientProjectsTableProps {
   projects: ClientProject[]
 }
 
-export function ClientProjectsTable({ projects }: ClientProjectsTableProps) {
+export const ClientProjectsTable = memo(function ClientProjectsTable({ projects }: ClientProjectsTableProps) {
   return (
     <DataTable
       columns={columns}
@@ -164,4 +165,4 @@ export function ClientProjectsTable({ projects }: ClientProjectsTableProps) {
       emptyStateDescription="Try adjusting your search or filters."
     />
   )
-}
+})

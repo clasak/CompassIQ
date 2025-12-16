@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '@/components/data/DataTable'
 import { Task, Account, Opportunity } from '@/lib/actions/crm-actions'
@@ -50,13 +51,19 @@ function getPriorityBadgeVariant(priority: string) {
   }
 }
 
-export function TasksTable({ tasks, accounts, opportunities }: TasksTableProps) {
+export const TasksTable = memo(function TasksTable({ tasks, accounts, opportunities }: TasksTableProps) {
   const router = useRouter()
   
-  const accountMap = new Map(accounts.map(a => [a.id, a]))
-  const oppMap = new Map(opportunities.map(o => [o.id, o]))
+  const accountMap = useMemo(() =>
+    new Map(accounts.map(a => [a.id, a])),
+    [accounts]
+  )
+  const oppMap = useMemo(() =>
+    new Map(opportunities.map(o => [o.id, o])),
+    [opportunities]
+  )
 
-  const columns: ColumnDef<Task>[] = [
+  const columns: ColumnDef<Task>[] = useMemo(() => [
     {
       accessorKey: 'title',
       header: 'Title',
@@ -175,7 +182,7 @@ export function TasksTable({ tasks, accounts, opportunities }: TasksTableProps) 
         )
       },
     },
-  ]
+  ], [accountMap, oppMap, router, accounts, opportunities])
 
   return (
     <DataTable
@@ -184,4 +191,4 @@ export function TasksTable({ tasks, accounts, opportunities }: TasksTableProps) 
       searchKey="title"
     />
   )
-}
+})
