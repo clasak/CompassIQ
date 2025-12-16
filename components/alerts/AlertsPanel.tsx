@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useCallback, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -28,7 +29,7 @@ interface AlertsPanelProps {
   title?: string
 }
 
-export function AlertsPanel({ alerts, title = 'Attention Required' }: AlertsPanelProps) {
+export const AlertsPanel = memo(function AlertsPanel({ alerts, title = 'Attention Required' }: AlertsPanelProps) {
   const router = useRouter()
 
   if (alerts.length === 0) {
@@ -42,16 +43,16 @@ export function AlertsPanel({ alerts, title = 'Attention Required' }: AlertsPane
     critical: 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300 border-red-200 dark:border-red-800',
   }
 
-  const handleAlertClick = (alert: Alert) => {
+  const handleAlertClick = useCallback((alert: Alert) => {
     if (alert.onClick) {
       alert.onClick()
     } else if (alert.route) {
       const url = alert.filter ? `${alert.route}?filter=${alert.filter}` : alert.route
       router.push(url)
     }
-  }
+  }, [router])
 
-  const formatLastEvaluated = (date?: Date | string) => {
+  const formatLastEvaluated = useCallback((date?: Date | string) => {
     if (!date) return null
     const d = new Date(date)
     const now = new Date()
@@ -64,16 +65,18 @@ export function AlertsPanel({ alerts, title = 'Attention Required' }: AlertsPane
     if (diffHours < 24) return `${diffHours}h ago`
     const diffDays = Math.floor(diffHours / 24)
     return `${diffDays}d ago`
-  }
+  }, [])
 
-  // Get last evaluated time (most recent across all alerts)
-  const lastEvaluatedTimes = alerts
-    .map(a => a.lastEvaluated)
-    .filter(Boolean)
-    .map(d => new Date(d!))
-  const mostRecentEval = lastEvaluatedTimes.length > 0 
-    ? new Date(Math.max(...lastEvaluatedTimes.map(d => d.getTime())))
-    : null
+  // Get last evaluated time (most recent across all alerts) - memoized to avoid expensive date calculations
+  const mostRecentEval = useMemo(() => {
+    const lastEvaluatedTimes = alerts
+      .map(a => a.lastEvaluated)
+      .filter(Boolean)
+      .map(d => new Date(d!))
+    return lastEvaluatedTimes.length > 0 
+      ? new Date(Math.max(...lastEvaluatedTimes.map(d => d.getTime())))
+      : null
+  }, [alerts])
 
   return (
     <Card className="border-border/50">
@@ -172,4 +175,4 @@ export function AlertsPanel({ alerts, title = 'Attention Required' }: AlertsPane
       </CardContent>
     </Card>
   )
-}
+})
