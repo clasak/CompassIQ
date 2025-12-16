@@ -12,33 +12,26 @@ export function DefaultMark({
 }) {
   return (
     <svg
-      viewBox="0 0 512 512"
+      viewBox="0 0 48 48"
       role="img"
       aria-label={title}
       className={cn('h-8 w-8', className)}
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="circleGradient" x1="256" y1="56" x2="256" y2="456" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#00D9FF"/>
-          <stop offset="50%" stopColor="#0080FF"/>
-          <stop offset="100%" stopColor="#0040C0"/>
-        </linearGradient>
-        <linearGradient id="arrowGradient" x1="256" y1="100" x2="380" y2="380" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#C0FF00"/>
-          <stop offset="50%" stopColor="#00E676"/>
-          <stop offset="100%" stopColor="#00BFA5"/>
+        <linearGradient id="ciq-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3B82F6"/>
+          <stop offset="100%" stopColor="#06B6D4"/>
         </linearGradient>
       </defs>
-
-      {/* Circular Ring */}
-      <circle cx="256" cy="256" r="180" stroke="url(#circleGradient)" strokeWidth="40" fill="none"/>
-
-      {/* Compass Needle/Arrow pointing up-right */}
-      <path
-        d="M 256 256 L 180 332 L 256 120 L 332 332 Z"
-        fill="url(#arrowGradient)"
-      />
+      {/* Solid gradient background circle */}
+      <circle cx="24" cy="24" r="22" fill="url(#ciq-bg)"/>
+      {/* Compass needle - North (solid white) */}
+      <path d="M24 8 L28.5 22 L24 26 L19.5 22 Z" fill="white"/>
+      {/* Compass needle - South (semi-transparent) */}
+      <path d="M24 40 L28.5 26 L24 22 L19.5 26 Z" fill="white" fillOpacity="0.4"/>
+      {/* Center point */}
+      <circle cx="24" cy="24" r="2.5" fill="white"/>
     </svg>
   )
 }

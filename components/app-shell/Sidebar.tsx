@@ -116,23 +116,20 @@ export const Sidebar = memo(function Sidebar() {
   }, [router])
 
   return (
-    <div className="flex h-full w-72 flex-col border-r border-border/50 bg-background">
-      <div className="flex h-16 items-center gap-3 border-b border-border/50 px-6">
-        <BrandMark url={branding.mark_url} size={32} alt={branding.brand_name} />
+    <div className="flex h-full w-64 flex-col border-r border-border/30 bg-surface/50">
+      <div className="flex h-14 items-center gap-2.5 border-b border-border/30 px-4">
+        <BrandMark url={branding.mark_url} size={28} alt={branding.brand_name} />
         <div className="min-w-0 leading-tight flex-1">
           <BrandWordmark
             brandName={branding.brand_name}
             logoLightUrl={branding.logo_light_url}
             logoDarkUrl={branding.logo_dark_url}
-            height={20}
-            className="text-section-sm font-semibold"
+            height={18}
+            className="text-sm font-semibold"
           />
-          {branding.tagline && (
-            <div className="text-table-sm text-muted-foreground truncate mt-0.5" title={branding.tagline}>{branding.tagline}</div>
-          )}
         </div>
       </div>
-      <nav className="flex-1 space-y-0.5 px-3 py-4 overflow-y-auto">
+      <nav className="flex-1 space-y-0.5 px-2 py-3 overflow-y-auto">
         {navigation.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/app' && pathname.startsWith(item.href))
           return (
@@ -141,9 +138,9 @@ export const Sidebar = memo(function Sidebar() {
               href={item.href}
               prefetch={true}
               className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-table font-medium transition-all duration-200 min-w-0',
+                'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150 min-w-0',
                 isActive
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-sm'
                   : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
               )}
               title={item.name}
@@ -154,9 +151,9 @@ export const Sidebar = memo(function Sidebar() {
             </Link>
           )
         })}
-        <div className="my-3 border-t border-border/50" />
-        <div className="px-3 py-2">
-          <div className="text-section-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-3">
+        <div className="my-2 mx-2 border-t border-border/30" />
+        <div className="py-1">
+          <div className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-widest mb-1.5 px-3">
             Operate
           </div>
           <div className="space-y-0.5">
@@ -168,9 +165,9 @@ export const Sidebar = memo(function Sidebar() {
                   href={item.href}
                   prefetch={true}
                   className={cn(
-                    'flex items-center gap-3 rounded-md px-3 py-2 text-table font-medium transition-colors min-w-0',
+                    'flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150 min-w-0',
                     isActive
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
                   )}
                   title={item.name}
@@ -183,9 +180,9 @@ export const Sidebar = memo(function Sidebar() {
             })}
           </div>
         </div>
-        <div className="my-3 border-t border-border/50" />
-        <div className="px-3 py-2">
-          <div className="text-section-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-3">
+        <div className="my-2 mx-2 border-t border-border/30" />
+        <div className="py-1">
+          <div className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-widest mb-1.5 px-3">
             Build
           </div>
           <div className="space-y-0.5">
@@ -197,9 +194,9 @@ export const Sidebar = memo(function Sidebar() {
                   href={item.href}
                   prefetch={true}
                   className={cn(
-                    'flex items-center gap-3 rounded-md px-3 py-2 text-table font-medium transition-colors min-w-0',
+                    'flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150 min-w-0',
                     isActive
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
                   )}
                   title={item.name}
@@ -212,9 +209,9 @@ export const Sidebar = memo(function Sidebar() {
             })}
           </div>
         </div>
-        <div className="my-3 border-t border-border/50" />
-        <div className="px-3 py-2">
-          <div className="text-section-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-3">
+        <div className="my-2 mx-2 border-t border-border/30" />
+        <div className="py-1">
+          <div className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-widest mb-1.5 px-3">
             CRM
           </div>
           <div className="space-y-0.5">
@@ -226,9 +223,9 @@ export const Sidebar = memo(function Sidebar() {
                   href={item.href}
                   prefetch={true}
                   className={cn(
-                    'flex items-center gap-3 rounded-md px-3 py-2 text-table font-medium transition-colors min-w-0',
+                    'flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150 min-w-0',
                     isActive
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
                   )}
                   title={item.name}
@@ -240,9 +237,9 @@ export const Sidebar = memo(function Sidebar() {
             })}
           </div>
         </div>
-        <div className="my-3 border-t border-border/50" />
-        <div className="px-3 py-2">
-          <div className="text-section-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-3">
+        <div className="my-2 mx-2 border-t border-border/30" />
+        <div className="py-1">
+          <div className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-widest mb-1.5 px-3">
             Construction
           </div>
           <div className="space-y-0.5">
@@ -254,9 +251,9 @@ export const Sidebar = memo(function Sidebar() {
                   href={item.href}
                   prefetch={true}
                   className={cn(
-                    'flex items-center gap-3 rounded-md px-3 py-2 text-table font-medium transition-colors min-w-0',
+                    'flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150 min-w-0',
                     isActive
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
                   )}
                   title={item.name}
@@ -270,15 +267,15 @@ export const Sidebar = memo(function Sidebar() {
         </div>
         {!loading && isAdmin && (
           <>
-            <div className="my-3 border-t border-border/50" />
+            <div className="my-2 mx-2 border-t border-border/30" />
             <Link
               href="/app/settings/org"
               data-settings-link
               prefetch={true}
               className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-table font-medium transition-colors min-w-0 mx-3',
+                'flex items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150 min-w-0 mx-2',
                 pathname.startsWith('/app/settings')
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-sm'
                   : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
               )}
               title="Settings"
