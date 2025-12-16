@@ -136,12 +136,11 @@ export async function importConfiguration(config: any): Promise<{
         cadence: metric.cadence || null,
       }))
 
-      for (const metric of metrics) {
-        const { error } = await supabase.from('metric_catalog').upsert(metric, { onConflict: 'org_id,key' })
+      // Batch upsert all metrics at once instead of sequential inserts
+      const { error } = await supabase.from('metric_catalog').upsert(metrics, { onConflict: 'org_id,key' })
 
-        if (error) {
-          return { success: false, error: `Failed to import metric ${metric.key}: ${error.message}` }
-        }
+      if (error) {
+        return { success: false, error: `Failed to import metrics: ${error.message}` }
       }
     }
 
