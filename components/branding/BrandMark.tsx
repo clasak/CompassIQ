@@ -12,31 +12,62 @@ export function DefaultMark({
 }) {
   return (
     <svg
-      viewBox="40 90 432 432"
+      viewBox="0 0 512 512"
       role="img"
       aria-label={title}
       className={cn('h-8 w-8', className)}
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="ciq-ring" x1="256" y1="90" x2="256" y2="522" gradientUnits="userSpaceOnUse">
+        {/* Ring gradient - cyan to blue */}
+        <linearGradient id="ciq-ring" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#00D9FF"/>
           <stop offset="50%" stopColor="#0080FF"/>
           <stop offset="100%" stopColor="#0040C0"/>
         </linearGradient>
-        <linearGradient id="ciq-arrow" x1="256" y1="150" x2="400" y2="400" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#C0FF00"/>
-          <stop offset="50%" stopColor="#00E676"/>
-          <stop offset="100%" stopColor="#00BFA5"/>
+        {/* Arrow gradient - lime to teal */}
+        <linearGradient id="ciq-arrow" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#00BFA5"/>
+          <stop offset="40%" stopColor="#00E676"/>
+          <stop offset="100%" stopColor="#C0FF00"/>
+        </linearGradient>
+        {/* Arrow shadow gradient */}
+        <linearGradient id="ciq-arrow-shadow" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#008B6A"/>
+          <stop offset="100%" stopColor="#006B5A"/>
         </linearGradient>
       </defs>
-      {/* Circular Ring */}
-      <circle cx="256" cy="306" r="180" stroke="url(#ciq-ring)" strokeWidth="45" fill="none"/>
-      {/* Compass Needle/Arrow */}
+
+      {/* Ring with gap - back portion (behind arrow) */}
       <path
-        d="M 200 430 L 256 350 L 180 306 L 380 200 L 256 350 L 332 306 Z"
+        d="M 140 380 A 160 160 0 1 1 372 140"
+        stroke="url(#ciq-ring)"
+        strokeWidth="44"
+        strokeLinecap="round"
+        fill="none"
+      />
+
+      {/* Arrow shadow (darker, offset) */}
+      <path
+        d="M 115 410 L 240 285 L 175 335 L 175 335 L 240 285 L 310 330 L 115 410 Z"
+        fill="url(#ciq-arrow-shadow)"
+        opacity="0.6"
+      />
+
+      {/* Main arrow pointing up-right */}
+      <path
+        d="M 100 400 L 380 120 L 300 200 L 330 310 L 230 280 L 160 350 Z"
         fill="url(#ciq-arrow)"
-        opacity="0.95"
+      />
+
+      {/* Ring front portion (in front of arrow) */}
+      <path
+        d="M 372 140 A 160 160 0 0 1 310 340"
+        stroke="url(#ciq-ring)"
+        strokeWidth="44"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.3"
       />
     </svg>
   )
