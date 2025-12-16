@@ -712,9 +712,10 @@ export async function getQuote(id: string): Promise<GetQuoteResult> {
     }
 
     const supabase = await createClient()
+    // Use JOIN to fetch quote and line items in a single query
     const { data: quote, error: quoteError } = await supabase
       .from('quotes')
-      .select('*')
+      .select('*, quote_line_items(*)')
       .eq('id', id)
       .eq('org_id', context.orgId)
       .single()
@@ -723,16 +724,8 @@ export async function getQuote(id: string): Promise<GetQuoteResult> {
       return { success: false, error: normalizeError(quoteError) }
     }
 
-    const { data: lineItems, error: itemsError } = await supabase
-      .from('quote_line_items')
-      .select('*')
-      .eq('quote_id', id)
-      .eq('org_id', context.orgId)
-      .order('created_at', { ascending: true })
-
-    if (itemsError) {
-      return { success: false, error: normalizeError(itemsError) }
-    }
+    // Extract line items from the joined data
+    const lineItems = (quote as any).quote_line_items || []
 
     return {
       success: true,
