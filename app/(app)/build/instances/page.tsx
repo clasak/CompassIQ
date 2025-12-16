@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useRole } from '@/hooks/use-role'
 import { toast } from 'sonner'
@@ -95,17 +95,20 @@ export default function OSInstancesPage() {
     }
   }
 
-  const filtered = instances.filter((instance) => {
-    const matchesStatus = statusFilter === 'all' ? true : instance.status === statusFilter
-    if (!matchesStatus) return false
-    const q = search.trim().toLowerCase()
-    if (!q) return true
-    return (
-      instance.name.toLowerCase().includes(q) ||
-      instance.os_templates?.name?.toLowerCase().includes(q) ||
-      instance.os_templates?.key?.toLowerCase().includes(q)
-    )
-  })
+  const filtered = useMemo(() =>
+    instances.filter((instance) => {
+      const matchesStatus = statusFilter === 'all' ? true : instance.status === statusFilter
+      if (!matchesStatus) return false
+      const q = search.trim().toLowerCase()
+      if (!q) return true
+      return (
+        instance.name.toLowerCase().includes(q) ||
+        instance.os_templates?.name?.toLowerCase().includes(q) ||
+        instance.os_templates?.key?.toLowerCase().includes(q)
+      )
+    }),
+    [instances, statusFilter, search]
+  )
 
   if (loading || roleLoading) {
     return (
