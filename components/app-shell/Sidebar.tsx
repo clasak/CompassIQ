@@ -7,7 +7,7 @@ import { useRole } from '@/hooks/use-role'
 import { useBranding } from '@/components/branding/BrandProvider'
 import { BrandMark } from '@/components/branding/BrandMark'
 import { BrandWordmark } from '@/components/branding/BrandWordmark'
-import { useEffect } from 'react'
+import { useEffect, memo, useCallback } from 'react'
 import {
   LayoutDashboard,
   TrendingUp,
@@ -79,7 +79,7 @@ const settingsPrefetchRoutes = [
   '/app/settings/setup',
 ]
 
-export function Sidebar() {
+export const Sidebar = memo(function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { isAdmin, loading } = useRole()
@@ -105,6 +105,16 @@ export function Sidebar() {
     if (!isAdmin) return
     router.prefetch('/app/settings/branding')
   }, [router, isAdmin, loading])
+
+  const handlePrefetch = useCallback((href: string) => () => {
+    router.prefetch(href)
+  }, [router])
+
+  const handleSettingsPrefetch = useCallback(() => {
+    for (const href of settingsPrefetchRoutes) {
+      router.prefetch(href)
+    }
+  }, [router])
 
   return (
     <div className="flex h-full w-72 flex-col border-r border-border/50 bg-background">
@@ -138,7 +148,7 @@ export function Sidebar() {
                   : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
               )}
               title={item.name}
-              onMouseEnter={() => router.prefetch(item.href)}
+              onMouseEnter={handlePrefetch(item.href)}
             >
               <item.icon className="h-4 w-4 flex-shrink-0" />
               <span data-sidebar-item className="truncate">{item.name}</span>
@@ -165,7 +175,7 @@ export function Sidebar() {
                       : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
                   )}
                   title={item.name}
-                  onMouseEnter={() => router.prefetch(item.href)}
+                  onMouseEnter={handlePrefetch(item.href)}
                 >
                   <item.icon className="h-4 w-4 flex-shrink-0" />
                   <span data-sidebar-item className="truncate">{item.name}</span>
@@ -194,7 +204,7 @@ export function Sidebar() {
                       : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
                   )}
                   title={item.name}
-                  onMouseEnter={() => router.prefetch(item.href)}
+                  onMouseEnter={handlePrefetch(item.href)}
                 >
                   <item.icon className="h-4 w-4 flex-shrink-0" />
                   <span data-sidebar-item className="truncate">{item.name}</span>
@@ -223,7 +233,7 @@ export function Sidebar() {
                       : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
                   )}
                   title={item.name}
-                  onMouseEnter={() => router.prefetch(item.href)}
+                  onMouseEnter={handlePrefetch(item.href)}
                 >
                   <span data-sidebar-item className="truncate">{item.name}</span>
                 </Link>
@@ -251,7 +261,7 @@ export function Sidebar() {
                       : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
                   )}
                   title={item.name}
-                  onMouseEnter={() => router.prefetch(item.href)}
+                  onMouseEnter={handlePrefetch(item.href)}
                 >
                   <span data-sidebar-item className="truncate">{item.name}</span>
                 </Link>
@@ -273,11 +283,7 @@ export function Sidebar() {
                   : 'text-muted-foreground hover:bg-surface-2 hover:text-foreground'
               )}
               title="Settings"
-              onMouseEnter={() => {
-                for (const href of settingsPrefetchRoutes) {
-                  router.prefetch(href)
-                }
-              }}
+              onMouseEnter={handleSettingsPrefetch}
             >
               <Cog className="h-4 w-4 flex-shrink-0" />
               <span data-sidebar-item className="truncate">Settings</span>
@@ -287,4 +293,4 @@ export function Sidebar() {
       </nav>
     </div>
   )
-}
+})
