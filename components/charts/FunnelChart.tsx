@@ -20,13 +20,13 @@ function formatStageLabel(stage: string): string {
 }
 
 export const FunnelChart = memo(function FunnelChart({ data, showAmount = false }: FunnelChartProps) {
-  // Professional BI color palette - cohesive blue-teal gradient
+  // CompassIQ brand color palette
   const colors = [
-    '#3B82F6', // Primary blue
-    '#0EA5E9', // Sky blue
-    '#06B6D4', // Cyan
-    '#14B8A6', // Teal
-    '#10B981', // Emerald (success)
+    '#00D9FF', // Cyan (brand primary)
+    '#0080FF', // Blue
+    '#00BFA5', // Teal (brand accent)
+    '#00E676', // Green
+    '#C0FF00', // Lime
     '#6B7280', // Gray (lost/neutral)
   ]
 

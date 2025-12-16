@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils'
 
 export function DefaultWordmark({ className, brandName = 'CompassIQ' }: { className?: string, brandName?: string }) {
   return (
-    <span className={cn('inline-flex items-center font-semibold text-lg tracking-tight', className)}>
+    <span className={cn('inline-flex items-center font-bold text-lg tracking-tight', className)}>
       <span className="text-foreground">Compass</span>
-      <span className="bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] bg-clip-text text-transparent">IQ</span>
+      <span className="text-[#00BFA5]">IQ</span>
     </span>
   )
 }
