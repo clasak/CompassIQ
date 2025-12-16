@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts'
 
 interface BarChartData {
@@ -24,7 +25,7 @@ const defaultColors = [
   'hsl(var(--warning))',        // Warning
 ]
 
-export function BarChartBasic({
+export const BarChartBasic = memo(function BarChartBasic({
   data,
   dataKey = 'value',
   name = 'Value',
@@ -61,14 +62,14 @@ export function BarChartBasic({
           wrapperStyle={{ fontSize: '12px', color: 'hsl(var(--muted))' }}
         />
         <Bar dataKey={dataKey} name={name} radius={[4, 4, 0, 0]}>
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+          {data.map((entry) => (
+            <Cell key={entry.name} fill={colors[data.indexOf(entry) % colors.length]} />
           ))}
         </Bar>
       </BarChart>
     </ResponsiveContainer>
   )
-}
+})
 
 
 

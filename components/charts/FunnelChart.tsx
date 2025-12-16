@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 
 interface FunnelData {
@@ -18,7 +19,7 @@ function formatStageLabel(stage: string): string {
   return stage.charAt(0) + stage.slice(1).toLowerCase()
 }
 
-export function FunnelChart({ data, showAmount = true }: FunnelChartProps) {
+export const FunnelChart = memo(function FunnelChart({ data, showAmount = true }: FunnelChartProps) {
   // BI Sleek colors: primary for current, neutral for baseline
   const colors = [
     'hsl(var(--primary))',
@@ -67,20 +68,20 @@ export function FunnelChart({ data, showAmount = true }: FunnelChartProps) {
           labelFormatter={(label) => formatStageLabel(label)}
         />
         <Bar dataKey="count" name="Count" radius={[0, 4, 4, 0]}>
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+          {data.map((entry) => (
+            <Cell key={entry.stage} fill={colors[data.indexOf(entry) % colors.length]} />
           ))}
         </Bar>
         {showAmount && (
           <Bar dataKey="amount" name="Amount" radius={[0, 4, 4, 0]}>
-            {data.map((entry, index) => (
-              <Cell key={`cell-amount-${index}`} fill={colors[index % colors.length]} opacity={0.7} />
+            {data.map((entry) => (
+              <Cell key={`${entry.stage}-amount`} fill={colors[data.indexOf(entry) % colors.length]} opacity={0.7} />
             ))}
           </Bar>
         )}
       </BarChart>
     </ResponsiveContainer>
   )
-}
+})
 
 
