@@ -658,11 +658,13 @@ html.presentation-mode [data-kpi-card] {
 }
 
 html.presentation-mode [data-kpi-card] h3 {
-  @apply text-3xl;
+  font-size: 1.875rem; /* 30px - text-3xl */
+  line-height: 2.25rem;
 }
 
 html.presentation-mode [data-kpi-card] .text-3xl {
-  @apply text-5xl;
+  font-size: 3rem !important; /* 48px - text-5xl */
+  line-height: 1 !important;
 }
 
 html.presentation-mode [data-settings-link],
