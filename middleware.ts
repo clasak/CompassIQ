@@ -38,13 +38,6 @@ export async function middleware(request: NextRequest) {
       url.searchParams.set('error', 'missing_env_vars')
       return NextResponse.redirect(url)
     }
-    // For root path, redirect to login
-    if (request.nextUrl.pathname === '/') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      url.searchParams.set('error', 'missing_env_vars')
-      return NextResponse.redirect(url)
-    }
     // Otherwise, allow the request to proceed (e.g., login page)
     return supabaseResponse
   }
@@ -86,13 +79,6 @@ export async function middleware(request: NextRequest) {
       url.searchParams.set('error', 'supabase_config')
       return NextResponse.redirect(url)
     }
-    // For root path, redirect to login
-    if (request.nextUrl.pathname === '/') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      url.searchParams.set('error', 'supabase_config')
-      return NextResponse.redirect(url)
-    }
     return supabaseResponse
   }
 
@@ -123,19 +109,6 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/app'
     return NextResponse.redirect(url)
-  }
-
-  // Redirect root path based on auth status
-  if (request.nextUrl.pathname === '/') {
-    if (user) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/app'
-      return NextResponse.redirect(url)
-    } else {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      return NextResponse.redirect(url)
-    }
   }
 
   // Canonicalize preview query param: /app?preview=<id> -> /api/preview/enter?id=<id>
