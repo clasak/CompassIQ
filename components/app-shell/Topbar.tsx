@@ -121,11 +121,6 @@ export function Topbar() {
   return (
     <div className="flex h-16 items-center justify-between border-b border-border/50 bg-background px-6">
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2.5">
-          <BrandMark url={branding.mark_url} size={18} alt={branding.brand_name} />
-          <span className="text-section-sm font-semibold hidden sm:inline text-foreground">{branding.brand_name}</span>
-        </div>
-        <div className="h-6 w-px bg-border/50" />
         <OrgSwitcher />
         <DemoToggle />
         {isAdmin && (

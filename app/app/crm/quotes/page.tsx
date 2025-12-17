@@ -16,8 +16,8 @@ export default async function QuotesPage() {
     <div className="space-y-6 p-6">
       <PageHeader
         title="Quotes"
-        description="Create and manage sales quotes and proposals"
-        action={
+        subtitle="Create and manage sales quotes and proposals"
+        primaryAction={
           <CreateQuoteDialog accounts={accounts}>
             <ActionButton actionType="admin" className="gap-2">
               <Plus className="h-4 w-4" />

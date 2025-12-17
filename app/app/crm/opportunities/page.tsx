@@ -16,8 +16,8 @@ export default async function OpportunitiesPage() {
     <div className="space-y-6 p-6">
       <PageHeader
         title="Opportunities"
-        description="Track and manage your sales pipeline and deals"
-        action={
+        subtitle="Track and manage your sales pipeline and deals"
+        primaryAction={
           <CreateOpportunityDialog accounts={accounts}>
             <ActionButton actionType="admin" className="gap-2">
               <Plus className="h-4 w-4" />

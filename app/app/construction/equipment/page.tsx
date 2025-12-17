@@ -39,7 +39,7 @@ export default async function ConstructionEquipmentPage() {
     <div className="space-y-6">
       <PageHeader
         title="Equipment / Utilization"
-        description="Equipment logs and utilization analysis"
+        subtitle="Equipment logs and utilization analysis"
       />
 
       {/* Summary KPIs */}

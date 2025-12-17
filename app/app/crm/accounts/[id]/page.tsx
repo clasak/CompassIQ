@@ -30,7 +30,7 @@ export default async function AccountDetailPage({ params }: AccountDetailPagePro
       </div>
       <PageHeader
         title={result.account.name}
-        description={`Account details and information`}
+        subtitle={`Account details and information`}
       />
       <AccountDetailView account={result.account} />
     </div>

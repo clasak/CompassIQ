@@ -38,7 +38,7 @@ export default async function ConstructionChangesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Change Orders"
-        description="Change order funnel and aging analysis"
+        subtitle="Change order funnel and aging analysis"
       />
 
       {/* Summary */}

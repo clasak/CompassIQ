@@ -16,16 +16,16 @@ interface BarChartBasicProps {
   colors?: string[]
 }
 
-// BI Sleek Enhanced Color Palette - Professional Data Viz
+// CompassIQ Logo Colors - Maximum contrast for clarity
 const defaultColors = [
-  'hsl(var(--chart-1))',  // Primary Blue
-  'hsl(var(--chart-2))',  // Cyan
-  'hsl(var(--chart-3))',  // Green
-  'hsl(var(--chart-4))',  // Purple
-  'hsl(var(--chart-5))',  // Orange
-  'hsl(var(--chart-6))',  // Pink
-  'hsl(var(--chart-7))',  // Teal
-  'hsl(var(--chart-8))',  // Coral
+  '#C3F320',  // Lime Green (arrow) - Hue 74°
+  '#00A4A9',  // Teal (IQ text) - Hue 182°
+  '#052974',  // Dark Blue (ring) - Hue 221°
+  '#3ECE35',  // Medium Green (arrow) - Hue 116°
+  '#B7F026',  // Yellow-Lime (arrow tip) - Hue 77°
+  '#C3F320',  // Lime repeat
+  '#00A4A9',  // Teal repeat
+  '#052974',  // Blue repeat
 ]
 
 export const BarChartBasic = memo(function BarChartBasic({

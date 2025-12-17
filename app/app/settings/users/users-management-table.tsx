@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo, useCallback, useMemo } from 'react'
 import { updateMemberRole, removeMember, type MemberInfo } from '@/lib/actions/settings-actions'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -24,14 +24,14 @@ const ROLES = [
   { value: 'OWNER', label: 'Owner' },
 ] as const
 
-export function UsersManagementTable({ members, currentUserRole, isDemo }: UsersManagementTableProps) {
+export const UsersManagementTable = memo(function UsersManagementTable({ members, currentUserRole, isDemo }: UsersManagementTableProps) {
   const [updating, setUpdating] = useState<string | null>(null)
   const [removing, setRemoving] = useState<string | null>(null)
 
-  const isOwner = currentUserRole === 'OWNER'
+  const isOwner = useMemo(() => currentUserRole === 'OWNER', [currentUserRole])
   const canAssignOwner = isOwner
 
-  async function handleRoleChange(userId: string, newRole: string) {
+  const handleRoleChange = useCallback(async (userId: string, newRole: string) => {
     setUpdating(userId)
     try {
       const result = await updateMemberRole(userId, newRole)
@@ -46,9 +46,9 @@ export function UsersManagementTable({ members, currentUserRole, isDemo }: Users
     } finally {
       setUpdating(null)
     }
-  }
+  }, [])
 
-  async function handleRemove(userId: string) {
+  const handleRemove = useCallback(async (userId: string) => {
     if (!confirm('Are you sure you want to remove this member from the organization?')) {
       return
     }
@@ -67,7 +67,7 @@ export function UsersManagementTable({ members, currentUserRole, isDemo }: Users
     } finally {
       setRemoving(null)
     }
-  }
+  }, [])
 
   if (members.length === 0) {
     return <div className="text-center py-8 text-muted-foreground">No members found</div>
@@ -152,4 +152,4 @@ export function UsersManagementTable({ members, currentUserRole, isDemo }: Users
       </TableBody>
     </Table>
   )
-}
+})

@@ -14,8 +14,8 @@ export default async function AccountsPage() {
     <div className="space-y-6 p-6">
       <PageHeader
         title="Accounts"
-        description="Manage your customer accounts and company information"
-        action={
+        subtitle="Manage your customer accounts and company information"
+        primaryAction={
           <CreateAccountDialog>
             <ActionButton actionType="admin" className="gap-2">
               <Plus className="h-4 w-4" />

@@ -42,7 +42,7 @@ export default async function ProjectDetailPage({ params }: { params: { id: stri
     <div className="space-y-6">
       <PageHeader
         title={project.name}
-        description={project.job_number ? `Job #${project.job_number}` : 'Project details'}
+        subtitle={project.job_number ? `Job #${project.job_number}` : 'Project details'}
       />
 
       <div className="grid gap-4 md:grid-cols-3">

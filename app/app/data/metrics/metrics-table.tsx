@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { DataTable } from '@/components/data/DataTable'
 import type { ColumnDef } from '@tanstack/react-table'
 
@@ -13,7 +14,7 @@ interface MetricRow {
   cadence: string | null
 }
 
-const columns: ColumnDef<MetricRow>[] = [
+const getColumns = (): ColumnDef<MetricRow>[] => [
   {
     accessorKey: 'key',
     header: 'Key',
@@ -40,7 +41,9 @@ const columns: ColumnDef<MetricRow>[] = [
   },
 ]
 
-export function MetricsTable({ metrics }: { metrics: MetricRow[] }) {
+export const MetricsTable = memo(function MetricsTable({ metrics }: { metrics: MetricRow[] }) {
+  const columns = useMemo(() => getColumns(), [])
+  
   return (
     <DataTable
       columns={columns}
@@ -50,5 +53,5 @@ export function MetricsTable({ metrics }: { metrics: MetricRow[] }) {
       exportFilename="metrics.csv"
     />
   )
-}
+})
 

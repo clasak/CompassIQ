@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { DataTable } from '@/components/data/DataTable'
 import { Badge } from '@/components/ui/badge'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -15,7 +16,7 @@ interface WorkOrder {
   accounts: { name: string } | { name: string }[] | null
 }
 
-const columns: ColumnDef<WorkOrder>[] = [
+const getColumns = (): ColumnDef<WorkOrder>[] => [
   {
     accessorKey: 'title',
     header: 'Title',
@@ -81,7 +82,9 @@ const columns: ColumnDef<WorkOrder>[] = [
   },
 ]
 
-export function WorkOrdersTable({ workOrders }: { workOrders: WorkOrder[] }) {
+export const WorkOrdersTable = memo(function WorkOrdersTable({ workOrders }: { workOrders: WorkOrder[] }) {
+  const columns = useMemo(() => getColumns(), [])
+  
   return (
     <DataTable
       columns={columns}
@@ -91,4 +94,4 @@ export function WorkOrdersTable({ workOrders }: { workOrders: WorkOrder[] }) {
       exportFilename="work-orders.csv"
     />
   )
-}
+})

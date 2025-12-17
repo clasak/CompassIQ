@@ -13,8 +13,8 @@ export default async function LeadsPage() {
     <div className="space-y-6 p-6">
       <PageHeader
         title="Leads"
-        description="Manage your sales leads and contact information"
-        action={
+        subtitle="Manage your sales leads and contact information"
+        primaryAction={
           <CreateLeadDialog>
             <ActionButton actionType="admin" className="gap-2">
               <Plus className="h-4 w-4" />

@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { DataTable } from '@/components/data/DataTable'
 import { Badge } from '@/components/ui/badge'
 import { formatCurrency } from '@/lib/utils'
@@ -17,7 +18,7 @@ interface InvoiceRow {
   accounts: { name: string } | null
 }
 
-const columns: ColumnDef<InvoiceRow>[] = [
+const getColumns = (): ColumnDef<InvoiceRow>[] => [
   {
     accessorKey: 'invoice_number',
     header: 'Invoice #',
@@ -66,7 +67,9 @@ const columns: ColumnDef<InvoiceRow>[] = [
   },
 ]
 
-export function InvoicesTable({ invoices }: { invoices: InvoiceRow[] }) {
+export const InvoicesTable = memo(function InvoicesTable({ invoices }: { invoices: InvoiceRow[] }) {
+  const columns = useMemo(() => getColumns(), [])
+  
   return (
     <DataTable
       columns={columns}
@@ -76,5 +79,5 @@ export function InvoicesTable({ invoices }: { invoices: InvoiceRow[] }) {
       exportFilename="invoices.csv"
     />
   )
-}
+})
 

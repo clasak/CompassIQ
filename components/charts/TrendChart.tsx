@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 interface TrendData {
@@ -15,11 +16,11 @@ interface TrendChartProps {
   color?: string
 }
 
-export function TrendChart({ 
+export const TrendChart = memo(function TrendChart({ 
   data, 
   dataKey = 'value', 
   name = 'Value',
-  color = 'hsl(var(--primary))'
+  color = '#00A4A9'  // Teal from logo
 }: TrendChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -63,7 +64,7 @@ export function TrendChart({
       </LineChart>
     </ResponsiveContainer>
   )
-}
+})
 
 
 

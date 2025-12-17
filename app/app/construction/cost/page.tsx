@@ -29,7 +29,7 @@ export default async function ConstructionCostPage() {
     <div className="space-y-6">
       <PageHeader
         title="Job Cost / Budget vs Actual"
-        description="Job cost snapshots with budget vs actual analysis"
+        subtitle="Job cost snapshots with budget vs actual analysis"
       />
 
       {/* Summary KPIs */}

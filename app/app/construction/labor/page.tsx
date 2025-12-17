@@ -29,7 +29,7 @@ export default async function ConstructionLaborPage() {
     <div className="space-y-6">
       <PageHeader
         title="Labor / Productivity"
-        description="Labor entries and productivity analysis"
+        subtitle="Labor entries and productivity analysis"
       />
 
       {/* Summary KPIs */}

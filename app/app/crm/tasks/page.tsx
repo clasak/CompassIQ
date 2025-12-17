@@ -18,8 +18,8 @@ export default async function TasksPage() {
     <div className="space-y-6 p-6">
       <PageHeader
         title="Tasks"
-        description="Manage tasks linked to accounts and opportunities"
-        action={
+        subtitle="Manage tasks linked to accounts and opportunities"
+        primaryAction={
           <CreateTaskDialog accounts={accounts} opportunities={opportunities}>
             <ActionButton actionType="admin" className="gap-2">
               <Plus className="h-4 w-4" />

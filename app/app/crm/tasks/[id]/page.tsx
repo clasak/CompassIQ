@@ -36,7 +36,7 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
       </div>
       <PageHeader
         title={task.title}
-        description={`Task details and information`}
+        subtitle={`Task details and information`}
       />
       <TaskDetailView task={task} accounts={accounts} opportunities={opportunities} />
     </div>

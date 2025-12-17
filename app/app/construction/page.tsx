@@ -100,7 +100,7 @@ export default async function ConstructionCommandCenter() {
     <div className="space-y-6">
       <PageHeader
         title="Construction Command Center"
-        description="Portfolio overview, at-risk projects, and critical alerts"
+        subtitle="Portfolio overview, at-risk projects, and critical alerts"
       />
 
       {/* KPIs */}

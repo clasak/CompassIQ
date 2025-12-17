@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '@/components/data/DataTable'
 import { Quote, Account } from '@/lib/actions/crm-actions'
@@ -21,10 +22,13 @@ interface QuotesTableProps {
   accounts: Account[]
 }
 
-export function QuotesTable({ quotes, accounts }: QuotesTableProps) {
-  const accountMap = new Map(accounts.map((a) => [a.id, a.name]))
+export const QuotesTable = memo(function QuotesTable({ quotes, accounts }: QuotesTableProps) {
+  const accountMap = useMemo(() => 
+    new Map(accounts.map((a) => [a.id, a.name])),
+    [accounts]
+  )
 
-  const columns: ColumnDef<Quote>[] = [
+  const columns: ColumnDef<Quote>[] = useMemo(() => [
     {
       accessorKey: 'name',
       header: 'Name',
@@ -135,7 +139,7 @@ export function QuotesTable({ quotes, accounts }: QuotesTableProps) {
         )
       },
     },
-  ]
+  ], [accountMap])
 
   return (
     <DataTable
@@ -153,6 +157,6 @@ export function QuotesTable({ quotes, accounts }: QuotesTableProps) {
       }
     />
   )
-}
+})
 
 

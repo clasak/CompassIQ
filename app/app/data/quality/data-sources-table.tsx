@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { DataTable } from '@/components/data/DataTable'
 import { Badge } from '@/components/ui/badge'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -11,7 +12,7 @@ interface DataSourceRow {
   cadence: string | null
 }
 
-const dataSourceColumns: ColumnDef<DataSourceRow>[] = [
+const getDataSourceColumns = (): ColumnDef<DataSourceRow>[] => [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -38,15 +39,17 @@ const dataSourceColumns: ColumnDef<DataSourceRow>[] = [
   },
 ]
 
-export function DataSourcesTable({ dataSources }: { dataSources: DataSourceRow[] }) {
+export const DataSourcesTable = memo(function DataSourcesTable({ dataSources }: { dataSources: DataSourceRow[] }) {
+  const columns = useMemo(() => getDataSourceColumns(), [])
+  
   return (
     <DataTable
-      columns={dataSourceColumns}
+      columns={columns}
       data={dataSources}
       searchKey="name"
       searchPlaceholder="Search data sources..."
       exportFilename="data-sources.csv"
     />
   )
-}
+})
 

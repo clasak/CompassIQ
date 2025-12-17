@@ -8,7 +8,7 @@ export default async function ConstructionImportPage() {
     <div className="space-y-6">
       <PageHeader
         title="Construction Data Import"
-        description="Import job cost snapshots and AR aging data via CSV"
+        subtitle="Import job cost snapshots and AR aging data via CSV"
       />
 
       <Alert>

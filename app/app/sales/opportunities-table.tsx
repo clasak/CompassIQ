@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { DataTable } from '@/components/data/DataTable'
 import { Badge } from '@/components/ui/badge'
 import { formatCurrency } from '@/lib/utils'
@@ -15,7 +16,7 @@ interface Opportunity {
   accounts: { name: string } | { name: string }[] | null
 }
 
-const columns: ColumnDef<Opportunity>[] = [
+const getColumns = (): ColumnDef<Opportunity>[] => [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -47,7 +48,9 @@ const columns: ColumnDef<Opportunity>[] = [
   },
 ]
 
-export function OpportunitiesTable({ opportunities }: { opportunities: Opportunity[] }) {
+export const OpportunitiesTable = memo(function OpportunitiesTable({ opportunities }: { opportunities: Opportunity[] }) {
+  const columns = useMemo(() => getColumns(), [])
+  
   return (
     <DataTable
       columns={columns}
@@ -57,4 +60,4 @@ export function OpportunitiesTable({ opportunities }: { opportunities: Opportuni
       exportFilename="opportunities.csv"
     />
   )
-}
+})

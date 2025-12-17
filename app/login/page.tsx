@@ -11,7 +11,6 @@ import { toast } from 'sonner'
 import { isDevDemoMode } from '@/lib/runtime'
 import { BRANDING_DEFAULTS, getBrandCssVars, normalizeBranding, type OrgBranding } from '@/lib/branding'
 import { BrandMark } from '@/components/branding/BrandMark'
-import { BrandWordmark } from '@/components/branding/BrandWordmark'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -155,21 +154,16 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-muted/50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <BrandMark url={branding.mark_url} size={28} alt={branding.brand_name} />
-            <div className="min-w-0">
-              <CardTitle className="text-2xl">
-                <BrandWordmark
-                  brandName={branding.brand_name}
-                  logoLightUrl={branding.logo_light_url}
-                  logoDarkUrl={branding.logo_dark_url}
-                  height={26}
-                />
-              </CardTitle>
-              <CardDescription>
-                {branding.tagline ? branding.tagline : 'Sign in to your account'}
-              </CardDescription>
-            </div>
+          <div className="flex justify-center">
+            <BrandMark url={branding.mark_url} size={80} alt={branding.brand_name} />
+          </div>
+          <div className="mt-4">
+            <CardTitle className="text-2xl text-center">
+              Sign In
+            </CardTitle>
+            <CardDescription>
+              {branding.tagline ? branding.tagline : 'Sign in to your account'}
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>

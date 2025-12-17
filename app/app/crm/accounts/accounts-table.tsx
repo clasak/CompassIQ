@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '@/components/data/DataTable'
 import { Account } from '@/lib/actions/crm-actions'
@@ -16,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-const columns: ColumnDef<Account>[] = [
+const getColumns = (): ColumnDef<Account>[] => [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -97,7 +98,9 @@ interface AccountsTableProps {
   accounts: Account[]
 }
 
-export function AccountsTable({ accounts }: AccountsTableProps) {
+export const AccountsTable = memo(function AccountsTable({ accounts }: AccountsTableProps) {
+  const columns = useMemo(() => getColumns(), [])
+  
   return (
     <DataTable
       columns={columns}
@@ -117,6 +120,6 @@ export function AccountsTable({ accounts }: AccountsTableProps) {
       }
     />
   )
-}
+})
 
 

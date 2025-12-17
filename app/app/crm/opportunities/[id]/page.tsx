@@ -33,7 +33,7 @@ export default async function OpportunityDetailPage({ params }: OpportunityDetai
       </div>
       <PageHeader
         title={result.opportunity.name}
-        description={`Opportunity details and information`}
+        subtitle={`Opportunity details and information`}
       />
       <OpportunityDetailView opportunity={result.opportunity} accounts={accounts} />
     </div>

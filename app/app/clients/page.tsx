@@ -14,8 +14,8 @@ export default async function ClientProjectsPage() {
     <div className="space-y-6 p-6">
       <PageHeader
         title="Client Projects"
-        description="Manage client engagements from intake through delivery"
-        action={
+        subtitle="Manage client engagements from intake through delivery"
+        primaryAction={
           <Link href="/app/crm/opportunities">
             <Button className="gap-2">
               <Plus className="h-4 w-4" />

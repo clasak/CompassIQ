@@ -58,17 +58,17 @@ export default async function ClientProjectDetailPage({ params }: ClientProjectD
       </div>
       <PageHeader
         title={result.project.name}
-        description={`Client project workspace and engagement details`}
+        subtitle={`Client project workspace and engagement details`}
       />
       <ClientProjectDetailView 
         project={result.project} 
-        intakePack={intakePackResult.success ? intakePackResult.intakePack || null : null}
-        dataSources={dataSourcesResult.success ? dataSourcesResult.dataSources || [] : []}
-        kpis={kpisResult.success ? kpisResult.kpis || [] : []}
-        alertRules={alertsResult.success ? alertsResult.alertRules || [] : []}
-        cadences={cadencesResult.success ? cadencesResult.cadences || [] : []}
-        meetings={meetingsResult.success ? meetingsResult.meetings || [] : []}
-        deliverables={deliverablesResult.success ? deliverablesResult.deliverables || [] : []}
+        intakePack={intakePackResult.success ? (intakePackResult as any).intakePack || null : null}
+        dataSources={dataSourcesResult.success ? (dataSourcesResult as any).dataSources || [] : []}
+        kpis={kpisResult.success ? (kpisResult as any).kpis || [] : []}
+        alertRules={alertsResult.success ? (alertsResult as any).alertRules || [] : []}
+        cadences={cadencesResult.success ? (cadencesResult as any).cadences || [] : []}
+        meetings={meetingsResult.success ? (meetingsResult as any).meetings || [] : []}
+        deliverables={deliverablesResult.success ? (deliverablesResult as any).deliverables || [] : []}
       />
     </div>
   )

@@ -28,7 +28,7 @@ export default async function ConstructionSchedulePage() {
     <div className="space-y-6">
       <PageHeader
         title="Schedule / Milestones & Variance"
-        description="Project milestones with baseline vs forecast analysis"
+        subtitle="Project milestones with baseline vs forecast analysis"
       />
 
       {/* Critical Slippage Alert */}

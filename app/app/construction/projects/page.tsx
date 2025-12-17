@@ -21,7 +21,7 @@ export default async function ConstructionProjectsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Projects / Jobs"
-        description="Manage construction projects and jobs"
+        subtitle="Manage construction projects and jobs"
       />
 
       {projects.length === 0 ? (

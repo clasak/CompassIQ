@@ -40,7 +40,7 @@ export function CommandCenterView({
     <div className="page-container">
       <PageHeader
         title="Command Center"
-        description="Overview of your CRM data and recent activity"
+        subtitle="Overview of your CRM data and recent activity"
       />
 
       {/* Getting Started Panel for empty orgs */}

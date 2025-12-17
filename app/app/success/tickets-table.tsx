@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { DataTable } from '@/components/data/DataTable'
 import { Badge } from '@/components/ui/badge'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -15,7 +16,7 @@ interface TicketRow {
   accounts: { name: string } | { name: string }[] | null
 }
 
-const ticketColumns: ColumnDef<TicketRow>[] = [
+const getTicketColumns = (): ColumnDef<TicketRow>[] => [
   {
     accessorKey: 'title',
     header: 'Title',
@@ -60,14 +61,16 @@ const ticketColumns: ColumnDef<TicketRow>[] = [
   },
 ]
 
-export function TicketsTable({ tickets }: { tickets: TicketRow[] }) {
+export const TicketsTable = memo(function TicketsTable({ tickets }: { tickets: TicketRow[] }) {
+  const columns = useMemo(() => getTicketColumns(), [])
+  
   return (
     <DataTable
-      columns={ticketColumns}
+      columns={columns}
       data={tickets}
       searchKey="title"
       searchPlaceholder="Search tickets..."
       exportFilename="tickets.csv"
     />
   )
-}
+})

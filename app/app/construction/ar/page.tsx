@@ -65,7 +65,7 @@ export default async function ConstructionARPage() {
     <div className="space-y-6">
       <PageHeader
         title="AR / Accounts Receivable & DSO"
-        description="AR aging buckets and days sales outstanding"
+        subtitle="AR aging buckets and days sales outstanding"
       />
 
       {/* Summary KPIs */}

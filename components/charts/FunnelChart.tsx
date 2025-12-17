@@ -20,13 +20,13 @@ function formatStageLabel(stage: string): string {
 }
 
 export const FunnelChart = memo(function FunnelChart({ data, showAmount = false }: FunnelChartProps) {
-  // CompassIQ brand color palette
+  // CompassIQ brand color palette - Maximum contrast
   const colors = [
-    '#00D9FF', // Cyan (brand primary)
-    '#0080FF', // Blue
-    '#00BFA5', // Teal (brand accent)
-    '#00E676', // Green
-    '#C0FF00', // Lime
+    '#C3F320', // Lime Green (arrow) - Most distinct
+    '#00A4A9', // Teal (IQ text)
+    '#052974', // Dark Blue (ring)
+    '#3ECE35', // Medium Green (arrow)
+    '#B7F026', // Yellow-Lime (arrow tip)
     '#6B7280', // Gray (lost/neutral)
   ]
 

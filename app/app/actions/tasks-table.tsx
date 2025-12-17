@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { DataTable } from '@/components/data/DataTable'
 import { Badge } from '@/components/ui/badge'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -14,7 +15,7 @@ interface TaskRow {
   related_id: string | null
 }
 
-const columns: ColumnDef<TaskRow>[] = [
+const getColumns = (): ColumnDef<TaskRow>[] => [
   {
     accessorKey: 'title',
     header: 'Title',
@@ -64,13 +65,15 @@ const columns: ColumnDef<TaskRow>[] = [
   },
 ]
 
-export function TasksTable({
+export const TasksTable = memo(function TasksTable({
   tasks,
   exportFilename,
 }: {
   tasks: TaskRow[]
   exportFilename: string
 }) {
+  const columns = useMemo(() => getColumns(), [])
+  
   return (
     <DataTable
       columns={columns}
@@ -80,5 +83,5 @@ export function TasksTable({
       exportFilename={exportFilename}
     />
   )
-}
+})
 

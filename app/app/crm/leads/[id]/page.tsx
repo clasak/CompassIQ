@@ -30,7 +30,7 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
       </div>
       <PageHeader
         title={result.lead.name}
-        description={`Lead details and information`}
+        subtitle={`Lead details and information`}
       />
       <LeadDetailView lead={result.lead} />
     </div>

@@ -6,79 +6,79 @@
   :root {
     /* ══════════════════════════════════════════════════════════════
        COMPASSIQ BRAND DESIGN SYSTEM
-       Cyan-Blue-Teal Professional Theme
+       Deep Navy with Vibrant Cyan-Lime Accents (matches logo exactly)
        ══════════════════════════════════════════════════════════════ */
 
-    /* Background & Surfaces - Subtle cyan tint */
-    --bg: 195 30% 97%;
-    --bg-gradient-start: 195 30% 97%;
-    --bg-gradient-end: 200 35% 96%;
-    --surface: 0 0% 100%;
-    --surface-elevated: 0 0% 100%;
-    --surface-2: 195 25% 97%;
-    --surface-hover: 195 20% 95%;
-    --surface-glass: 0 0% 100% / 0.85;
+    /* Background & Surfaces - EXACT logo background color #051221 = rgb(5, 18, 33) */
+    --bg: 212 74% 7%;
+    --bg-gradient-start: 212 74% 7%;
+    --bg-gradient-end: 212 70% 9%;
+    --surface: 212 65% 11%;
+    --surface-elevated: 212 60% 13%;
+    --surface-2: 212 55% 15%;
+    --surface-hover: 212 50% 17%;
+    --surface-glass: 212 65% 11% / 0.90;
 
-    /* Text Colors */
-    --text: 210 50% 12%;
-    --text-secondary: 210 20% 45%;
-    --text-tertiary: 210 15% 55%;
-    --muted: 210 20% 45%;
+    /* Text Colors - High contrast using logo colors */
+    --text: 0 0% 100%;
+    --text-secondary: 182 60% 75%;
+    --text-tertiary: 182 40% 60%;
+    --muted: 182 30% 65%;
 
-    /* Borders */
-    --border: 195 25% 88%;
-    --border-strong: 200 20% 78%;
-    --border-subtle: 195 25% 93%;
+    /* Borders - Using logo teal */
+    --border: 212 50% 18%;
+    --border-strong: 182 100% 33%;
+    --border-subtle: 212 60% 13%;
 
-    /* Brand Colors - CompassIQ Cyan-Blue */
-    --primary: 210 100% 50%;
-    --primary-hover: 210 100% 45%;
-    --primary-light: 189 100% 50%;
+    /* Brand Colors - Extracted from actual logo PNG */
+    --primary: 182 100% 33%;
+    --primary-hover: 182 100% 40%;
+    --primary-light: 182 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --accent: 172 100% 37%;
-    --accent-hover: 172 100% 32%;
-    --accent-light: 172 100% 45%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 77 76% 53%;
+    --accent-hover: 77 80% 60%;
+    --accent-light: 77 85% 65%;
+    --accent-foreground: 212 74% 7%;
 
     /* Semantic Colors */
-    --danger: 0 72% 51%;
-    --danger-hover: 0 72% 46%;
-    --danger-light: 0 72% 65%;
-    --danger-foreground: 0 0% 100%;
+    --danger: 0 72% 58%;
+    --danger-hover: 0 72% 63%;
+    --danger-light: 0 72% 68%;
+    --danger-foreground: 215 60% 10%;
 
-    --success: 155 100% 45%;
-    --success-hover: 155 100% 40%;
-    --success-light: 155 100% 55%;
-    --success-foreground: 0 0% 100%;
+    --success: 155 100% 50%;
+    --success-hover: 155 100% 55%;
+    --success-light: 155 100% 60%;
+    --success-foreground: 215 60% 10%;
 
-    --warning: 38 92% 50%;
-    --warning-hover: 38 92% 45%;
-    --warning-light: 38 92% 62%;
-    --warning-foreground: 0 0% 100%;
+    --warning: 38 92% 55%;
+    --warning-hover: 38 92% 60%;
+    --warning-light: 38 92% 65%;
+    --warning-foreground: 215 60% 10%;
 
-    --info: 189 100% 50%;
-    --info-hover: 189 100% 45%;
-    --info-light: 189 100% 60%;
-    --info-foreground: 0 0% 100%;
+    --info: 189 100% 55%;
+    --info-hover: 189 100% 60%;
+    --info-light: 189 100% 65%;
+    --info-foreground: 215 60% 10%;
 
-    /* Chart Colors - CompassIQ Brand Palette */
-    --chart-1: 189 100% 50%;    /* Cyan #00D9FF */
-    --chart-2: 210 100% 50%;    /* Blue #0080FF */
-    --chart-3: 172 100% 37%;    /* Teal #00BFA5 */
-    --chart-4: 155 100% 45%;    /* Green #00E676 */
-    --chart-5: 75 100% 50%;     /* Lime #C0FF00 */
-    --chart-6: 220 100% 38%;    /* Deep Blue #0040C0 */
-    --chart-7: 200 100% 45%;    /* Sky Blue */
-    --chart-8: 165 100% 40%;    /* Sea Green */
-    --chart-9: 185 100% 42%;    /* Dark Cyan */
-    --chart-10: 195 100% 35%;   /* Ocean Blue */
+    /* Chart Colors - Maximum contrast from logo */
+    --chart-1: 74 90% 54%;      /* Lime Green #C3F320 */
+    --chart-2: 182 100% 33%;    /* Teal #00A4A9 */
+    --chart-3: 221 92% 24%;     /* Dark Blue #052974 */
+    --chart-4: 116 61% 51%;     /* Medium Green #3ECE35 */
+    --chart-5: 77 87% 55%;      /* Yellow-Lime #B7F026 */
+    --chart-6: 74 90% 54%;      /* Lime repeat */
+    --chart-7: 182 100% 33%;    /* Teal repeat */
+    --chart-8: 221 92% 24%;     /* Blue repeat */
+    --chart-9: 116 61% 51%;     /* Green repeat */
+    --chart-10: 77 87% 55%;     /* Yellow repeat */
 
     /* Chart Semantic Colors */
-    --chart-positive: 155 100% 45%;
-    --chart-negative: 0 72% 51%;
-    --chart-neutral: 210 20% 45%;
-    --chart-baseline: 195 25% 82%;
+    --chart-positive: 118 57% 52%;
+    --chart-negative: 0 72% 58%;
+    --chart-neutral: 182 50% 50%;
+    --chart-baseline: 212 50% 25%;
 
     /* Legacy Compatibility Shim */
     --background: var(--bg);
@@ -142,9 +142,9 @@
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.12);
     --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.04);
 
-    /* Special Effects */
-    --glow-primary: 0 0 20px rgb(221 83% 53% / 0.15);
-    --glow-accent: 0 0 20px rgb(199 89% 48% / 0.15);
+    /* Special Effects - Cyan glow like logo */
+    --glow-primary: 0 0 30px rgb(0 217 255 / 0.4);
+    --glow-accent: 0 0 30px rgb(192 255 0 / 0.4);
     --backdrop-blur: blur(12px);
 
     /* Transitions */
@@ -158,11 +158,16 @@
     --sidebar-width: 16rem;    /* 256px - sleeker */
     --topbar-height: 3.75rem;  /* 60px */
 
-    /* Branding CSS Variables - CompassIQ Brand Colors */
-    --brand-primary: #0080FF;
-    --brand-accent: #00BFA5;
-    --brand-primary-hsl: 210 100% 50%;
-    --brand-accent-hsl: 172 100% 37%;
+    /* Branding CSS Variables - Exact colors from logo PNG */
+    --brand-teal: #00A4A9;
+    --brand-lime: #A2EE1F;
+    --brand-green: #40CD3A;
+    --brand-yellow: #F9F91B;
+    --brand-blue: #023F8F;
+    --brand-navy: #051221;
+    --brand-white: #FEFEFE;
+    --brand-teal-hsl: 182 100% 33%;
+    --brand-lime-hsl: 77 76% 53%;
   }
 
   .dark {
@@ -171,14 +176,14 @@
        ══════════════════════════════════════════════════════════════ */
 
     /* Background & Surfaces - Deep blue-cyan */
-    --bg: 210 50% 6%;
-    --bg-gradient-start: 210 50% 6%;
-    --bg-gradient-end: 200 45% 8%;
-    --surface: 210 45% 10%;
-    --surface-elevated: 210 40% 13%;
-    --surface-2: 210 38% 16%;
-    --surface-hover: 210 35% 18%;
-    --surface-glass: 210 45% 10% / 0.85;
+    --bg: 215 35% 12%;
+    --bg-gradient-start: 215 35% 12%;
+    --bg-gradient-end: 210 40% 14%;
+    --surface: 215 30% 16%;
+    --surface-elevated: 215 28% 18%;
+    --surface-2: 215 25% 20%;
+    --surface-hover: 215 22% 22%;
+    --surface-glass: 215 30% 16% / 0.85;
 
     /* Text Colors */
     --text: 195 30% 98%;
@@ -282,6 +287,37 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom Scrollbar - CompassIQ Logo Colors */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(212 74% 7%);
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00A4A9 0%, #A2EE1F 100%);
+    border-radius: 6px;
+    border: 2px solid hsl(212 74% 7%);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00A4A9 0%, #40CD3A 50%, #A2EE1F 100%);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: #00A4A9;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #00A4A9 hsl(212 74% 7%);
   }
 
   /* Enhanced Typography System */

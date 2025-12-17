@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { DataTable } from '@/components/data/DataTable'
 import { Badge } from '@/components/ui/badge'
 import type { ColumnDef } from '@tanstack/react-table'
@@ -13,7 +14,7 @@ interface AccountRow {
   health_score: number
 }
 
-const accountColumns: ColumnDef<AccountRow>[] = [
+const getAccountColumns = (): ColumnDef<AccountRow>[] => [
   {
     accessorKey: 'name',
     header: 'Account',
@@ -46,15 +47,17 @@ const accountColumns: ColumnDef<AccountRow>[] = [
   },
 ]
 
-export function AccountsHealthTable({ accounts }: { accounts: AccountRow[] }) {
+export const AccountsHealthTable = memo(function AccountsHealthTable({ accounts }: { accounts: AccountRow[] }) {
+  const columns = useMemo(() => getAccountColumns(), [])
+  
   return (
     <DataTable
-      columns={accountColumns}
+      columns={columns}
       data={accounts}
       searchKey="name"
       searchPlaceholder="Search accounts..."
       exportFilename="accounts.csv"
     />
   )
-}
+})
 

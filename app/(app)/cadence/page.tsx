@@ -336,7 +336,7 @@ export default function CadencePage() {
             ))}
           </Tabs>
         </>
-      )}
+      ) : null}
     </OsPage>
   )
 }
