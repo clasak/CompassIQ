@@ -169,3 +169,5 @@ export default async function ConstructionEquipmentPage() {
     </div>
   )
 }
+
+

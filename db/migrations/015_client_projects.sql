@@ -513,3 +513,5 @@ CREATE POLICY "client_deliverables_delete" ON client_deliverables
         AND get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum])
         AND NOT is_demo_org(org_id)
     );
+
+

@@ -243,3 +243,5 @@ export function KPICatalogTab({ projectId, initialKPIs }: KPICatalogTabProps) {
     </div>
   )
 }
+
+

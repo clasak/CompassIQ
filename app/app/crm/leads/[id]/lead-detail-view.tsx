@@ -75,3 +75,5 @@ export function LeadDetailView({ lead }: LeadDetailViewProps) {
     </Card>
   )
 }
+
+

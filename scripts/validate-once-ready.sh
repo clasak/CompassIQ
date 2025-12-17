@@ -16,3 +16,5 @@ done
 echo "Starting validation process..."
 
 
+
+

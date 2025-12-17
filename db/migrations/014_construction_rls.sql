@@ -244,3 +244,5 @@ CREATE POLICY "construction_invoices_delete" ON construction_invoices
         get_user_role(org_id) = ANY (ARRAY['OWNER'::role_enum, 'ADMIN'::role_enum]) AND
         NOT is_demo_org(org_id)
     );
+
+

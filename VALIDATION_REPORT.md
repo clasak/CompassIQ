@@ -294,3 +294,5 @@ npm run test:e2e
 **Ready to proceed once Supabase credentials are provided.**
 
 
+
+

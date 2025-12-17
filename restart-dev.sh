@@ -10,3 +10,5 @@ rm -rf .next
 
 echo "Starting dev server..."
 npm run dev:3005
+
+

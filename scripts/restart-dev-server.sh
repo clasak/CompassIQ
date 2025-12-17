@@ -13,3 +13,5 @@ rm -rf .next
 # Start dev server
 echo "Starting dev server..."
 npm run dev
+
+

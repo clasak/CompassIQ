@@ -96,3 +96,5 @@ export const BarChartBasic = memo(function BarChartBasic({
     </ResponsiveContainer>
   )
 })
+
+

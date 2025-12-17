@@ -80,3 +80,5 @@ async function applyAllMigrations() {
 
 applyAllMigrations().catch(console.error)
 
+
+

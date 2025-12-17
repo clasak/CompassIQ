@@ -46,3 +46,5 @@ Next.js chunk files (`main-app.js` and `app-pages-internals.js`) were returning 
 Both files should return 200 status:
 - `http://localhost:3000/_next/static/chunks/main-app.js`
 - `http://localhost:3000/_next/static/chunks/app-pages-internals.js`
+
+

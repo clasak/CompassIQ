@@ -73,3 +73,5 @@ export default async function ClientProjectDetailPage({ params }: ClientProjectD
     </div>
   )
 }
+
+

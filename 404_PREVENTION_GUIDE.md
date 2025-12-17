@@ -14,7 +14,58 @@ The `.next` build directory was **corrupted** from a previous build. The dev ser
 2. **React Hook errors** - "Invalid hook call" and "Cannot read properties of null (reading 'useContext')"
 3. **Missing modules** - "Cannot find module '.../.next/server/pages/_document.js'"
 
-## The Fix Applied
+## 🚀 NEW: Self-Healing Solution (RECOMMENDED)
+
+We've implemented an automatic self-healing dev server that detects and fixes these issues automatically!
+
+### Use the Self-Healing Dev Server
+
+```bash
+# Start the self-healing dev server (recommended)
+npm run dev:self-heal:3005
+
+# Or for port 3000
+npm run dev:self-heal:3000
+```
+
+**What it does automatically:**
+- ✅ Monitors for 404 errors, React Hook errors, and missing modules
+- ✅ Automatically cleans `.next` and cache when issues detected
+- ✅ Restarts the server with a clean build
+- ✅ Tracks error patterns and health metrics
+- ✅ Prevents cascading failures with intelligent thresholds
+
+**Features:**
+- **Error Detection**: Watches for 404s, hook errors, webpack issues
+- **Auto-Restart**: Restarts with clean build when threshold exceeded
+- **Health Checks**: Periodic monitoring of server health
+- **Smart Recovery**: Up to 3 automatic restart attempts
+- **Graceful Shutdown**: Handles Ctrl+C cleanly
+
+### Quick Fix Command
+
+If you just need a one-time fix:
+
+```bash
+npm run dev:fix
+```
+
+This will:
+1. Kill any stuck processes
+2. Clean build artifacts
+3. Restart the dev server
+
+### Health Monitoring (Optional)
+
+Start a separate health check endpoint:
+
+```bash
+npm run dev:health
+```
+
+Then check health at: `http://localhost:3006/health`
+
+## The Original Fix Applied
 
 1. ✅ Killed the stuck node process on port 3005
 2. ✅ Removed corrupted `.next` directory
@@ -23,9 +74,30 @@ The `.next` build directory was **corrupted** from a previous build. The dev ser
 
 ## How to Prevent This
 
-### 1. Always Clean Build When You See 404s
+### 1. Use Self-Healing Dev Server (BEST)
 
-If you ever see 404 errors for Next.js chunk files again, **immediately** run:
+**Recommended approach** - Let the server fix itself:
+
+```bash
+npm run dev:self-heal:3005
+```
+
+The self-healing server will:
+- Detect issues automatically
+- Clean and restart when needed
+- No manual intervention required
+
+### 2. Quick Manual Fix
+
+If you prefer manual control or need a one-time fix:
+
+```bash
+npm run dev:fix
+```
+
+### 3. Traditional Clean Build (Fallback)
+
+If you ever see 404 errors for Next.js chunk files, run:
 
 ```bash
 # Stop the dev server (Ctrl+C)
@@ -34,29 +106,16 @@ rm -rf node_modules/.cache
 npm run dev
 ```
 
-### 2. Never Let the Dev Server Get Into a Bad State
+### 4. Watch for Warning Signs
 
-Watch for these warning signs:
+The self-healing server monitors these automatically, but you should know them:
 - ❌ React Hook errors in terminal
 - ❌ "Cannot find module" errors
 - ❌ Webpack errors about undefined properties
 - ❌ Pages compiling but returning 404
 
-**Action:** Stop and restart with clean build immediately.
-
-### 3. Use the Clean Start Script
-
-Add this to `package.json` if not already there:
-
-```json
-{
-  "scripts": {
-    "dev:clean": "rm -rf .next node_modules/.cache && npm run dev"
-  }
-}
-```
-
-Then use `npm run dev:clean` whenever you suspect issues.
+**With self-healing:** Server restarts automatically
+**Without self-healing:** Stop and restart with clean build immediately
 
 ### 4. Monitor Dev Server Health
 
@@ -139,9 +198,64 @@ npm install
 PORT=3005 npm run dev
 ```
 
+## Self-Healing Implementation Details
+
+### Error Detection Patterns
+
+The self-healing server monitors for:
+- `404.*/_next/static/chunks` - Missing chunk files
+- `Cannot find module.*\.next` - Missing Next.js modules
+- `Invalid hook call` - React Hook errors
+- `Cannot read properties of null.*useContext` - Context errors
+- `webpack.*undefined` - Webpack errors
+- `ENOENT.*\.next` - File not found in .next
+- `Module not found.*\.next` - Module resolution errors
+
+### Auto-Restart Logic
+
+1. **Error Threshold**: 3 errors trigger automatic restart
+2. **Max Restarts**: Up to 3 restart attempts
+3. **Health Checks**: Every 10 seconds
+4. **Clean Process**: Kills stuck processes, removes `.next` and cache
+5. **Graceful Recovery**: Waits for filesystem to settle before restart
+
+### Configuration
+
+Environment variables:
+- `PORT` - Dev server port (default: 3005)
+- `HEALTH_PORT` - Health check endpoint port (default: 3006)
+
+### Files Created
+
+- `scripts/self-healing-dev.ts` - Main self-healing wrapper
+- `scripts/health-check-endpoint.ts` - Health monitoring endpoint
+- `scripts/auto-fix-404.sh` - Manual fix script
+
 ## Current Status
 
 ✅ **FIXED** - Dev server is running clean on port 3005
 ✅ All chunk files loading with 200 status
 ✅ Page rendering successfully
+✅ **NEW**: Self-healing dev server implemented and ready to use
+✅ Automatic recovery system in place
+✅ Health monitoring available
 ⚠️ "Too many open files" warnings present (non-critical, affects hot reload only)
+
+## 🎯 Recommended Action
+
+**Start using the self-healing dev server today:**
+
+```bash
+npm run dev:self-heal:3005
+```
+
+This will prevent future 404 issues from requiring manual intervention.
+
+## 📚 Additional Documentation
+
+- **Quick Start:** `QUICK_START_SELF_HEALING.md`
+- **Full Guide:** `SELF_HEALING_DEV_SERVER.md`
+- **Implementation:** `SELF_HEALING_IMPLEMENTATION.md`
+- **Summary:** `SELF_HEALING_SUMMARY.md`
+
+

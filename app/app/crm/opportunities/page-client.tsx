@@ -25,3 +25,5 @@ export function OpportunitiesPageClient() {
   // Parent page will handle the dialog with proper data loading
   return null
 }
+
+

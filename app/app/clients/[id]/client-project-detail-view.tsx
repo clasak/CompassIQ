@@ -262,3 +262,5 @@ export function ClientProjectDetailView({ project, intakePack, dataSources, kpis
     </Tabs>
   )
 }
+
+

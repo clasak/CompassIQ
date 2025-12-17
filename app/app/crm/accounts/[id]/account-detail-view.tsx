@@ -86,3 +86,5 @@ export function AccountDetailView({ account }: AccountDetailViewProps) {
     </Card>
   )
 }
+
+

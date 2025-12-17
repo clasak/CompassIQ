@@ -13,10 +13,11 @@ import { OsEmptyState } from '@/components/os/OsEmptyState'
 import { OsErrorState } from '@/components/os/OsErrorState'
 import { OsTableSkeleton } from '@/components/os/OsTableSkeleton'
 import { AlertStatePill, SeverityPill, TaskStatePill } from '@/components/os/OsPills'
-import { KPIStatCard } from '@/components/kpi/KPIStatCard'
 import { formatDate } from '@/lib/utils'
 import { useRole } from '@/hooks/use-role'
-import { AlertTriangle, Download, Gauge, RefreshCw, ShieldCheck } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { AlertTriangle, Download, Gauge, RefreshCw, ShieldCheck, Target, CalendarDays } from 'lucide-react'
 
 interface Alert {
   id: string
@@ -36,6 +37,52 @@ interface Task {
   state: 'open' | 'in_progress' | 'done' | 'canceled'
 }
 
+type HealthColor = 'green' | 'yellow' | 'red'
+
+interface ExecutiveTile {
+  key: string
+  title: string
+  value: string
+  statusLabel: string
+  statusColor: HealthColor
+  helper: string
+}
+
+interface JobRiskRow {
+  id: string
+  project: string
+  customer: string
+  segment: string
+  projectManager: string
+  marginPct: number
+  budgetOverPct: number
+  unbilledWip: string
+  statusColor: HealthColor
+  nextAction: string
+}
+
+interface CashRiskRow {
+  id: string
+  customer: string
+  segment: string
+  projectManager: string
+  arOver60: string
+  billingLagDays: number
+  unbilledWip: string
+  statusColor: HealthColor
+  nextAction: string
+}
+
+interface ScorecardRow {
+  id: string
+  kpi: string
+  owner: string
+  target: string
+  actual: string
+  statusColor: HealthColor
+  note: string
+}
+
 export default function OperatePage() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -46,9 +93,21 @@ export default function OperatePage() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null)
+  const [filters, setFilters] = useState<{ customer: string; segment: string; projectManager: string }>({
+    customer: 'all',
+    segment: 'all',
+    projectManager: 'all',
+  })
 
   useEffect(() => {
-    fetchData()
+    // In demo mode, we still fetch (if params are present) but always render a proof-first experience.
+    // In non-demo mode, we only fetch when a client/OS context is selected.
+    if (isDemo || clientProjectId || osInstanceId) {
+      fetchData()
+    } else {
+      setLoading(false)
+    }
   }, [clientProjectId, osInstanceId])
 
   function severityRank(sev: string) {
@@ -70,6 +129,7 @@ export default function OperatePage() {
     setError(null)
     setLoading(true)
     try {
+      setLastUpdatedAt(new Date())
       // Fetch open alerts and prioritize by severity
       const alertsRes = await fetch('/api/os/alerts?state=open')
       if (!alertsRes.ok) {
@@ -175,14 +235,368 @@ export default function OperatePage() {
     }
   }
 
-  const criticalCount = topAlerts.filter((a) => a.severity === 'critical').length
-  const openAlertsCount = topAlerts.length
-  const upcomingTasksCount = tasks.length
+  const demoTiles: ExecutiveTile[] = [
+    {
+      key: 'jobs_over_budget',
+      title: 'Jobs over budget',
+      value: '6',
+      statusLabel: 'At risk',
+      statusColor: 'yellow',
+      helper: 'Margin leakage surfaced daily',
+    },
+    {
+      key: 'ar_over_60',
+      title: 'AR > 60 days',
+      value: '$412k',
+      statusLabel: 'Critical',
+      statusColor: 'red',
+      helper: 'Cash drag prioritized by owner',
+    },
+    {
+      key: 'unbilled_wip',
+      title: 'Unbilled WIP',
+      value: '$287k',
+      statusLabel: 'At risk',
+      statusColor: 'yellow',
+      helper: 'Billing backlog visible within 24h',
+    },
+    {
+      key: 'utilization',
+      title: 'Utilization',
+      value: '72%',
+      statusLabel: 'On track',
+      statusColor: 'green',
+      helper: 'Labor efficiency in one glance',
+    },
+  ]
+
+  const placeholderTiles: ExecutiveTile[] = [
+    {
+      key: 'jobs_over_budget',
+      title: 'Jobs over budget',
+      value: '—',
+      statusLabel: 'Connect job costing',
+      statusColor: 'yellow',
+      helper: 'Requires cost-to-complete + budget feeds',
+    },
+    {
+      key: 'ar_over_60',
+      title: 'AR > 60 days',
+      value: '—',
+      statusLabel: 'Connect AR aging',
+      statusColor: 'yellow',
+      helper: 'Requires AR aging + payments feeds',
+    },
+    {
+      key: 'unbilled_wip',
+      title: 'Unbilled WIP',
+      value: '—',
+      statusLabel: 'Connect billing',
+      statusColor: 'yellow',
+      helper: 'Requires billing backlog + WIP feeds',
+    },
+    {
+      key: 'utilization',
+      title: 'Utilization',
+      value: '—',
+      statusLabel: 'Connect labor',
+      statusColor: 'yellow',
+      helper: 'Requires time/labor feeds',
+    },
+  ]
+
+  const demoJobsAtRisk: JobRiskRow[] = [
+    {
+      id: 'jr-1',
+      project: 'Riverside Logistics — Phase 2',
+      customer: 'Riverside Logistics',
+      segment: 'Industrial',
+      projectManager: 'A. Patel',
+      marginPct: 8.4,
+      budgetOverPct: 6.2,
+      unbilledWip: '$64k',
+      statusColor: 'red',
+      nextAction: 'Approve change order + rebalance crews',
+    },
+    {
+      id: 'jr-2',
+      project: 'Oakview Medical — Renovation',
+      customer: 'Oakview Medical',
+      segment: 'Healthcare',
+      projectManager: 'S. Chen',
+      marginPct: 11.2,
+      budgetOverPct: 3.4,
+      unbilledWip: '$41k',
+      statusColor: 'yellow',
+      nextAction: 'Lock scope + reforecast labor hours',
+    },
+    {
+      id: 'jr-3',
+      project: 'Cedar Grove Apartments — Sitework',
+      customer: 'Cedar Grove DevCo',
+      segment: 'Multifamily',
+      projectManager: 'J. Rivera',
+      marginPct: 9.6,
+      budgetOverPct: 2.1,
+      unbilledWip: '$28k',
+      statusColor: 'yellow',
+      nextAction: 'Review subcontractor overruns',
+    },
+    {
+      id: 'jr-4',
+      project: 'Westport Schools — Gym Addition',
+      customer: 'Westport Schools',
+      segment: 'Public',
+      projectManager: 'M. Johnson',
+      marginPct: 13.8,
+      budgetOverPct: 1.2,
+      unbilledWip: '$19k',
+      statusColor: 'green',
+      nextAction: 'Monitor procurement lead times',
+    },
+  ]
+
+  const demoCashAtRisk: CashRiskRow[] = [
+    {
+      id: 'cr-1',
+      customer: 'Oakview Medical',
+      segment: 'Healthcare',
+      projectManager: 'S. Chen',
+      arOver60: '$168k',
+      billingLagDays: 18,
+      unbilledWip: '$41k',
+      statusColor: 'red',
+      nextAction: 'Escalate AR: CFO call + payment plan',
+    },
+    {
+      id: 'cr-2',
+      customer: 'Riverside Logistics',
+      segment: 'Industrial',
+      projectManager: 'A. Patel',
+      arOver60: '$124k',
+      billingLagDays: 12,
+      unbilledWip: '$64k',
+      statusColor: 'yellow',
+      nextAction: 'Push billing: release invoice #2149',
+    },
+    {
+      id: 'cr-3',
+      customer: 'Cedar Grove DevCo',
+      segment: 'Multifamily',
+      projectManager: 'J. Rivera',
+      arOver60: '$72k',
+      billingLagDays: 9,
+      unbilledWip: '$28k',
+      statusColor: 'yellow',
+      nextAction: 'Confirm lien waivers + submit draw',
+    },
+    {
+      id: 'cr-4',
+      customer: 'Westport Schools',
+      segment: 'Public',
+      projectManager: 'M. Johnson',
+      arOver60: '$48k',
+      billingLagDays: 6,
+      unbilledWip: '$19k',
+      statusColor: 'green',
+      nextAction: 'Routine follow-up (AP weekly)',
+    },
+  ]
+
+  const demoAlerts: Alert[] = [
+    {
+      id: 'da-1',
+      title: 'Billing lag > 14 days on Oakview Medical (invoices not submitted)',
+      severity: 'critical',
+      state: 'open',
+      owner: 'Controller',
+      due_at: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+      created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 'da-2',
+      title: 'Job margin compression: Riverside Logistics trending -3.1 pts WoW',
+      severity: 'high',
+      state: 'open',
+      owner: 'Ops Director',
+      due_at: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+      created_at: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 'da-3',
+      title: 'Unbilled WIP > $50k on Riverside Logistics (pending approvals)',
+      severity: 'high',
+      state: 'open',
+      owner: 'PMO Lead',
+      due_at: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+      created_at: new Date(Date.now() - 22 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 'da-4',
+      title: 'Labor utilization fell below target (72% vs 80%)',
+      severity: 'medium',
+      state: 'open',
+      owner: 'Resource Manager',
+      due_at: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+      created_at: new Date(Date.now() - 30 * 60 * 60 * 1000).toISOString(),
+    },
+  ]
+
+  const demoTasks: Task[] = [
+    {
+      id: 'dt-1',
+      title: 'Approve Oakview invoice pack + submit by EOD',
+      owner: 'Controller',
+      due_at: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
+      state: 'in_progress',
+    },
+    {
+      id: 'dt-2',
+      title: 'Riverside: reforecast labor + lock scope changes',
+      owner: 'Ops Director',
+      due_at: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+      state: 'open',
+    },
+    {
+      id: 'dt-3',
+      title: 'Cedar Grove: confirm draw schedule + lien waivers',
+      owner: 'PMO Lead',
+      due_at: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+      state: 'open',
+    },
+  ]
+
+  const demoScorecard: ScorecardRow[] = [
+    {
+      id: 'sc-1',
+      kpi: 'Gross margin (rolling 4 weeks)',
+      owner: 'Ops Director',
+      target: '≥ 14%',
+      actual: '12.9%',
+      statusColor: 'yellow',
+      note: '2 jobs compressing margin this week',
+    },
+    {
+      id: 'sc-2',
+      kpi: 'AR > 60 days',
+      owner: 'Controller',
+      target: '≤ $250k',
+      actual: '$412k',
+      statusColor: 'red',
+      note: 'Oakview is primary driver; escalated',
+    },
+    {
+      id: 'sc-3',
+      kpi: 'Unbilled WIP',
+      owner: 'PMO Lead',
+      target: '≤ $150k',
+      actual: '$287k',
+      statusColor: 'yellow',
+      note: '3 invoice packs pending approvals',
+    },
+    {
+      id: 'sc-4',
+      kpi: 'Billing lag (median)',
+      owner: 'Controller',
+      target: '≤ 7 days',
+      actual: '11 days',
+      statusColor: 'yellow',
+      note: 'Tighten approval SLA to 24h',
+    },
+    {
+      id: 'sc-5',
+      kpi: 'Labor utilization',
+      owner: 'Resource Manager',
+      target: '≥ 80%',
+      actual: '72%',
+      statusColor: 'yellow',
+      note: 'Rebalance crews + reduce idle time',
+    },
+    {
+      id: 'sc-6',
+      kpi: 'Forecast accuracy (EAC vs actual)',
+      owner: 'PMO Lead',
+      target: '± 2%',
+      actual: '± 3.6%',
+      statusColor: 'yellow',
+      note: 'Improve weekly reforecast discipline',
+    },
+  ]
+
+  const isProofMode = isDemo
+  const tiles = isProofMode ? demoTiles : placeholderTiles
+  const jobsAtRisk = isProofMode ? demoJobsAtRisk : []
+  const cashAtRisk = isProofMode ? demoCashAtRisk : []
+  const scorecard = isProofMode ? demoScorecard : []
+
+  const effectiveAlerts = isProofMode && topAlerts.length === 0 ? demoAlerts : topAlerts
+  const effectiveTasks = isProofMode && tasks.length === 0 ? demoTasks : tasks
+
+  const statusDotClass: Record<HealthColor, string> = {
+    green: 'bg-green-500',
+    yellow: 'bg-amber-500',
+    red: 'bg-red-500',
+  }
+  const statusBorderClass: Record<HealthColor, string> = {
+    green: 'border-l-4 border-l-green-500',
+    yellow: 'border-l-4 border-l-amber-500',
+    red: 'border-l-4 border-l-red-500',
+  }
+
+  const allCustomers = Array.from(
+    new Set([...jobsAtRisk.map((r) => r.customer), ...cashAtRisk.map((r) => r.customer)])
+  ).sort()
+  const allSegments = Array.from(
+    new Set([...jobsAtRisk.map((r) => r.segment), ...cashAtRisk.map((r) => r.segment)])
+  ).sort()
+  const allPMs = Array.from(
+    new Set([...jobsAtRisk.map((r) => r.projectManager), ...cashAtRisk.map((r) => r.projectManager)])
+  ).sort()
+
+  const filteredJobs = jobsAtRisk.filter((r) => {
+    if (filters.customer !== 'all' && r.customer !== filters.customer) return false
+    if (filters.segment !== 'all' && r.segment !== filters.segment) return false
+    if (filters.projectManager !== 'all' && r.projectManager !== filters.projectManager) return false
+    return true
+  })
+  const filteredCash = cashAtRisk.filter((r) => {
+    if (filters.customer !== 'all' && r.customer !== filters.customer) return false
+    if (filters.segment !== 'all' && r.segment !== filters.segment) return false
+    if (filters.projectManager !== 'all' && r.projectManager !== filters.projectManager) return false
+    return true
+  })
+
+  const combinedFeed = [
+    ...effectiveAlerts.map((a) => ({
+      type: 'alert' as const,
+      id: a.id,
+      title: a.title,
+      owner: a.owner || 'Unassigned',
+      due_at: a.due_at || null,
+      severity: a.severity,
+      state: a.state,
+    })),
+    ...effectiveTasks.map((t) => ({
+      type: 'task' as const,
+      id: t.id,
+      title: t.title,
+      owner: t.owner,
+      due_at: t.due_at,
+      severity: null as any,
+      state: t.state,
+    })),
+  ]
+    .sort((a, b) => {
+      const ad = a.due_at ? new Date(a.due_at).getTime() : Number.POSITIVE_INFINITY
+      const bd = b.due_at ? new Date(b.due_at).getTime() : Number.POSITIVE_INFINITY
+      return ad - bd
+    })
+    .slice(0, 8)
 
   return (
     <OsPage
       title="Founder Command Center"
-      description="An executive view of risks, commitments, and operating rhythm."
+      description="Stop margin leakage, cash drag, and dashboard chaos—see what’s at risk, assign owners, and run a weekly scorecard in one place."
       actions={
         <>
           <Button variant="outline" size="sm" onClick={fetchData} aria-label="Refresh command center">
@@ -208,13 +622,13 @@ export default function OperatePage() {
           title={isDemo ? 'Demo org is read-only' : 'Permission required'}
           description={
             isDemo
-              ? 'Exec packet export is disabled in the demo organization.'
+              ? 'This view is pre-populated to show what a CFO/COO sees during a 60-day proof pilot. Exec packet export is disabled in demo.'
               : 'Exec packet export requires OWNER or ADMIN permissions.'
           }
         />
       )}
 
-      {!clientProjectId && !osInstanceId && (
+      {!isDemo && !clientProjectId && !osInstanceId && (
         <OsEmptyState
           title="Select a client project"
           description="Open Operate Mode from a client project to view the executive command center for that engagement."
@@ -226,88 +640,369 @@ export default function OperatePage() {
 
       {error && <OsErrorState description={error} onRetry={fetchData} />}
 
-      {(loading || roleLoading) && (clientProjectId || osInstanceId) && !error ? (
+      {(loading || roleLoading) && (isDemo || clientProjectId || osInstanceId) && !error ? (
         <OsTableSkeleton rows={6} columns={5} />
-      ) : (clientProjectId || osInstanceId) ? (
+      ) : isDemo || clientProjectId || osInstanceId ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <KPIStatCard
-              title="Open Risks"
-              value={openAlertsCount}
-              timeframe="Last 7"
-              onClick={() => router.push('/app/execute/alerts')}
-            />
-            <KPIStatCard
-              title="Critical Risks"
-              value={criticalCount}
-              timeframe="Last 7"
-              onClick={() => router.push('/app/execute/alerts?severity=critical')}
-            />
-            <KPIStatCard
-              title="Commitments"
-              value={upcomingTasksCount}
-              timeframe="Last 7"
-              onClick={() => router.push('/app/execute/tasks')}
-            />
-            <Card className="border-border/50">
-              <CardContent className="p-5 flex items-start gap-3">
-                <div className="h-10 w-10 rounded-lg border border-border/30 bg-surface-2/50 flex items-center justify-center flex-shrink-0">
-                  <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-section-sm text-muted-foreground mb-1">Data Trust</div>
-                  <div className="text-section font-semibold">Healthy</div>
-                  <div className="text-table-sm text-muted-foreground mt-1">All systems operational</div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div className="text-table-sm text-muted-foreground">
+              {lastUpdatedAt ? (
+                <>
+                  Last updated <span className="font-medium text-foreground">{formatDate(lastUpdatedAt.toISOString())}</span>
+                </>
+              ) : (
+                'Last updated —'
+              )}
+            </div>
+            <div className="hidden md:flex items-center gap-2">
+              <Badge variant="outline" className="text-[10px]">
+                Pilot proof view
+              </Badge>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Top band: executive scorecard */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {tiles.map((t) => (
+              <Card key={t.key} className={`border-border/50 ${statusBorderClass[t.statusColor]}`}>
+                <CardContent className="p-5 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="text-section-sm text-muted-foreground">{t.title}</div>
+                    <div className="flex items-center gap-2">
+                      <div className={`h-2 w-2 rounded-full ${statusDotClass[t.statusColor]}`} aria-hidden="true" />
+                      <span className="text-[11px] text-muted-foreground">{t.statusLabel}</span>
+                    </div>
+                  </div>
+                  <div className="text-[28px] leading-none font-semibold tracking-tight">{t.value}</div>
+                  <div className="text-table-sm text-muted-foreground">{t.helper}</div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Middle: jobs + cash at risk (with filters) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+            <div className="lg:col-span-9 space-y-6">
+              <Card className="border-border/50">
+                <CardHeader className="pb-3">
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                    <div className="space-y-0.5">
+                      <CardTitle className="text-section font-semibold">Jobs at risk</CardTitle>
+                      <CardDescription className="text-table-sm text-muted-foreground">
+                        Job costing signals that indicate margin compression, WIP health, and budget overruns.
+                      </CardDescription>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                      <Select value={filters.customer} onValueChange={(v) => setFilters((s) => ({ ...s, customer: v }))}>
+                        <SelectTrigger className="w-full sm:w-[190px]" aria-label="Filter by customer">
+                          <SelectValue placeholder="Customer" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All customers</SelectItem>
+                          {allCustomers.map((c) => (
+                            <SelectItem key={c} value={c}>
+                              {c}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Select value={filters.segment} onValueChange={(v) => setFilters((s) => ({ ...s, segment: v }))}>
+                        <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter by segment">
+                          <SelectValue placeholder="Segment" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All segments</SelectItem>
+                          {allSegments.map((s) => (
+                            <SelectItem key={s} value={s}>
+                              {s}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Select
+                        value={filters.projectManager}
+                        onValueChange={(v) => setFilters((s) => ({ ...s, projectManager: v }))}
+                      >
+                        <SelectTrigger className="w-full sm:w-[170px]" aria-label="Filter by project manager">
+                          <SelectValue placeholder="Project manager" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All PMs</SelectItem>
+                          {allPMs.map((p) => (
+                            <SelectItem key={p} value={p}>
+                              {p}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <Table className="table-standard">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Project</TableHead>
+                        <TableHead className="hidden md:table-cell">PM</TableHead>
+                        <TableHead className="hidden md:table-cell text-right">Margin</TableHead>
+                        <TableHead className="text-right">Over budget</TableHead>
+                        <TableHead className="hidden md:table-cell text-right">Unbilled WIP</TableHead>
+                        <TableHead className="hidden lg:table-cell">Next action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredJobs.map((r) => (
+                        <TableRow key={r.id}>
+                          <TableCell className="max-w-[520px]">
+                            <div className="flex items-center gap-2">
+                              <div className={`h-2 w-2 rounded-full ${statusDotClass[r.statusColor]}`} aria-hidden="true" />
+                              <div className="min-w-0">
+                                <div className="font-medium truncate">{r.project}</div>
+                                <div className="text-[11px] text-muted-foreground truncate">
+                                  {r.customer} • {r.segment}
+                                </div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell text-muted-foreground">{r.projectManager}</TableCell>
+                          <TableCell className="hidden md:table-cell text-right tabular-nums text-muted-foreground">
+                            {r.marginPct.toFixed(1)}%
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">
+                            <span className={r.statusColor === 'red' ? 'text-red-600 dark:text-red-500' : r.statusColor === 'yellow' ? 'text-amber-600 dark:text-amber-500' : 'text-muted-foreground'}>
+                              +{r.budgetOverPct.toFixed(1)}%
+                            </span>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell text-right tabular-nums text-muted-foreground">
+                            {r.unbilledWip}
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell text-muted-foreground">{r.nextAction}</TableCell>
+                        </TableRow>
+                      ))}
+                      {!isProofMode && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="py-8 text-center text-table text-muted-foreground">
+                            Connect job costing to populate jobs at risk (margin trend, WIP health, budget variance).
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {isProofMode && filteredJobs.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="py-8 text-center text-table text-muted-foreground">
+                            No jobs matched these filters.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/50">
+                <CardHeader className="pb-3">
+                  <div className="space-y-0.5">
+                    <CardTitle className="text-section font-semibold">Cash at risk</CardTitle>
+                    <CardDescription className="text-table-sm text-muted-foreground">
+                      AR aging, billing lag, and unbilled WIP that create cash drag.
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <Table className="table-standard">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Customer</TableHead>
+                        <TableHead className="hidden md:table-cell">PM</TableHead>
+                        <TableHead className="text-right">AR &gt; 60</TableHead>
+                        <TableHead className="text-right">Billing lag</TableHead>
+                        <TableHead className="hidden md:table-cell text-right">Unbilled WIP</TableHead>
+                        <TableHead className="hidden lg:table-cell">Next action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredCash.map((r) => (
+                        <TableRow key={r.id}>
+                          <TableCell className="max-w-[520px]">
+                            <div className="flex items-center gap-2">
+                              <div className={`h-2 w-2 rounded-full ${statusDotClass[r.statusColor]}`} aria-hidden="true" />
+                              <div className="min-w-0">
+                                <div className="font-medium truncate">{r.customer}</div>
+                                <div className="text-[11px] text-muted-foreground truncate">{r.segment}</div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell text-muted-foreground">{r.projectManager}</TableCell>
+                          <TableCell className="text-right tabular-nums">
+                            <span className={r.statusColor === 'red' ? 'text-red-600 dark:text-red-500' : r.statusColor === 'yellow' ? 'text-amber-600 dark:text-amber-500' : 'text-muted-foreground'}>
+                              {r.arOver60}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums text-muted-foreground">{r.billingLagDays}d</TableCell>
+                          <TableCell className="hidden md:table-cell text-right tabular-nums text-muted-foreground">
+                            {r.unbilledWip}
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell text-muted-foreground">{r.nextAction}</TableCell>
+                        </TableRow>
+                      ))}
+                      {!isProofMode && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="py-8 text-center text-table text-muted-foreground">
+                            Connect AR aging + billing feeds to populate cash at risk (slow payers, billing lag, backlog).
+                          </TableCell>
+                        </TableRow>
+                      )}
+                      {isProofMode && filteredCash.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="py-8 text-center text-table text-muted-foreground">
+                            No cash risks matched these filters.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Right side: Pilot Proof Panel + CTA */}
+            <div className="lg:col-span-3 space-y-4">
+              <Card className="border-border/50 lg:sticky lg:top-24">
+                <CardHeader className="pb-3">
+                  <div className="space-y-0.5">
+                    <CardTitle className="text-section font-semibold">Pilot Proof Panel</CardTitle>
+                    <CardDescription className="text-table-sm text-muted-foreground">
+                      Map what you see to 60-day pilot outcomes.
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex gap-2">
+                      <Target className="h-4 w-4 text-muted-foreground mt-0.5" aria-hidden="true" />
+                      <div>
+                        <div className="font-medium">Margin protected</div>
+                        <div className="text-muted-foreground text-[12px]">“Jobs over budget” + “Jobs at risk” show leakage early.</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Target className="h-4 w-4 text-muted-foreground mt-0.5" aria-hidden="true" />
+                      <div>
+                        <div className="font-medium">Cash accelerated</div>
+                        <div className="text-muted-foreground text-[12px]">“AR &gt; 60” + billing lag alerts surface drag within 24h.</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Target className="h-4 w-4 text-muted-foreground mt-0.5" aria-hidden="true" />
+                      <div>
+                        <div className="font-medium">Accountability layer</div>
+                        <div className="text-muted-foreground text-[12px]">Owners + due dates + weekly scorecard drive follow-through.</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <CalendarDays className="h-4 w-4 text-muted-foreground mt-0.5" aria-hidden="true" />
+                      <div>
+                        <div className="font-medium">Weekly scorecard by Monday 9 AM</div>
+                        <div className="text-muted-foreground text-[12px]">This week’s scorecard ties directly into Meeting Mode.</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border/30 bg-surface-2/30 p-3">
+                    <div className="text-xs text-muted-foreground mb-2">Run a 60-day proof pilot</div>
+                    <ul className="text-[12px] text-muted-foreground space-y-1 list-disc pl-4">
+                      <li>Systems connected</li>
+                      <li>Dashboards live</li>
+                      <li>Alerts firing daily</li>
+                      <li>Weekly scorecard running</li>
+                    </ul>
+                    <Button
+                      className="w-full mt-3"
+                      onClick={() => toast.success('Pilot request captured (demo). Wire this CTA to your commercial flow next.')}
+                    >
+                      Run a 60-Day Proof Pilot
+                    </Button>
+                    <div className="text-[11px] text-muted-foreground mt-2">
+                      CFO/COO-friendly: margin, cash, and labor in one place.
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/50">
+                <CardContent className="p-5 flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-lg border border-border/30 bg-surface-2/50 flex items-center justify-center flex-shrink-0">
+                    <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-section-sm text-muted-foreground mb-1">Data Trust</div>
+                    <div className="text-section font-semibold">Healthy</div>
+                    <div className="text-table-sm text-muted-foreground mt-1">
+                      In demo, this is simulated. In production, this reflects ingest freshness and completeness.
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Bottom: alerts/commitments feed + weekly scorecard */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="border-border/50">
               <CardHeader className="flex flex-row items-start justify-between gap-4 pb-3">
                 <div className="space-y-0.5">
-                  <CardTitle className="text-section font-semibold">Top Risks This Week</CardTitle>
-                  <CardDescription className="text-table-sm text-muted-foreground">Prioritized by severity and recency</CardDescription>
+                  <CardTitle className="text-section font-semibold">Alerts & commitments</CardTitle>
+                  <CardDescription className="text-table-sm text-muted-foreground">
+                    5–8 core items with owners, due dates, and status.
+                  </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => router.push('/app/execute/alerts')} className="flex-shrink-0">
-                  View all
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={() => router.push('/app/execute/alerts')}>
+                    Alerts
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => router.push('/app/execute/tasks')}>
+                    Tasks
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
-                {topAlerts.length === 0 ? (
+                {combinedFeed.length === 0 ? (
                   <div className="p-6 text-table text-muted-foreground flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4" aria-hidden="true" />
-                    No open alerts right now.
+                    No alerts or commitments to show.
                   </div>
                 ) : (
                   <Table className="table-standard">
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Severity</TableHead>
-                        <TableHead>Alert</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Item</TableHead>
                         <TableHead className="hidden md:table-cell">Owner</TableHead>
                         <TableHead className="hidden md:table-cell">Due</TableHead>
-                        <TableHead>State</TableHead>
+                        <TableHead>Status</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {topAlerts.map((a) => (
-                        <TableRow key={a.id}>
+                      {combinedFeed.map((i) => (
+                        <TableRow key={`${i.type}-${i.id}`}>
                           <TableCell>
-                            <SeverityPill severity={a.severity} />
+                            <Badge variant="outline" className="text-[10px]">
+                              {i.type === 'alert' ? 'Alert' : 'Commitment'}
+                            </Badge>
                           </TableCell>
                           <TableCell className="max-w-[520px]">
-                            <div className="font-medium truncate">{a.title}</div>
+                            <div className="font-medium truncate">{i.title}</div>
+                            {i.type === 'alert' && (
+                              <div className="mt-1">
+                                <SeverityPill severity={i.severity} />
+                              </div>
+                            )}
                           </TableCell>
+                          <TableCell className="hidden md:table-cell text-muted-foreground">{i.owner}</TableCell>
                           <TableCell className="hidden md:table-cell text-muted-foreground">
-                            {a.owner || 'Unassigned'}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell text-muted-foreground">
-                            {a.due_at ? formatDate(a.due_at) : '—'}
+                            {i.due_at ? formatDate(i.due_at) : '—'}
                           </TableCell>
                           <TableCell>
-                            <AlertStatePill state={a.state} />
+                            {i.type === 'alert' ? <AlertStatePill state={i.state as any} /> : <TaskStatePill state={i.state as any} />}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -320,82 +1015,70 @@ export default function OperatePage() {
             <Card className="border-border/50">
               <CardHeader className="flex flex-row items-start justify-between gap-4 pb-3">
                 <div className="space-y-0.5">
-                  <CardTitle className="text-section font-semibold">Commitments</CardTitle>
-                  <CardDescription className="text-table-sm text-muted-foreground">Due within the next 7 days</CardDescription>
+                  <CardTitle className="text-section font-semibold">This week’s scorecard</CardTitle>
+                  <CardDescription className="text-table-sm text-muted-foreground">
+                    KPIs with owners and explicit weekly accountability.
+                  </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => router.push('/app/execute/tasks')} className="flex-shrink-0">
-                  View all
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const qp = clientProjectId ? `?client=${encodeURIComponent(clientProjectId)}` : osInstanceId ? `?os=${encodeURIComponent(osInstanceId)}` : ''
+                    router.push(`/app/cadence${qp}`)
+                  }}
+                >
+                  Open Meeting Mode
                 </Button>
               </CardHeader>
               <CardContent className="p-0">
-                {tasks.length === 0 ? (
-                  <div className="p-6 text-table text-muted-foreground">
-                    No upcoming tasks due in the next 7 days.
-                  </div>
-                ) : (
-                  <Table className="table-standard">
-                    <TableHeader>
+                <Table className="table-standard">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>KPI</TableHead>
+                      <TableHead className="hidden md:table-cell">Owner</TableHead>
+                      <TableHead className="hidden md:table-cell">Target</TableHead>
+                      <TableHead>Actual</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {!isProofMode && (
                       <TableRow>
-                        <TableHead>Task</TableHead>
-                        <TableHead className="hidden md:table-cell">Owner</TableHead>
-                        <TableHead className="hidden md:table-cell">Due</TableHead>
-                        <TableHead>State</TableHead>
+                        <TableCell colSpan={4} className="py-8 text-center text-table text-muted-foreground">
+                          Publish cadence rules to generate a weekly scorecard, then review it in Meeting Mode.
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {tasks.map((t) => (
-                        <TableRow key={t.id}>
-                          <TableCell className="max-w-[520px]">
-                            <div className="font-medium truncate">{t.title}</div>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell text-muted-foreground">
-                            {t.owner}
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell text-muted-foreground">
-                            {t.due_at ? formatDate(t.due_at) : '—'}
-                          </TableCell>
-                          <TableCell>
-                            <TaskStatePill state={t.state} />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
+                    )}
+                    {isProofMode && scorecard.slice(0, 6).map((r) => (
+                      <TableRow key={r.id}>
+                        <TableCell className="max-w-[520px]">
+                          <div className="flex items-start gap-2">
+                            <div className={`h-2 w-2 rounded-full mt-1.5 ${statusDotClass[r.statusColor]}`} aria-hidden="true" />
+                            <div className="min-w-0">
+                              <div className="font-medium truncate">{r.kpi}</div>
+                              <div className="text-[11px] text-muted-foreground truncate">{r.note}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell text-muted-foreground">{r.owner}</TableCell>
+                        <TableCell className="hidden md:table-cell text-muted-foreground">{r.target}</TableCell>
+                        <TableCell className="tabular-nums">
+                          <span className={r.statusColor === 'red' ? 'text-red-600 dark:text-red-500' : r.statusColor === 'yellow' ? 'text-amber-600 dark:text-amber-500' : 'text-muted-foreground'}>
+                            {r.actual}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </div>
-
-          <Card className="border-border/50">
-            <CardHeader className="pb-3">
-              <div className="space-y-0.5">
-                <CardTitle className="text-section font-semibold">Data Trust</CardTitle>
-                <CardDescription className="text-table-sm text-muted-foreground">Ingestion health and data quality metrics</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="rounded-lg border border-border/30 bg-surface-2/30 px-4 py-3">
-                  <div className="text-section-sm text-muted-foreground mb-1">Freshness</div>
-                  <div className="text-section font-semibold">—</div>
-                </div>
-                <div className="rounded-lg border border-border/30 bg-surface-2/30 px-4 py-3">
-                  <div className="text-section-sm text-muted-foreground mb-1">Completeness</div>
-                  <div className="text-section font-semibold">—</div>
-                </div>
-                <div className="rounded-lg border border-border/30 bg-surface-2/30 px-4 py-3">
-                  <div className="text-section-sm text-muted-foreground mb-1">Last Ingest</div>
-                  <div className="text-section font-semibold">—</div>
-                </div>
-              </div>
-              <p className="text-table text-muted-foreground">
-                Data quality metrics will appear here once ingestion health is wired to real sources.
-              </p>
-            </CardContent>
-          </Card>
         </>
       ) : null}
     </OsPage>
   )
 }
+
+
 

@@ -124,3 +124,5 @@ export function OpportunityDetailView({ opportunity, accounts }: OpportunityDeta
     </Card>
   )
 }
+
+

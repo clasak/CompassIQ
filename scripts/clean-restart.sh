@@ -17,3 +17,5 @@ fi
 echo "✅ Port 3005 is clear"
 echo "🚀 Starting dev server on port 3005..."
 PORT=3005 npm run dev
+
+

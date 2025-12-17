@@ -66,3 +66,5 @@ npm run dev
 - **"relation does not exist" error**: Migrations haven't been applied yet - complete Step 1
 - **Connection errors**: Verify `NEXT_PUBLIC_SUPABASE_URL` is correct
 
+
+

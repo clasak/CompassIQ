@@ -157,3 +157,5 @@ export type Company = z.infer<typeof CompanySchema>
 export type Branding = z.infer<typeof BrandingSchema>
 export type KPI = z.infer<typeof KPISchema>
 export type OptionalEntities = z.infer<typeof OptionalEntitiesSchema>
+
+

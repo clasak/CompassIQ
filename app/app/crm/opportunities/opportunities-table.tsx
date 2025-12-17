@@ -140,3 +140,5 @@ export const OpportunitiesTable = memo(function OpportunitiesTable({ opportuniti
 })
 
 
+
+

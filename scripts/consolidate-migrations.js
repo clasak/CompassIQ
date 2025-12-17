@@ -28,3 +28,5 @@ fs.writeFileSync(outputPath, allSQL);
 
 console.log(`✅ Consolidated SQL file created at ${outputPath}`);
 
+
+

@@ -21,3 +21,5 @@ Generated: 2025-12-15
 | `/app/settings/org → /app/settings/branding` (settings nav) | 24 | 678 | PASS |
 | KPI drilldown: `/app → /app/finance?filter=revenue` | 24 | 105 | PASS |
 
+
+

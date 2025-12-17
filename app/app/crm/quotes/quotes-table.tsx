@@ -160,3 +160,5 @@ export const QuotesTable = memo(function QuotesTable({ quotes, accounts }: Quote
 })
 
 
+
+

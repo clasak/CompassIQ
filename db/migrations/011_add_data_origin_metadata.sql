@@ -49,3 +49,5 @@ CREATE INDEX IF NOT EXISTS idx_accounts_metadata_origin ON accounts((metadata->>
 CREATE INDEX IF NOT EXISTS idx_opportunities_metadata_origin ON opportunities((metadata->>'data_origin'));
 CREATE INDEX IF NOT EXISTS idx_tasks_metadata_origin ON tasks((metadata->>'data_origin'));
 CREATE INDEX IF NOT EXISTS idx_quotes_metadata_origin ON quotes((metadata->>'data_origin'));
+
+

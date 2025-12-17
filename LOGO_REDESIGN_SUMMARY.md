@@ -222,3 +222,5 @@ The logo now perfectly matches the official CompassIQ brand design:
 **Branch:** `claude/fix-ui-layout-issues-ekyk3`
 **Dev Server:** Running on port 3005
 
+
+

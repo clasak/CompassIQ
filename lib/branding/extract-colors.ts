@@ -239,3 +239,5 @@ export async function extractColorsFromSvg(svgText: string): Promise<ExtractedCo
 }
 
 
+
+

@@ -1,6 +1,7 @@
 import { TasksTable } from './tasks-table'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getOrgContext } from '@/lib/org-context'
 import { getActiveOrgId } from '@/lib/org'
 import { createClient } from '@/lib/supabase/server'
@@ -84,9 +85,17 @@ export default async function ActionsPage() {
       </div>
 
       {overdue.length > 0 && (
-        <Card className="border-red-200 bg-red-50">
-          <CardHeader>
-            <CardTitle className="text-red-800">Overdue Tasks ({overdue.length})</CardTitle>
+        <Card className="border-border/50">
+          <CardHeader className="flex flex-row items-start justify-between gap-4 pb-3">
+            <div className="space-y-0.5">
+              <CardTitle className="text-section font-semibold">Overdue tasks</CardTitle>
+              <CardDescription className="text-table-sm text-muted-foreground">
+                Past-due items that need an owner update or next action.
+              </CardDescription>
+            </div>
+            <Badge variant="destructive" className="flex-shrink-0">
+              {overdue.length} overdue
+            </Badge>
           </CardHeader>
           <CardContent>
             <TasksTable tasks={overdue} exportFilename="overdue-tasks.csv" />
@@ -94,9 +103,9 @@ export default async function ActionsPage() {
         </Card>
       )}
 
-      <Card>
+      <Card className="border-border/50">
         <CardHeader data-demo-tour="actions-tasks">
-          <CardTitle>My Tasks ({allTasks.length})</CardTitle>
+          <CardTitle className="text-section font-semibold">My tasks ({allTasks.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <TasksTable tasks={allTasks} exportFilename="my-tasks.csv" />

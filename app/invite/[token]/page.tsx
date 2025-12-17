@@ -70,3 +70,5 @@ export default async function InviteAcceptPage({ params }: InviteAcceptPageProps
   )
 }
 
+
+

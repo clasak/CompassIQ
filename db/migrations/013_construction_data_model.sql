@@ -210,3 +210,5 @@ ALTER TABLE construction_change_orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE construction_labor_entries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE construction_equipment_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE construction_invoices ENABLE ROW LEVEL SECURITY;
+
+
