@@ -60,15 +60,15 @@ export default async function ClientProjectDetailPage({ params }: ClientProjectD
         title={result.project.name}
         description={`Client project workspace and engagement details`}
       />
-      <ClientProjectDetailView 
-        project={result.project} 
-        intakePack={intakePackResult.success ? intakePackResult.intakePack || null : null}
-        dataSources={dataSourcesResult.success ? dataSourcesResult.dataSources || [] : []}
-        kpis={kpisResult.success ? kpisResult.kpis || [] : []}
-        alertRules={alertsResult.success ? alertsResult.alertRules || [] : []}
-        cadences={cadencesResult.success ? cadencesResult.cadences || [] : []}
-        meetings={meetingsResult.success ? meetingsResult.meetings || [] : []}
-        deliverables={deliverablesResult.success ? deliverablesResult.deliverables || [] : []}
+      <ClientProjectDetailView
+        project={result.project}
+        intakePack={('intakePack' in intakePackResult ? intakePackResult.intakePack : null) as any}
+        dataSources={('dataSources' in dataSourcesResult ? dataSourcesResult.dataSources : []) as any}
+        kpis={('kpis' in kpisResult ? kpisResult.kpis : []) as any}
+        alertRules={('alertRules' in alertsResult ? alertsResult.alertRules : []) as any}
+        cadences={('cadences' in cadencesResult ? cadencesResult.cadences : []) as any}
+        meetings={('meetings' in meetingsResult ? meetingsResult.meetings : []) as any}
+        deliverables={('deliverables' in deliverablesResult ? deliverablesResult.deliverables : []) as any}
       />
     </div>
   )
