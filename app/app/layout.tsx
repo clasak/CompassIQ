@@ -16,6 +16,7 @@ import { PreviewBanner } from '@/components/app-shell/PreviewBanner'
 import { PerfNavCapture } from '@/components/perf/PerfNavCapture'
 import { serverPerf } from '@/lib/perf'
 import { getActivePreviewId } from '@/lib/preview'
+import { AnalyticsCapture } from '@/components/analytics/AnalyticsCapture'
 
 export default async function AppLayout({
   children,
@@ -41,6 +42,7 @@ export default async function AppLayout({
                 <UiClickAudit />
                 <DemoTour />
                 <PerfNavCapture />
+                <AnalyticsCapture />
               </main>
             </div>
           </div>
@@ -86,8 +88,11 @@ export default async function AppLayout({
     redirect('/app/onboarding')
   }
 
-  const branding = await serverPerf('layout:getBrandingForOrgId', () => getBrandingForOrgId(orgId))
-  const previewId = await getActivePreviewId()
+  // Parallel fetch branding and preview ID (both independent)
+  const [branding, previewId] = await Promise.all([
+    serverPerf('layout:getBrandingForOrgId', () => getBrandingForOrgId(orgId)),
+    getActivePreviewId()
+  ])
 
   return (
     <BrandProvider branding={branding}>
@@ -103,6 +108,7 @@ export default async function AppLayout({
               <UiClickAudit />
               <DemoTour />
               <PerfNavCapture />
+              <AnalyticsCapture />
             </main>
           </div>
         </div>

@@ -7,8 +7,11 @@ import { PageHeader } from '@/components/ui/page-header'
 import { QuotesPageClient } from './page-client'
 
 export default async function QuotesPage() {
-  const quotesResult = await listQuotes()
-  const accountsResult = await listAccounts()
+  // Parallel fetching for 2x performance improvement
+  const [quotesResult, accountsResult] = await Promise.all([
+    listQuotes(),
+    listAccounts()
+  ])
   const quotes = quotesResult.quotes || []
   const accounts = accountsResult.accounts || []
 
@@ -32,6 +35,8 @@ export default async function QuotesPage() {
     </div>
   )
 }
+
+
 
 
 

@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 export function DefaultMark({
@@ -10,12 +11,15 @@ export function DefaultMark({
   className?: string
   title?: string
 }) {
-  // Use PNG logo by default for exact brand match - EXTRA LARGE size
+  // Use Next.js Image for automatic optimization (WebP, sizing, lazy loading)
   return (
-    <img
+    <Image
       src="/compass-iq-logo.png"
       alt={title}
-      className={cn('h-48 w-48 object-contain', className)}
+      width={192} // h-48 = 192px
+      height={192}
+      className={cn('object-contain', className)}
+      priority // Above-the-fold logo in sidebar
     />
   )
 }
@@ -33,13 +37,13 @@ export function BrandMark({
 }) {
   if (url) {
     return (
-      <img
+      <Image
         src={url}
         alt={alt}
         width={size}
         height={size}
         className={cn('shrink-0 object-contain', className)}
-        style={{ width: size, height: size }}
+        priority // Custom logos also above-the-fold
       />
     )
   }

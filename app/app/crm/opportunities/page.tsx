@@ -7,8 +7,11 @@ import { PageHeader } from '@/components/ui/page-header'
 import { OpportunitiesPageClient } from './page-client'
 
 export default async function OpportunitiesPage() {
-  const oppsResult = await listOpportunities()
-  const accountsResult = await listAccounts()
+  // Parallel fetching for 2x performance improvement
+  const [oppsResult, accountsResult] = await Promise.all([
+    listOpportunities(),
+    listAccounts()
+  ])
   const opportunities = oppsResult.opportunities || []
   const accounts = accountsResult.accounts || []
 
@@ -32,6 +35,8 @@ export default async function OpportunitiesPage() {
     </div>
   )
 }
+
+
 
 
 

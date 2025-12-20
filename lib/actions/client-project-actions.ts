@@ -54,9 +54,10 @@ export interface ClientIntakePack {
 /**
  * Get all client projects for the current org
  */
-export async function getClientProjects(): Promise<{
+export async function getClientProjects(page: number = 0, limit: number = 100): Promise<{
   success: boolean
   projects?: ClientProject[]
+  total?: number
   error?: string
 }> {
   try {
@@ -66,17 +67,18 @@ export async function getClientProjects(): Promise<{
     }
 
     const supabase = await createClient()
-    const { data: projects, error } = await supabase
+    const { data: projects, error, count } = await supabase
       .from('client_projects')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('org_id', context.orgId)
       .order('created_at', { ascending: false })
+      .range(page * limit, (page + 1) * limit - 1)
 
     if (error) {
       return { success: false, error: normalizeError(error) }
     }
 
-    return { success: true, projects: projects || [] }
+    return { success: true, projects: projects || [], total: count || 0 }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to get client projects' }
   }
@@ -1072,5 +1074,7 @@ export async function deleteDeliverable(id: string) {
     return { success: false, error: err.message }
   }
 }
+
+
 
 

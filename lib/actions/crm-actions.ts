@@ -27,10 +27,11 @@ export interface Lead {
 export interface ListLeadsResult {
   success: boolean
   leads?: Lead[]
+  total?: number
   error?: string
 }
 
-export async function listLeads(): Promise<ListLeadsResult> {
+export async function listLeads(page: number = 0, limit: number = 100): Promise<ListLeadsResult> {
   try {
     const context = await requireOrgContext()
     if (!context) {
@@ -42,17 +43,18 @@ export async function listLeads(): Promise<ListLeadsResult> {
     }
 
     const supabase = await createClient()
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('leads')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('org_id', context.orgId)
       .order('created_at', { ascending: false })
+      .range(page * limit, (page + 1) * limit - 1)
 
     if (error) {
       return { success: false, error: normalizeError(error) }
     }
 
-    return { success: true, leads: data || [] }
+    return { success: true, leads: data || [], total: count || 0 }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to list leads' }
   }
@@ -238,10 +240,11 @@ export interface Account {
 export interface ListAccountsResult {
   success: boolean
   accounts?: Account[]
+  total?: number
   error?: string
 }
 
-export async function listAccounts(): Promise<ListAccountsResult> {
+export async function listAccounts(page: number = 0, limit: number = 100): Promise<ListAccountsResult> {
   try {
     const context = await requireOrgContext()
     if (!context) {
@@ -249,17 +252,18 @@ export async function listAccounts(): Promise<ListAccountsResult> {
     }
 
     const supabase = await createClient()
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('accounts')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('org_id', context.orgId)
       .order('created_at', { ascending: false })
+      .range(page * limit, (page + 1) * limit - 1)
 
     if (error) {
       return { success: false, error: normalizeError(error) }
     }
 
-    return { success: true, accounts: data || [] }
+    return { success: true, accounts: data || [], total: count || 0 }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to list accounts' }
   }
@@ -442,10 +446,11 @@ export interface Opportunity {
 export interface ListOpportunitiesResult {
   success: boolean
   opportunities?: Opportunity[]
+  total?: number
   error?: string
 }
 
-export async function listOpportunities(): Promise<ListOpportunitiesResult> {
+export async function listOpportunities(page: number = 0, limit: number = 100): Promise<ListOpportunitiesResult> {
   try {
     const context = await requireOrgContext()
     if (!context) {
@@ -453,17 +458,18 @@ export async function listOpportunities(): Promise<ListOpportunitiesResult> {
     }
 
     const supabase = await createClient()
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('opportunities')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('org_id', context.orgId)
       .order('created_at', { ascending: false })
+      .range(page * limit, (page + 1) * limit - 1)
 
     if (error) {
       return { success: false, error: normalizeError(error) }
     }
 
-    return { success: true, opportunities: data || [] }
+    return { success: true, opportunities: data || [], total: count || 0 }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to list opportunities' }
   }
@@ -671,10 +677,11 @@ export interface QuoteWithLineItems extends Quote {
 export interface ListQuotesResult {
   success: boolean
   quotes?: Quote[]
+  total?: number
   error?: string
 }
 
-export async function listQuotes(): Promise<ListQuotesResult> {
+export async function listQuotes(page: number = 0, limit: number = 100): Promise<ListQuotesResult> {
   try {
     const context = await requireOrgContext()
     if (!context) {
@@ -682,17 +689,18 @@ export async function listQuotes(): Promise<ListQuotesResult> {
     }
 
     const supabase = await createClient()
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('quotes')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('org_id', context.orgId)
       .order('created_at', { ascending: false })
+      .range(page * limit, (page + 1) * limit - 1)
 
     if (error) {
       return { success: false, error: normalizeError(error) }
     }
 
-    return { success: true, quotes: data || [] }
+    return { success: true, quotes: data || [], total: count || 0 }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to list quotes' }
   }
@@ -979,10 +987,11 @@ export interface Task {
 export interface ListTasksResult {
   success: boolean
   tasks?: Task[]
+  total?: number
   error?: string
 }
 
-export async function listTasks(): Promise<ListTasksResult> {
+export async function listTasks(page: number = 0, limit: number = 100): Promise<ListTasksResult> {
   try {
     const context = await requireOrgContext()
     if (!context) {
@@ -990,17 +999,18 @@ export async function listTasks(): Promise<ListTasksResult> {
     }
 
     const supabase = await createClient()
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('tasks')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('org_id', context.orgId)
       .order('created_at', { ascending: false })
+      .range(page * limit, (page + 1) * limit - 1)
 
     if (error) {
       return { success: false, error: normalizeError(error) }
     }
 
-    return { success: true, tasks: data || [] }
+    return { success: true, tasks: data || [], total: count || 0 }
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to list tasks' }
   }
@@ -1191,6 +1201,8 @@ export async function deleteTask(id: string): Promise<DeleteTaskResult> {
     return { success: false, error: err.message || 'Failed to delete task' }
   }
 }
+
+
 
 
 

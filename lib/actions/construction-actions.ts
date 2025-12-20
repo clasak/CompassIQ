@@ -103,27 +103,28 @@ export interface ConstructionInvoice {
   metadata: Record<string, any>
 }
 
-export async function listConstructionProjects() {
+export async function listConstructionProjects(page: number = 0, limit: number = 100) {
   try {
     const supabase = await createClient()
     const orgId = await getActiveOrgId()
     if (!orgId) {
-      return { projects: [], error: 'No org context' }
+      return { projects: [], total: 0, error: 'No org context' }
     }
 
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('construction_projects')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('org_id', orgId)
       .order('created_at', { ascending: false })
+      .range(page * limit, (page + 1) * limit - 1)
 
     if (error) {
-      return { projects: [], error: error.message }
+      return { projects: [], total: 0, error: error.message }
     }
 
-    return { projects: (data || []) as ConstructionProject[] }
+    return { projects: (data || []) as ConstructionProject[], total: count || 0 }
   } catch (err: any) {
-    return { projects: [], error: err.message || 'Failed to list projects' }
+    return { projects: [], total: 0, error: err.message || 'Failed to list projects' }
   }
 }
 
@@ -306,5 +307,7 @@ export async function listConstructionInvoices(projectId?: string) {
     return { invoices: [], error: err.message || 'Failed to list invoices' }
   }
 }
+
+
 
 
