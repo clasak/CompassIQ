@@ -1,0 +1,36 @@
+import { listQuotes, listAccounts } from '@/lib/actions/crm-actions'
+import { QuotesTable } from './quotes-table'
+import { ActionButton } from '@/components/ui/action-button'
+import { Plus } from 'lucide-react'
+import { CreateQuoteDialog } from './create-quote-dialog'
+import { PageHeader } from '@/components/ui/page-header'
+import { QuotesPageClient } from './page-client'
+
+export default async function QuotesPage() {
+  const quotesResult = await listQuotes()
+  const accountsResult = await listAccounts()
+  const quotes = quotesResult.quotes || []
+  const accounts = accountsResult.accounts || []
+
+  return (
+    <div className="space-y-6 p-6">
+      <PageHeader
+        title="Quotes"
+        description="Create and manage sales quotes and proposals"
+        action={
+          <CreateQuoteDialog accounts={accounts}>
+            <ActionButton actionType="admin" className="gap-2">
+              <Plus className="h-4 w-4" />
+              New Quote
+            </ActionButton>
+          </CreateQuoteDialog>
+        }
+      />
+
+      <QuotesTable quotes={quotes} accounts={accounts} />
+      <QuotesPageClient />
+    </div>
+  )
+}
+
+

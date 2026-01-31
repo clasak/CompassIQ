@@ -1,0 +1,7 @@
+<svg width="400" height="80" viewBox="0 0 400 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- CompassIQ Text for dark backgrounds -->
+  <text x="10" y="60" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="700" fill="#0A1929">
+    <tspan>Compass</tspan>
+    <tspan fill="#00BFA5">IQ</tspan>
+  </text>
+</svg>

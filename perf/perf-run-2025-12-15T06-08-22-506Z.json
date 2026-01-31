@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "baseURL": "http://localhost:3005",
+    "runs": 1,
+    "at": "2025-12-15T06:08:45.713Z",
+    "node": "v20.18.0"
+  },
+  "scenarios": [
+    {
+      "name": "/app → /app/sales (sidebar)",
+      "fromPath": "/app",
+      "destPath": "/app/sales",
+      "runs": 1,
+      "rendered": [
+        131.19999998807907
+      ],
+      "skeleton": [
+        117.5
+      ],
+      "summary": {
+        "rendered": {
+          "medianMs": 131.19999998807907,
+          "p95Ms": 131.19999998807907
+        },
+        "skeleton": {
+          "medianMs": 117.5,
+          "p95Ms": 117.5
+        }
+      }
+    },
+    {
+      "name": "/app → /app/ops (sidebar)",
+      "fromPath": "/app",
+      "destPath": "/app/ops",
+      "runs": 1,
+      "rendered": [
+        114.60000002384186
+      ],
+      "skeleton": [
+        100.60000002384186
+      ],
+      "summary": {
+        "rendered": {
+          "medianMs": 114.60000002384186,
+          "p95Ms": 114.60000002384186
+        },
+        "skeleton": {
+          "medianMs": 100.60000002384186,
+          "p95Ms": 100.60000002384186
+        }
+      }
+    },
+    {
+      "name": "/app/settings/org → /app/settings/branding (settings nav)",
+      "fromPath": "/app/settings/org",
+      "destPath": "/app/settings/branding",
+      "runs": 1,
+      "rendered": [
+        1852.7999999523163
+      ],
+      "skeleton": [],
+      "summary": {
+        "rendered": {
+          "medianMs": 1852.7999999523163,
+          "p95Ms": 1852.7999999523163
+        },
+        "skeleton": {
+          "medianMs": 0,
+          "p95Ms": 0
+        }
+      }
+    },
+    {
+      "name": "KPI drilldown: Revenue MTD card",
+      "fromPath": "/app",
+      "destPath": "/app/finance?filter=revenue",
+      "runs": 1,
+      "rendered": [
+        579.6999999880791
+      ],
+      "skeleton": [
+        572
+      ],
+      "summary": {
+        "rendered": {
+          "medianMs": 579.6999999880791,
+          "p95Ms": 579.6999999880791
+        },
+        "skeleton": {
+          "medianMs": 572,
+          "p95Ms": 572
+        }
+      }
+    }
+  ]
+}
