@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import {
@@ -106,9 +107,13 @@ export function Sidebar() {
       <div className="p-6 border-b border-border">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pipeline to-revenue flex items-center justify-center">
-              <Target className="w-5 h-5 text-white" />
-            </div>
+            <Image 
+              src="/compass-iq-logo.svg" 
+              alt="CompassIQ Logo" 
+              width={40} 
+              height={40}
+              className="w-10 h-10"
+            />
             <div>
               <span className="font-display font-bold text-lg text-text-primary">
                 CompassIQ

@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="circleGradient" x1="256" y1="100" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00D9FF"/>
+      <stop offset="50%" stop-color="#0080FF"/>
+      <stop offset="100%" stop-color="#0040C0"/>
+    </linearGradient>
+    <linearGradient id="arrowGradient" x1="256" y1="150" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#C0FF00"/>
+      <stop offset="50%" stop-color="#00E676"/>
+      <stop offset="100%" stop-color="#00BFA5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Ring -->
+  <circle cx="256" cy="306" r="180" stroke="url(#circleGradient)" stroke-width="45" fill="none"/>
+
+  <!-- Compass Needle/Arrow -->
+  <path d="M 200 430 L 256 350 L 180 306 L 380 200 L 256 350 L 332 306 Z"
+        fill="url(#arrowGradient)"
+        opacity="0.95"/>
+</svg>
