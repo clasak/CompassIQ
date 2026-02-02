@@ -9,9 +9,12 @@ import { Button } from '@/components/ui/button'
 import { DataTable, StatusBadge, CurrencyCell, DateCell } from '@/components/ui/data-table'
 import { FunnelChart } from '@/components/ui/funnel-chart'
 import { formatCurrency, formatPercent } from '@/lib/utils'
-import { kpis, funnelData, recentDeals, openTasks, alerts, revenueByMonth } from '@/lib/mock-data'
-import { leadStats } from '@/lib/leads-data'
-import { campaignStats } from '@/lib/campaigns-data'
+import { leadStats as staticLeadStats } from '@/lib/leads-data'
+import { campaignStats as staticCampaignStats } from '@/lib/campaigns-data'
+import { useLeads } from '@/hooks/use-leads'
+import { useCampaigns } from '@/hooks/use-campaigns'
+import { useDeals } from '@/hooks/use-deals'
+import { useTasks } from '@/hooks/use-tasks'
 import {
   TrendingUp,
   Target,
@@ -25,28 +28,79 @@ import {
   Zap,
   Users,
   Mail,
+  Database,
+  RefreshCw,
+  Loader2,
 } from 'lucide-react'
 import Link from 'next/link'
 
 export function CommandCenter() {
+  // Use live data from Supabase
+  const { stats: leadStatsLive, isLoading: leadsLoading, error: leadsError, fetchStats } = useLeads()
+  const { stats: campaignStatsLive, campaigns, isLoading: campaignsLoading } = useCampaigns()
+  const { deals, pipeline, isLoading: dealsLoading } = useDeals()
+  const { tasks, isLoading: tasksLoading } = useTasks()
+  
+  // Use live stats if available, otherwise use static data
+  const leadStats = leadStatsLive || staticLeadStats
+  const campaignStats = campaignStatsLive || staticCampaignStats
+  const isLiveData = !!leadStatsLive && !leadsError
+  const isLoading = leadsLoading || campaignsLoading || dealsLoading || tasksLoading
+  
+  // Build funnel data from deals
+  const funnelData = pipeline?.byStage?.map(s => ({
+    name: s.stage.charAt(0).toUpperCase() + s.stage.slice(1).replace('-', ' '),
+    stage: s.stage.charAt(0).toUpperCase() + s.stage.slice(1).replace('-', ' '),
+    count: s.count,
+    value: s.value
+  })) || []
+  
+  // Recent deals (top 5)
+  const recentDeals = deals.slice(0, 5).map(d => ({
+    id: d.id,
+    name: d.name,
+    account: d.company,
+    value: d.value,
+    stage: d.stage.charAt(0).toUpperCase() + d.stage.slice(1).replace('-', ' '),
+    probability: d.probability,
+    closeDate: d.expected_close_date || '',
+    owner: d.owner
+  }))
+  
+  // Open tasks (pending)
+  const openTasks = tasks.map(t => ({
+    id: t.id,
+    title: t.title,
+    account: t.company || '',
+    dueDate: t.due_date || '',
+    priority: t.priority,
+    assignee: t.assignee
+  }))
+  
   return (
     <div className="space-y-8">
-      {/* Header with Launch Day indicator */}
+      {/* Header with data source indicator */}
       <PageHeader
         title="Command Center"
-        description="🚀 Launch Day - Ready to execute with 21 researched leads and 3 proven campaigns"
+        description={`🚀 Ready to execute with ${leadStats.total}+ researched leads and ${campaignStats.totalCampaigns} proven campaigns`}
         actions={
           <div className="flex items-center gap-4">
+            {/* Data source indicator */}
+            <div className={`flex items-center gap-2 text-sm ${isLiveData ? 'text-revenue' : 'text-warning'}`}>
+              <Database className="w-4 h-4" />
+              <span>{isLiveData ? 'Live Data' : 'Static Data'}</span>
+              {isLoading && <RefreshCw className="w-3 h-3 animate-spin" />}
+            </div>
             <div className="flex items-center gap-2 text-sm text-pipeline">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pipeline opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-pipeline"></span>
               </span>
-              Launch Day
+              Active
             </div>
-            <Button variant="secondary" size="sm">
-              <Zap className="w-4 h-4 mr-2" />
-              Ready to Execute
+            <Button variant="secondary" size="sm" onClick={() => fetchStats()}>
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Refresh
             </Button>
           </div>
         }
@@ -57,24 +111,22 @@ export function CommandCenter() {
         <div>
           <HeroMetric
             label="Revenue (Day 1)"
-            value={formatCurrency(kpis.revenue.current)}
-            trend={kpis.revenue.trend}
-            trendLabel="Launching today!"
+            value={formatCurrency(deals.filter(d => d.stage === 'closed-won').reduce((sum, d) => sum + d.value, 0))}
+            trend={0}
+            trendLabel={deals.filter(d => d.stage === 'closed-won').length > 0 ? `${deals.filter(d => d.stage === 'closed-won').length} deals won` : 'No closed deals yet'}
             variant="neutral"
             size="lg"
-            sparkline={kpis.revenue.sparkline}
             delay={0}
           />
         </div>
         <div>
           <HeroMetric
-            label="Pipeline Potential (21 Leads)"
-            value={formatCurrency(kpis.pipeline.current)}
-            trend={kpis.pipeline.trend}
-            trendLabel="Researched & ready"
+            label={`Pipeline Potential (${leadStats.total} Leads)`}
+            value={formatCurrency(pipeline?.total || leadStats.totalValue)}
+            trend={deals.length}
+            trendLabel={deals.length > 0 ? `${deals.length} active deals` : `${leadStats.total} leads ready`}
             variant="pipeline"
             size="lg"
-            sparkline={kpis.pipeline.sparkline}
             delay={0.1}
           />
         </div>
@@ -102,14 +154,14 @@ export function CommandCenter() {
         </Link>
         <StatCard
           label="Pipeline Value"
-          value={`$${(leadStats.totalValue / 1000).toFixed(0)}K`}
+          value={formatCurrency(leadStats.totalValue)}
           icon={DollarSign}
           variant="success"
           delay={0.3}
         />
         <StatCard
           label="Avg Deal Size"
-          value={`$${(leadStats.avgValue / 1000).toFixed(0)}K`}
+          value={formatCurrency(leadStats.avgValue)}
           icon={TrendingUp}
           variant="default"
           delay={0.35}
@@ -137,11 +189,11 @@ export function CommandCenter() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <div className="text-2xl font-bold text-pipeline">${(leadStats.totalValue / 1000).toFixed(0)}K</div>
+                  <div className="text-2xl font-bold text-pipeline">{formatCurrency(leadStats.totalValue)}</div>
                   <div className="text-text-secondary">Total Value</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-revenue">${(leadStats.avgValue / 1000).toFixed(0)}K</div>
+                  <div className="text-2xl font-bold text-revenue">{formatCurrency(leadStats.avgValue)}</div>
                   <div className="text-text-secondary">Avg Deal</div>
                 </div>
               </div>
@@ -174,8 +226,8 @@ export function CommandCenter() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <div className="text-2xl font-bold text-pipeline">{campaignStats.totalEmails}</div>
-                  <div className="text-text-secondary">Total Emails</div>
+                  <div className="text-2xl font-bold text-pipeline">{(campaignStats as any).totalEmailsSent || (campaignStats as any).totalEmails || 0}</div>
+                  <div className="text-text-secondary">Emails Sent</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-revenue">14 days</div>
@@ -207,7 +259,7 @@ export function CommandCenter() {
             <div>
               <CardTitle>Launch Readiness</CardTitle>
               <CardDescription>
-                21 leads researched, 3 campaigns ready - starting outreach this week
+                {leadStats.total} leads researched, {campaignStats.totalCampaigns} campaigns ready - starting outreach this week
               </CardDescription>
             </div>
             <Link href="/leads">
@@ -227,7 +279,7 @@ export function CommandCenter() {
           </CardContent>
         </Card>
 
-        {/* Alerts Panel */}
+        {/* Alerts Panel - Dynamic based on real data */}
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -236,50 +288,74 @@ export function CommandCenter() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            {alerts.map((alert, i) => (
+            {/* Generate alerts from real data */}
+            {campaigns.filter(c => c.status === 'draft').length > 0 && (
               <motion.div
-                key={alert.id}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: i * 0.1 }}
-                className={`p-4 rounded-lg border ${
-                  alert.type === 'danger'
-                    ? 'bg-danger-muted border-danger/30'
-                    : alert.type === 'warning'
-                    ? 'bg-warning-muted border-warning/30'
-                    : 'bg-pipeline-muted border-pipeline/30'
-                }`}
+                className="p-4 rounded-lg border bg-pipeline-muted border-pipeline/30"
               >
                 <div className="flex items-start gap-3">
-                  <AlertTriangle
-                    className={`w-4 h-4 mt-0.5 ${
-                      alert.type === 'danger'
-                        ? 'text-danger'
-                        : alert.type === 'warning'
-                        ? 'text-warning'
-                        : 'text-pipeline'
-                    }`}
-                  />
+                  <Mail className="w-4 h-4 mt-0.5 text-pipeline" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-text-primary">
-                      {alert.title}
+                      {campaigns.filter(c => c.status === 'draft').length} campaigns ready to launch
                     </p>
                     <p className="text-xs text-text-secondary mt-1">
-                      {alert.message}
-                    </p>
-                    <p className="text-xs text-text-tertiary mt-2">
-                      {alert.timestamp}
+                      Start a campaign to begin outreach
                     </p>
                   </div>
                 </div>
               </motion.div>
-            ))}
+            )}
+            {leadStats.total > 0 && deals.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                className="p-4 rounded-lg border bg-warning-muted border-warning/30"
+              >
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-4 h-4 mt-0.5 text-warning" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-text-primary">
+                      No active deals yet
+                    </p>
+                    <p className="text-xs text-text-secondary mt-1">
+                      {leadStats.total} leads ready — time to start outreach
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            {tasks.length === 0 && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="p-4 rounded-lg border bg-surface-subtle border-border-subtle"
+              >
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 mt-0.5 text-revenue" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-text-primary">
+                      No pending tasks
+                    </p>
+                    <p className="text-xs text-text-secondary mt-1">
+                      You&apos;re all caught up!
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </CardContent>
           <CardFooter>
-            <Button variant="ghost" size="sm" className="w-full">
-              View All Alerts
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+            <Link href="/leads" className="w-full">
+              <Button variant="ghost" size="sm" className="w-full">
+                View All Leads
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
       </div>
@@ -310,7 +386,7 @@ export function CommandCenter() {
                 Ready to Launch
               </h3>
               <p className="text-text-secondary mb-4 max-w-md mx-auto">
-                21 researched leads ready for outreach. First campaigns launching this week. 
+                {leadStats.total} researched leads ready for outreach. First campaigns launching this week. 
                 Check back soon to see deals in motion!
               </p>
               <Link href="/leads">
@@ -450,67 +526,79 @@ export function CommandCenter() {
           </CardContent>
         </Card>
 
-        {/* Revenue Targets - Day 1 */}
+        {/* Pipeline by Stage */}
         <Card>
           <CardHeader>
             <div>
-              <CardTitle>Revenue Targets</CardTitle>
-              <CardDescription>Projected growth trajectory (Day 1 - targets only)</CardDescription>
+              <CardTitle>Pipeline by Stage</CardTitle>
+              <CardDescription>
+                {deals.length > 0 
+                  ? `${deals.length} deals worth ${formatCurrency(pipeline?.total || 0)}`
+                  : 'No deals yet — start outreach to build pipeline'
+                }
+              </CardDescription>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {revenueByMonth.map((month, i) => {
-                const percentage = month.revenue > 0 ? (month.revenue / month.target) * 100 : 0
-                const isAboveTarget = month.revenue >= month.target
-                return (
-                  <motion.div
-                    key={month.month}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: i * 0.05 }}
-                    className="space-y-2"
-                  >
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-text-secondary font-medium">
-                        {month.month}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-text-tertiary tabular-nums text-xs">
-                          Target: {formatCurrency(month.target)}
+            {deals.length > 0 ? (
+              <div className="space-y-4">
+                {funnelData.map((stage, i) => {
+                  const maxValue = Math.max(...funnelData.map(s => s.value), 1)
+                  const percentage = (stage.value / maxValue) * 100
+                  return (
+                    <motion.div
+                      key={stage.stage}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                      className="space-y-2"
+                    >
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-text-secondary font-medium">
+                          {stage.stage}
                         </span>
-                        {month.revenue > 0 && (
-                          <span className="font-mono text-text-primary tabular-nums">
-                            {formatCurrency(month.revenue)}
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-text-tertiary">
+                            {stage.count} deal{stage.count !== 1 ? 's' : ''}
                           </span>
-                        )}
+                          <span className="font-mono text-text-primary tabular-nums">
+                            {formatCurrency(stage.value)}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="relative h-2 bg-surface-subtle rounded-full overflow-hidden">
-                      {/* Target line */}
-                      <div
-                        className="absolute top-0 bottom-0 w-0.5 bg-text-tertiary z-10"
-                        style={{ left: '100%' }}
-                      />
-                      {/* Progress bar - only show if revenue > 0 */}
-                      {month.revenue > 0 && (
+                      <div className="relative h-2 bg-surface-subtle rounded-full overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: `${Math.min(percentage, 120)}%` }}
+                          animate={{ width: `${percentage}%` }}
                           transition={{ duration: 0.6, delay: i * 0.05 + 0.2 }}
-                          className={`absolute top-0 bottom-0 left-0 rounded-full ${
-                            isAboveTarget ? 'bg-revenue' : 'bg-pipeline'
-                          }`}
+                          className="absolute top-0 bottom-0 left-0 rounded-full bg-pipeline"
                         />
-                      )}
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </div>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="py-8 text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-pipeline-muted mb-3">
+                  <Target className="w-6 h-6 text-pipeline" />
+                </div>
+                <p className="text-sm text-text-secondary mb-3">
+                  Pipeline empty — {leadStats.total} leads ready for outreach
+                </p>
+                <Link href="/campaigns">
+                  <Button variant="secondary" size="sm">
+                    Start Campaign
+                  </Button>
+                </Link>
+              </div>
+            )}
             <div className="mt-6 pt-4 border-t border-border-subtle">
               <p className="text-xs text-text-secondary text-center">
-                🚀 Launch Day - Targets set, execution begins this week
+                {deals.length > 0 
+                  ? `Weighted pipeline: ${formatCurrency(pipeline?.weighted || 0)}`
+                  : '🚀 Ready to execute — campaigns and leads are set'
+                }
               </p>
             </div>
           </CardContent>

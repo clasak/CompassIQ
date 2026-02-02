@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/layout/page-header'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { StatCard } from '@/components/ui/stat-card'
-import { prospects } from '@/lib/leads-data'
+import { useLeads } from '@/hooks/use-leads'
 import {
   Target,
   Mail,
@@ -19,7 +19,9 @@ import {
   DollarSign,
   Percent,
   ArrowRight,
-  ChevronRight
+  ChevronRight,
+  Loader2,
+  AlertCircle
 } from 'lucide-react'
 
 type PipelineStage = 'research' | 'outreach' | 'call-scheduled' | 'proposal' | 'won' | 'lost'
@@ -42,30 +44,91 @@ const stages: StageConfig[] = [
 ]
 
 export default function PipelinePage() {
+  const { leads, isLoading, error } = useLeads()
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-pipeline animate-spin mx-auto mb-4" />
+          <p className="text-text-secondary">Loading pipeline...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Card className="max-w-md">
+          <CardContent className="py-12 text-center">
+            <AlertCircle className="w-12 h-12 text-danger mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-text-primary mb-2">Failed to load pipeline</h3>
+            <p className="text-text-secondary mb-4">{error}</p>
+            <Button variant="default" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   // Group prospects by stage
   const prospectsByStage = stages.reduce((acc, stage) => {
-    acc[stage.id] = prospects.filter(p => p.status === stage.id)
+    acc[stage.id] = leads.filter(p => p.status === stage.id)
     return acc
-  }, {} as Record<PipelineStage, typeof prospects>)
+  }, {} as Record<PipelineStage, typeof leads>)
 
   // Calculate stats
-  const totalProspects = prospects.length
-  const activeProspects = prospects.filter(p => !['won', 'lost'].includes(p.status)).length
-  const wonDeals = prospects.filter(p => p.status === 'won').length
-  const totalPipelineValue = prospects
+  const totalProspects = leads.length
+  const activeProspects = leads.filter(p => !['won', 'lost'].includes(p.status)).length
+  const wonDeals = leads.filter(p => p.status === 'won').length
+  const totalPipelineValue = leads
     .filter(p => !['won', 'lost'].includes(p.status))
-    .reduce((sum, p) => sum + p.estimatedValue, 0)
-  const wonValue = prospects
+    .reduce((sum, p) => sum + p.estimated_value, 0)
+  const wonValue = leads
     .filter(p => p.status === 'won')
-    .reduce((sum, p) => sum + p.estimatedValue, 0)
+    .reduce((sum, p) => sum + p.estimated_value, 0)
   
   // Conversion rates
-  const researchToOutreach = prospects.filter(p => p.status !== 'research').length
-  const outreachToCall = prospects.filter(p => ['call-scheduled', 'proposal', 'won'].includes(p.status)).length
-  const callToProposal = prospects.filter(p => ['proposal', 'won'].includes(p.status)).length
+  const researchToOutreach = leads.filter(p => p.status !== 'research').length
+  const outreachToCall = leads.filter(p => ['call-scheduled', 'proposal', 'won'].includes(p.status)).length
+  const callToProposal = leads.filter(p => ['proposal', 'won'].includes(p.status)).length
   const proposalToWon = wonDeals
 
   const conversionRate = totalProspects > 0 ? (wonDeals / totalProspects) * 100 : 0
+
+  // Empty state
+  if (leads.length === 0) {
+    return (
+      <div className="space-y-8">
+        <PageHeader
+          title="Pipeline Tracker"
+          description="Track prospects through your sales process"
+          actions={
+            <Button variant="default">
+              <Target className="w-4 h-4 mr-2" />
+              Add Prospect
+            </Button>
+          }
+        />
+        <Card>
+          <CardContent className="py-12 text-center">
+            <Target className="w-12 h-12 text-text-tertiary mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-text-primary mb-2">No prospects in pipeline</h3>
+            <p className="text-text-secondary mb-4">Start by adding prospects to your pipeline</p>
+            <Button variant="default">
+              <Target className="w-4 h-4 mr-2" />
+              Add First Prospect
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   // Mock activity data
   const recentActivity = [
@@ -140,7 +203,7 @@ export default function PipelinePage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 min-w-max lg:min-w-0">
         {stages.map((stage, stageIndex) => {
           const stageProspects = prospectsByStage[stage.id]
-          const stageValue = stageProspects.reduce((sum, p) => sum + p.estimatedValue, 0)
+          const stageValue = stageProspects.reduce((sum, p) => sum + p.estimated_value, 0)
           
           return (
             <motion.div
@@ -177,7 +240,7 @@ export default function PipelinePage() {
                             {prospect.company}
                           </p>
                           <p className="text-xs text-text-tertiary mt-0.5">
-                            ${(prospect.estimatedValue / 1000).toFixed(0)}K
+                            ${(prospect.estimated_value / 1000).toFixed(0)}K
                           </p>
                         </div>
                         <div className={`w-1.5 h-1.5 rounded-full mt-1.5 ${

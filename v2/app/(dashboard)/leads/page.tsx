@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/layout/page-header'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { StatCard } from '@/components/ui/stat-card'
-import { prospects, leadStats } from '@/lib/leads-data'
+import { useLeads } from '@/hooks/use-leads'
 import {
   Target,
   Mail,
@@ -20,10 +20,12 @@ import {
   Zap,
   DollarSign,
   Users,
-  Briefcase
+  Briefcase,
+  Loader2
 } from 'lucide-react'
 
 export default function LeadsPage() {
+  const { leads, stats, isLoading, error } = useLeads()
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
   const [selectedSize, setSelectedSize] = useState<string>('all')
@@ -31,7 +33,7 @@ export default function LeadsPage() {
 
   // Filter prospects
   const filteredProspects = useMemo(() => {
-    return prospects.filter(prospect => {
+    return leads.filter(prospect => {
       const matchesIndustry = selectedIndustry === 'all' || prospect.industry === selectedIndustry
       const matchesStatus = selectedStatus === 'all' || prospect.status === selectedStatus
       const matchesSize = selectedSize === 'all' || prospect.size.includes(selectedSize)
@@ -41,10 +43,10 @@ export default function LeadsPage() {
       
       return matchesIndustry && matchesStatus && matchesSize && matchesSearch
     })
-  }, [selectedIndustry, selectedStatus, selectedSize, searchQuery])
+  }, [leads, selectedIndustry, selectedStatus, selectedSize, searchQuery])
 
   // Get unique industries, sizes
-  const industries = ['all', ...Array.from(new Set(prospects.map(p => p.industry)))]
+  const industries = ['all', ...Array.from(new Set(leads.map(p => p.industry)))]
   const sizes = ['all', '10-20', '20-30', '30-40', '40-50', '50+']
   const statuses = ['all', 'research', 'outreach', 'call-scheduled', 'proposal', 'won', 'lost']
 
@@ -69,12 +71,42 @@ export default function LeadsPage() {
     }
   }
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-pipeline animate-spin mx-auto mb-4" />
+          <p className="text-text-secondary">Loading prospects...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Card className="max-w-md">
+          <CardContent className="py-12 text-center">
+            <AlertCircle className="w-12 h-12 text-danger mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-text-primary mb-2">Failed to load prospects</h3>
+            <p className="text-text-secondary mb-4">{error}</p>
+            <Button variant="default" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
       <PageHeader
         title="Prospect Pipeline"
-        description={`${leadStats.total} researched Texas field service companies ready for outreach`}
+        description={`${stats?.total || 0} researched Texas field service companies ready for outreach`}
         actions={
           <Button variant="default">
             <Zap className="w-4 h-4 mr-2" />
@@ -87,28 +119,28 @@ export default function LeadsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           label="Total Prospects"
-          value={leadStats.total.toString()}
+          value={(stats?.total || 0).toString()}
           icon={Target}
           variant="default"
           delay={0}
         />
         <StatCard
           label="Total Pipeline Value"
-          value={`$${(leadStats.totalValue / 1000).toFixed(0)}K`}
+          value={`$${((stats?.totalValue || 0) / 1000).toFixed(0)}K`}
           icon={DollarSign}
           variant="success"
           delay={0.1}
         />
         <StatCard
           label="Avg Deal Size"
-          value={`$${(leadStats.avgValue / 1000).toFixed(0)}K`}
+          value={`$${((stats?.avgValue || 0) / 1000).toFixed(0)}K`}
           icon={TrendingUp}
           variant="success"
           delay={0.2}
         />
         <StatCard
           label="Active Outreach"
-          value={leadStats.byStatus.outreach.toString()}
+          value={(stats?.byStatus?.outreach || 0).toString()}
           icon={Mail}
           variant="success"
           delay={0.3}
@@ -200,7 +232,7 @@ export default function LeadsPage() {
       {/* Results Count */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-text-secondary">
-          Showing <span className="font-semibold text-text-primary">{filteredProspects.length}</span> of {leadStats.total} prospects
+          Showing <span className="font-semibold text-text-primary">{filteredProspects.length}</span> of {stats?.total || 0} prospects
         </p>
         {(selectedIndustry !== 'all' || selectedStatus !== 'all' || selectedSize !== 'all' || searchQuery) && (
           <Button
@@ -218,8 +250,24 @@ export default function LeadsPage() {
         )}
       </div>
 
+      {/* Empty state - no leads at all */}
+      {leads.length === 0 && (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <Target className="w-12 h-12 text-text-tertiary mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-text-primary mb-2">No prospects yet</h3>
+            <p className="text-text-secondary mb-4">Start by adding prospects to your pipeline</p>
+            <Button variant="default">
+              <Target className="w-4 h-4 mr-2" />
+              Add First Prospect
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Prospects Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {leads.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredProspects.map((prospect, index) => (
           <motion.div
             key={prospect.id}
@@ -250,7 +298,7 @@ export default function LeadsPage() {
                   </div>
                   <div className="flex items-center gap-2 text-text-secondary">
                     <DollarSign className="w-4 h-4" />
-                    <span>${(prospect.estimatedValue / 1000).toFixed(0)}K estimated value</span>
+                    <span>${(prospect.estimated_value / 1000).toFixed(0)}K estimated value</span>
                   </div>
                 </div>
 
@@ -258,7 +306,7 @@ export default function LeadsPage() {
                 <div>
                   <h4 className="text-xs font-semibold text-text-secondary mb-2">Key Pain Points</h4>
                   <div className="space-y-1">
-                    {prospect.painPoints.slice(0, 3).map((pain, i) => (
+                    {prospect.pain_points?.slice(0, 3).map((pain, i) => (
                       <div key={i} className="flex items-start gap-2">
                         <AlertCircle className="w-3 h-3 text-warning mt-0.5 flex-shrink-0" />
                         <span className="text-xs text-text-secondary leading-relaxed">{pain}</span>
@@ -296,10 +344,11 @@ export default function LeadsPage() {
             </Card>
           </motion.div>
         ))}
-      </div>
+        </div>
+      )}
 
-      {/* Empty State */}
-      {filteredProspects.length === 0 && (
+      {/* Filtered Empty State */}
+      {leads.length > 0 && filteredProspects.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
             <Filter className="w-12 h-12 text-text-tertiary mx-auto mb-4" />

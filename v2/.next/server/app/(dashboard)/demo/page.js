@@ -23,4 +23,4 @@
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
- */let a=(0,t(9224).Z)("CheckCircle2",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]])},106:(e,s,t)=>{"use strict";t.r(s),t.d(s,{$$typeof:()=>r,__esModule:()=>i,default:()=>n});let a=(0,t(6843).createProxy)(String.raw`/home/clasak/Projects/CompassIQ/v2/app/(dashboard)/demo/page.tsx`),{__esModule:i,$$typeof:r}=a,n=a.default}};var s=require("../../../webpack-runtime.js");s.C(e);var t=e=>s(s.s=e),a=s.X(0,[84,742,285],()=>t(6568));module.exports=a})();
+ */let a=(0,t(9224).Z)("CheckCircle2",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]])},106:(e,s,t)=>{"use strict";t.r(s),t.d(s,{$$typeof:()=>r,__esModule:()=>i,default:()=>n});let a=(0,t(6843).createProxy)(String.raw`/home/clasak/Projects/CompassIQ/v2/app/(dashboard)/demo/page.tsx`),{__esModule:i,$$typeof:r}=a,n=a.default}};var s=require("../../../webpack-runtime.js");s.C(e);var t=e=>s(s.s=e),a=s.X(0,[638,798,789,285],()=>t(6568));module.exports=a})();
