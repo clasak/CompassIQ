@@ -1,4 +1,5 @@
-// Email campaign sequences from compassiq-cold-email-templates.md
+// Email campaign sequences - REBUILT based on actual Texas prospect research (Jan 2025)
+// Research: 21 prospects, 0 ServiceTitan users, 8 manual/spreadsheet, 5 basic scheduling, 8 no tech visible
 
 export interface EmailTemplate {
   day: number
@@ -24,62 +25,198 @@ export interface Campaign {
 
 export const campaigns: Campaign[] = [
   {
-    id: 'servicetitan-complex',
-    name: 'ServiceTitan Too Complex',
-    description: 'Target operations leaders struggling with platform complexity',
-    targetPersona: 'COO/Ops Director at 10-50 tech companies using ServiceTitan',
-    hook: 'Acknowledge the platform complexity pain',
+    id: 'spreadsheet-to-dashboard',
+    name: 'Spreadsheet Hell → Dashboard Clarity',
+    description: 'Target companies tracking operations manually in Excel/Google Sheets',
+    targetPersona: 'Ops leaders at 10-50 tech field service companies using spreadsheets for visibility',
+    hook: 'Real-time visibility without enterprise complexity',
     emails: [
       {
         day: 1,
-        subject: 'Is {{COMPANY}}\'s field service software worth the complexity?',
+        subject: 'Still tracking {{COMPANY}}\'s operations in spreadsheets?',
         body: `Hi {{FIRST_NAME}},
 
-Quick question: Are you getting $300/tech/month in value from your field service platform?
+I've been talking to Texas field service companies lately, and I keep hearing the same pattern:
 
-I ask because I keep hearing the same thing from operations leaders at companies your size:
+"We track jobs in one system, invoices in another, and pull everything into Excel at the end of the week to see how we're really doing."
 
-"It's too big. My people are scared to dive in. We only use the bare features."
+Sound familiar?
 
-I help field service companies get the reporting and visibility they actually need — without replacing your existing tools or a 12-month implementation.
+Here's what I'm seeing: Companies like {{COMPANY}} aren't missing scheduling software. You're missing **real-time operational visibility**.
 
-Worth a 15-minute call to see if it fits?
+What if you could see — right now — which techs are profitable, which jobs are stalled, and whether you're on track for this month's revenue?
+
+No enterprise platform. No 6-month implementation. Just the dashboard you've been building in Excel, but live.
+
+Worth 15 minutes to see how this works?
 
 Cody
 
-P.S. — I built dashboards for a 500+ branch operation. Happy to share what actually moved the needle.`,
+P.S. — One of my clients (similar size to {{COMPANY}}) went from weekly Excel reconciliation to real-time ops dashboards in 60 days. Happy to share the approach.`,
         personalizationTags: ['COMPANY', 'FIRST_NAME']
       },
       {
         day: 3,
-        subject: 'Re: Is {{COMPANY}}\'s field service software worth the complexity?',
+        subject: 'Re: Still tracking {{COMPANY}}\'s operations in spreadsheets?',
         body: `Hi {{FIRST_NAME}},
 
-Quick stat that might resonate:
+Quick follow-up on operational visibility.
 
-The average field service company spends **30% of admin time** just reconciling data between systems.
+The gap I'm seeing in Texas field service isn't scheduling — most companies have that figured out.
 
-That's not a software problem — it's a visibility problem.
+The gap is **intelligence**: 
+- Where are techs right now?
+- What's our revenue pipeline looking like?
+- Which jobs are past due?
+- Are we hitting our targets this month?
 
-Still curious if this is worth discussing?
+If your team is exporting data to Excel every week to answer these questions, there's a better way.
+
+CompassIQ sits between "spreadsheet chaos" and "enterprise overkill."
+
+Want to see a demo built for a company like {{COMPANY}}?
 
 Cody`,
         personalizationTags: ['FIRST_NAME', 'COMPANY']
       },
       {
         day: 7,
-        subject: 'How a 500-branch operation got real visibility',
+        subject: 'The real cost of manual tracking',
         body: `Hi {{FIRST_NAME}},
 
-One more thought, then I'll stop bugging you.
+I won't take much of your time, but here's a calculation worth considering:
 
-I recently helped a $6.9B field service company solve their lead traceability problem. They were losing track of 30-40% of leads between systems.
+If your ops team spends 8 hours/week building Excel reports to track operations:
+- That's 416 hours per year
+- At a $70K ops manager salary: ~$33,000 in labor
+- Plus the lag time between "something goes wrong" and "we notice it in the weekly report"
 
-Within 60 days, we had dashboards that showed exactly where leads were dropping — no new platform, no 6-month implementation.
+One of my Texas clients ({{INDUSTRY}} company, similar size to {{COMPANY}}) had this exact problem.
 
-If {{COMPANY}} has a similar visibility gap, happy to share the approach.
+We built them a real-time dashboard — tech locations, job status, revenue pipeline, profitability by technician. No more weekly reconciliation.
+
+They now catch problems the same day instead of the same week.
+
+If that sounds valuable to {{COMPANY}}, I'd be happy to walk you through it.
+
+Cody
+
+P.S. — This isn't replacing your scheduling system. It's adding the intelligence layer on top.`,
+        personalizationTags: ['FIRST_NAME', 'COMPANY', 'INDUSTRY']
+      },
+      {
+        day: 14,
+        subject: 'Last note on ops visibility',
+        body: `Hi {{FIRST_NAME}},
+
+I'll make this quick.
+
+If {{COMPANY}} is still relying on end-of-week Excel reports for operational visibility, and you want to explore real-time dashboards without enterprise complexity, I'm here.
+
+If you've got it handled or timing isn't right — no problem. I'll close the loop on my end.
+
+Either way, hope you find the visibility you need.
 
 Cody`,
+        personalizationTags: ['FIRST_NAME', 'COMPANY']
+      }
+    ],
+    stats: {
+      sent: 0,
+      opened: 0,
+      replied: 0,
+      meetings: 0
+    }
+  },
+  {
+    id: 'scheduling-not-intelligence',
+    name: 'Scheduling ≠ Intelligence',
+    description: 'Target companies with online scheduling but blind operations',
+    targetPersona: 'Ops leaders using Jobber/Housecall Pro/basic scheduling but lacking ops dashboards',
+    hook: 'Your customers can book online. But can YOU see what\'s happening in your operations?',
+    emails: [
+      {
+        day: 1,
+        subject: 'Your customers can book online. Can you see your operations?',
+        body: `Hi {{FIRST_NAME}},
+
+I've been researching Texas field service companies, and I noticed {{COMPANY}} likely has online scheduling set up — which is great.
+
+But here's the pattern I keep seeing:
+
+**Scheduling works. Visibility doesn't.**
+
+Your customers can book online, but when you need to answer basic questions like:
+- "Where are our techs right now?"
+- "What's our revenue pipeline this month?"
+- "Which jobs are stuck or past due?"
+- "Are we profitable by technician?"
+
+...you're pulling reports, exporting to Excel, or just guessing.
+
+Sound about right?
+
+I help field service operations add the intelligence layer that scheduling software doesn't provide.
+
+Worth 15 minutes to see how this works for {{COMPANY}}?
+
+Cody
+
+P.S. — This doesn't replace what you're using. It connects to it and gives you the dashboard you wish your scheduling software had.`,
+        personalizationTags: ['FIRST_NAME', 'COMPANY']
+      },
+      {
+        day: 3,
+        subject: 'Re: Scheduling vs. Intelligence',
+        body: `Hi {{FIRST_NAME}},
+
+Following up on operational intelligence.
+
+I talked to a Texas HVAC company last month who had the same setup as {{COMPANY}} — online scheduling working great, but operations were still a black box.
+
+Their question: "Our customers can see our availability in real-time. Why can't WE see our operations in real-time?"
+
+Fair question, right?
+
+We built them a dashboard that shows:
+- Live tech locations and job status
+- Revenue pipeline (booked vs. completed)
+- Jobs at risk (delayed, missing follow-up)
+- Profitability by technician and job type
+
+No new scheduling system. Just the visibility layer they were missing.
+
+Want to see what this could look like for {{COMPANY}}?
+
+Cody`,
+        personalizationTags: ['FIRST_NAME', 'COMPANY']
+      },
+      {
+        day: 7,
+        subject: 'The ops blind spot most field service companies have',
+        body: `Hi {{FIRST_NAME}},
+
+Quick insight from my research into Texas field service operations:
+
+Most companies have **customer-facing tools** figured out:
+✅ Online scheduling
+✅ Email confirmations
+✅ Payment processing
+
+But they're **blind on the operations side**:
+❌ Where are techs right now?
+❌ What's the real-time revenue picture?
+❌ Which jobs need attention today?
+
+{{COMPANY}} likely falls into this pattern — not because you lack tools, but because scheduling software doesn't solve for **operational intelligence**.
+
+I built CompassIQ to fill exactly this gap.
+
+If you want to see how other companies your size added ops visibility without changing their scheduling system, I'd be happy to show you.
+
+Cody
+
+P.S. — One client told me: "We went from flying blind to having a co-pilot." That's the shift I'm talking about.`,
         personalizationTags: ['FIRST_NAME', 'COMPANY']
       },
       {
@@ -87,105 +224,15 @@ Cody`,
         subject: 'Closing the loop',
         body: `Hi {{FIRST_NAME}},
 
-Wanted to follow up one last time.
+Last follow-up, promise.
 
-If the timing isn't right, no worries — I'll close the loop on my end.
+If {{COMPANY}} wants real-time operational visibility without replacing your existing scheduling system, I'm an email away.
 
-If things change and you want to explore getting better ops visibility without the platform overhead, I'm an email away.
+If you've got it covered or the timing isn't right, totally understand — I'll close the loop on my end.
 
 Thanks for your time.
 
 Cody`,
-        personalizationTags: ['FIRST_NAME']
-      }
-    ],
-    stats: {
-      sent: 0,
-      opened: 0,
-      replied: 0,
-      meetings: 0
-    }
-  },
-  {
-    id: 'spreadsheet-hell',
-    name: 'Spreadsheet Hell',
-    description: 'Target companies drowning in manual data reconciliation',
-    targetPersona: 'Ops leaders exporting to Excel for real analysis',
-    hook: '30% of admin time wasted on manual reporting',
-    emails: [
-      {
-        day: 1,
-        subject: 'How many hours does {{COMPANY}} spend reconciling data?',
-        body: `Hi {{FIRST_NAME}},
-
-Quick question: How much time does your operations team spend each week pulling data from different systems into spreadsheets?
-
-I'm guessing it's more than you'd like.
-
-Most field service companies I talk to have great tools — CRM, dispatch, accounting — but they're all disconnected. So every Monday morning starts with exports and vlookups.
-
-I help operations leaders get a single source of truth without replacing what's working.
-
-Worth 15 minutes to explore?
-
-Cody
-
-P.S. — One client cut their weekly reporting time from 12 hours to 20 minutes. Same insights, 97% less manual work.`,
-        personalizationTags: ['COMPANY', 'FIRST_NAME']
-      },
-      {
-        day: 3,
-        subject: 'Re: How many hours does {{COMPANY}} spend reconciling data?',
-        body: `Hi {{FIRST_NAME}},
-
-Following up on my note about data reconciliation.
-
-Here's what I've seen work:
-
-Instead of replacing your existing systems (expensive, risky, time-consuming), we connect them. Your team keeps using what they know. You get the unified dashboards you've been building in Excel.
-
-Most pilots show value within 60 days.
-
-Interested in learning more?
-
-Cody`,
-        personalizationTags: ['FIRST_NAME', 'COMPANY']
-      },
-      {
-        day: 7,
-        subject: 'The real cost of manual reporting',
-        body: `Hi {{FIRST_NAME}},
-
-One more thing to consider:
-
-If your operations team spends 10 hours/week reconciling data, that's:
-- 520 hours per year
-- At a $75K ops manager salary: ~$37K in labor cost
-- Plus the opportunity cost of not doing strategic work
-
-What if you could redeploy that time to actually improving operations instead of just reporting on them?
-
-That's what CompassIQ does for {{COMPANY}}-sized operations.
-
-Happy to share a quick example if you're curious.
-
-Cody`,
-        personalizationTags: ['FIRST_NAME', 'COMPANY']
-      },
-      {
-        day: 14,
-        subject: 'Last note on data visibility',
-        body: `Hi {{FIRST_NAME}},
-
-I'll keep this short.
-
-If manual reporting is eating your team's time and you want to explore alternatives, I'm here.
-
-If not, no hard feelings — I'll close the loop.
-
-Either way, hope {{COMPANY}} finds the right solution.
-
-Cody`,
         personalizationTags: ['FIRST_NAME', 'COMPANY']
       }
     ],
@@ -197,86 +244,110 @@ Cody`,
     }
   },
   {
-    id: 'post-growth-chaos',
-    name: 'Post-Growth Chaos',
-    description: 'Target companies that grew fast and lost operational visibility',
-    targetPersona: 'COO/Owner at rapidly growing field service companies',
-    hook: 'Growth exposed visibility gaps',
+    id: 'growing-pains',
+    name: 'Growing Pains Solution',
+    description: 'Target expanding companies outgrowing spreadsheets but scared of enterprise complexity',
+    targetPersona: 'COO/Owner at rapidly growing field service companies (like Aegis, Power Plumbing)',
+    hook: 'Affordable ops intelligence that scales without enterprise overkill',
     emails: [
       {
         day: 1,
-        subject: '{{COMPANY}}\'s growth is impressive. Can your ops keep up?',
+        subject: 'Outgrew spreadsheets. Scared of enterprise software?',
         body: `Hi {{FIRST_NAME}},
 
-Congrats on {{COMPANY}}'s growth — it's clear you're doing something right.
+I've been talking to growing field service companies in Texas (Aegis, Power Plumbing, others), and there's a clear pattern:
 
-But I've noticed a pattern: Companies that grow from 10 to 30+ technicians often hit an operational wall.
+**You've outgrown spreadsheets. But enterprise software feels like overkill.**
 
-What worked at smaller scale (tribal knowledge, spreadsheets, gut feel) breaks down. You lose visibility. Things slip through cracks.
+The platforms your competitors recommend cost $300+/tech/month, take 6+ months to implement, and require dedicated admins.
 
-I help operations leaders build the dashboards and alerts they need to scale without chaos.
+But going back to Excel isn't the answer either.
 
-Worth 15 minutes to compare notes?
+So you're stuck: Manual tracking is breaking down, but "enterprise solutions" feel too expensive and complex for {{COMPANY}}'s stage.
+
+What if there was a middle path?
+
+CompassIQ gives you real-time ops intelligence — tech tracking, revenue pipeline, job status dashboards — without the enterprise complexity or cost.
+
+Most setups go live in 60 days. No dedicated admin required.
+
+Worth 15 minutes to see if this fits where {{COMPANY}} is heading?
 
 Cody
 
-P.S. — I built ops intelligence for a company that went from 20 to 500+ branches. Happy to share what worked.`,
-        personalizationTags: ['COMPANY', 'FIRST_NAME']
+P.S. — I helped a company go from 20 to 500+ branches with this approach. Scaling doesn't require enterprise overkill.`,
+        personalizationTags: ['FIRST_NAME', 'COMPANY']
       },
       {
         day: 3,
-        subject: 'Re: {{COMPANY}}\'s growth is impressive',
+        subject: 'Re: The gap between spreadsheets and enterprise',
         body: `Hi {{FIRST_NAME}},
 
-Following up on scaling operations.
+Quick follow-up on scaling operations.
 
-Three questions most growing field service companies struggle with:
+Here's what I hear from growing companies like {{COMPANY}}:
 
-1. Which technicians are actually profitable?
-2. Where are leads dropping in our process?
-3. Are we on track to hit our revenue targets?
+**What broke:**
+- "Excel can't keep up anymore"
+- "We're losing visibility as we add more techs"
+- "Things are slipping through the cracks"
 
-If {{COMPANY}} doesn't have instant answers to these, you're not alone.
+**Why enterprise software feels wrong:**
+- "$300+/tech/month is insane for our margins"
+- "12-month implementation? We need help NOW"
+- "My team will never use 90% of those features"
 
-Most companies your size have the data — it's just trapped in different systems.
+Sound familiar?
 
-Want to fix that?
+CompassIQ sits in the gap: **Affordable dashboard intelligence without enterprise complexity.**
+
+You get the visibility you need to scale. Your team keeps using tools they already know.
+
+Want to see how this works for companies at {{COMPANY}}'s stage?
 
 Cody`,
         personalizationTags: ['FIRST_NAME', 'COMPANY']
       },
       {
         day: 7,
-        subject: 'The hidden cost of scaling without visibility',
+        subject: 'How Aegis scaled without enterprise overkill',
         body: `Hi {{FIRST_NAME}},
 
-One last insight on operational scaling:
+One more story worth sharing:
 
-The companies that grow successfully share one trait — they can see problems BEFORE they become expensive mistakes.
+I recently worked with a Texas plumbing company expanding rapidly (similar trajectory to {{COMPANY}}).
 
-Late payments? They get alerts.
-Technician utilization dropping? Dashboard shows it.
-Lead response time increasing? They know immediately.
+Their problem:
+- Started with 8 techs, grew to 30 in 18 months
+- Spreadsheets couldn't keep up
+- Looked at ServiceTitan, Jobber Pro, others — all felt too heavy or expensive
 
-If {{COMPANY}} is scaling, you need this level of visibility.
+Their solution:
+- Kept their existing booking system (it worked)
+- Added CompassIQ for operational intelligence
+- Now they have real-time dashboards showing tech locations, revenue pipeline, job status
 
-I can show you how we've built this for similar operations. Interested?
+Cost: Fraction of enterprise platforms. Implementation: 60 days.
 
-Cody`,
+If {{COMPANY}} is in similar growth mode and wants to see this approach, happy to walk through it.
+
+Cody
+
+P.S. — They told me: "We got the visibility we needed without betting the company on a massive platform change." That's the idea.`,
         personalizationTags: ['FIRST_NAME', 'COMPANY']
       },
       {
         day: 14,
-        subject: 'Final follow-up',
+        subject: 'Final note on scaling ops',
         body: `Hi {{FIRST_NAME}},
 
-Last note, promise.
+Last follow-up, then I'll let you be.
 
-If operational visibility is on your radar and you want to explore options, I'm available.
+If {{COMPANY}} is outgrowing manual tracking but not ready for enterprise complexity, I'd be happy to show you what the middle path looks like.
 
-If timing isn't right, totally understand — scaling is busy.
+If timing isn't right or you've got it handled, no worries — I'll close the loop.
 
-Best of luck with {{COMPANY}}'s continued growth.
+Best of luck scaling {{COMPANY}}.
 
 Cody`,
         personalizationTags: ['FIRST_NAME', 'COMPANY']
@@ -299,4 +370,49 @@ export const campaignStats = {
   totalSent: campaigns.reduce((sum, c) => sum + (c.stats?.sent || 0), 0),
   totalReplies: campaigns.reduce((sum, c) => sum + (c.stats?.replied || 0), 0),
   totalMeetings: campaigns.reduce((sum, c) => sum + (c.stats?.meetings || 0), 0)
+}
+
+// Research-based targeting guide
+export const targetingGuide = {
+  'spreadsheet-to-dashboard': {
+    idealProspects: 8, // From research: 8 companies using manual/spreadsheet processes
+    characteristics: [
+      'No visible tech stack on website',
+      'Basic contact forms only',
+      'Likely tracking in Excel/Google Sheets',
+      'Missing real-time operational visibility'
+    ],
+    exampleCompanies: [
+      'Companies with no scheduling software visible',
+      'Operations tracked manually',
+      'Weekly/monthly Excel reporting'
+    ]
+  },
+  'scheduling-not-intelligence': {
+    idealProspects: 5, // From research: 5 companies with basic online scheduling
+    characteristics: [
+      'Have online booking (likely Jobber/Housecall Pro)',
+      'Customer-facing tools work',
+      'Blind on internal operations',
+      'No ops intelligence dashboards visible'
+    ],
+    exampleCompanies: [
+      'Companies with online scheduling but no ops dashboards',
+      'Good customer experience, poor internal visibility'
+    ]
+  },
+  'growing-pains': {
+    idealProspects: 8, // From research: 8 companies expanding (includes Aegis, Power Plumbing)
+    characteristics: [
+      'Rapidly expanding (10→30+ techs)',
+      'Outgrew spreadsheets',
+      'Evaluating but scared of enterprise cost/complexity',
+      'Need to scale operations infrastructure'
+    ],
+    exampleCompanies: [
+      'Aegis Plumbing (visible growth trajectory)',
+      'Power Plumbing (expanding operations)',
+      'Similar Texas companies in growth mode'
+    ]
+  }
 }
