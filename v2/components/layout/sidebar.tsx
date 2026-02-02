@@ -22,6 +22,7 @@ import {
   Menu,
   X,
 } from 'lucide-react'
+import { UserMenu } from './user-menu'
 
 const navigation = [
   { name: 'Command Center', href: '/', icon: LayoutDashboard },
@@ -192,17 +193,7 @@ export function Sidebar() {
 
         {/* User */}
         <div className="p-3 border-t border-border">
-          <div className="flex items-center gap-3 px-4 py-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pipeline to-revenue flex items-center justify-center text-white text-sm font-semibold">
-              CC
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-text-primary truncate">
-                Cody Clasak
-              </div>
-              <div className="text-xs text-text-tertiary">Admin</div>
-            </div>
-          </div>
+          <UserMenu />
         </div>
       </aside>
     </>
