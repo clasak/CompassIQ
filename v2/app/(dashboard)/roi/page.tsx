@@ -264,7 +264,7 @@ export default function ROICalculatorPage() {
         <HeroMetric
           label="Return on Investment"
           value={`${calculations.impact.roi}%`}
-          variant="pipeline"
+          variant="revenue"
           size="lg"
           delay={0.1}
         />

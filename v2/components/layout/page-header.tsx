@@ -16,17 +16,17 @@ export function PageHeader({ title, description, actions, className }: PageHeade
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={cn('flex items-start justify-between gap-4 mb-8', className)}
+      className={cn('flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8', className)}
     >
-      <div>
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-text-primary">
+      <div className="flex-1 min-w-0">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-text-primary">
           {title}
         </h1>
         {description && (
-          <p className="mt-2 text-text-secondary text-base">{description}</p>
+          <p className="mt-2 text-sm sm:text-base text-text-secondary">{description}</p>
         )}
       </div>
-      {actions && <div className="flex items-center gap-3">{actions}</div>}
+      {actions && <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">{actions}</div>}
     </motion.header>
   )
 }

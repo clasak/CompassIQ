@@ -1,154 +1,99 @@
-// Mock data for the v2 dashboard
-// This simulates real business data for demo/presentation purposes
+// Day 1 Launch Data - Honest metrics showing preparation, not revenue yet
+// CompassIQ is launching today with real prospects and campaigns ready to execute
 
 export const kpis = {
   revenue: {
-    current: 2847000,
+    current: 0, // Day 1 - No revenue yet, launching today!
     target: 3000000,
-    trend: 12.4,
+    trend: 0,
     period: 'MTD',
-    sparkline: [45, 52, 49, 58, 63, 67, 72, 68, 75, 82, 78, 85],
+    sparkline: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   },
   pipeline: {
-    current: 8420000,
-    target: 10000000,
-    trend: 8.2,
-    period: '90-Day',
-    sparkline: [60, 55, 62, 58, 65, 70, 68, 72, 75, 80, 84, 82],
+    current: 750000, // Real potential from 21 researched leads
+    target: 1000000,
+    trend: 0,
+    period: 'Potential',
+    sparkline: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 75], // Shows the research we've done
   },
   winRate: {
-    current: 34.2,
+    current: 0,
     target: 35,
-    trend: 2.1,
+    trend: 0,
     period: '30-Day',
-    sparkline: [28, 30, 32, 29, 31, 33, 32, 34, 33, 35, 34, 34],
+    sparkline: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   },
   avgDealSize: {
-    current: 47500,
+    current: 35000, // Average from researched leads
     target: 50000,
-    trend: -1.8,
-    period: 'Trailing',
-    sparkline: [52, 48, 50, 46, 49, 45, 48, 44, 47, 46, 48, 47],
+    trend: 0,
+    period: 'Projected',
+    sparkline: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35],
   },
 }
 
+// Day 1: Show our preparation, not fake conversions
 export const funnelData = [
-  { name: 'Leads', count: 847, value: 21175000, conversion: 42 },
-  { name: 'Qualified', count: 356, value: 12460000, conversion: 38 },
-  { name: 'Proposal', count: 135, value: 6075000, conversion: 52 },
-  { name: 'Negotiation', count: 70, value: 3850000, conversion: 49 },
-  { name: 'Closed Won', count: 34, value: 2847000 },
+  { name: 'Researched', count: 21, value: 750000, conversion: 0 },
+  { name: 'Campaigns Ready', count: 3, value: 0, conversion: 0 },
+  { name: 'Outreach Started', count: 0, value: 0, conversion: 0 },
+  { name: 'Meetings Booked', count: 0, value: 0, conversion: 0 },
+  { name: 'Deals Closed', count: 0, value: 0 },
 ]
 
-export const recentDeals = [
-  {
-    id: '1',
-    name: 'Acme Corp - Enterprise License',
-    account: 'Acme Corporation',
-    value: 125000,
-    stage: 'Negotiation',
-    probability: 75,
-    closeDate: '2026-02-15',
-    owner: 'Sarah Chen',
-  },
-  {
-    id: '2',
-    name: 'TechStart - Annual Subscription',
-    account: 'TechStart Inc',
-    value: 48000,
-    stage: 'Proposal',
-    probability: 50,
-    closeDate: '2026-02-28',
-    owner: 'Mike Johnson',
-  },
-  {
-    id: '3',
-    name: 'Global Systems - Multi-year',
-    account: 'Global Systems Ltd',
-    value: 380000,
-    stage: 'Qualified',
-    probability: 30,
-    closeDate: '2026-03-31',
-    owner: 'Sarah Chen',
-  },
-  {
-    id: '4',
-    name: 'DataFlow - Expansion',
-    account: 'DataFlow Analytics',
-    value: 85000,
-    stage: 'Negotiation',
-    probability: 80,
-    closeDate: '2026-02-10',
-    owner: 'James Wilson',
-  },
-  {
-    id: '5',
-    name: 'CloudNine - New Business',
-    account: 'CloudNine Solutions',
-    value: 62000,
-    stage: 'Proposal',
-    probability: 45,
-    closeDate: '2026-03-15',
-    owner: 'Emma Davis',
-  },
-]
+// Day 1: No deals yet - launching today!
+export const recentDeals: any[] = []
 
+// Day 1: Launch tasks - what we're about to execute
 export const openTasks = [
   {
     id: '1',
-    title: 'Follow up with Acme Corp decision maker',
-    account: 'Acme Corporation',
-    dueDate: '2026-02-01',
-    priority: 'high',
-    assignee: 'Sarah Chen',
+    title: 'Launch first outreach campaign - ServiceTitan angle',
+    account: 'Campaign Execution',
+    dueDate: '2026-02-03',
+    priority: 'urgent',
+    assignee: 'Cody',
   },
   {
     id: '2',
-    title: 'Send revised proposal to TechStart',
-    account: 'TechStart Inc',
-    dueDate: '2026-02-02',
-    priority: 'medium',
-    assignee: 'Mike Johnson',
+    title: 'Begin outreach to Houston HVAC prospects (7 companies)',
+    account: 'Lead Outreach',
+    dueDate: '2026-02-04',
+    priority: 'high',
+    assignee: 'Cody',
   },
   {
     id: '3',
-    title: 'Schedule demo for Global Systems',
-    account: 'Global Systems Ltd',
-    dueDate: '2026-02-03',
+    title: 'Follow up sequence - Spreadsheet Hell campaign',
+    account: 'Campaign Execution',
+    dueDate: '2026-02-06',
     priority: 'high',
-    assignee: 'Sarah Chen',
-  },
-  {
-    id: '4',
-    title: 'Prepare contract for DataFlow',
-    account: 'DataFlow Analytics',
-    dueDate: '2026-02-05',
-    priority: 'urgent',
-    assignee: 'James Wilson',
+    assignee: 'Cody',
   },
 ]
 
+// Day 1: Launch readiness alerts - excited to begin!
 export const alerts = [
   {
     id: '1',
-    type: 'danger',
-    title: 'Overdue Invoice',
-    message: 'Acme Corp invoice #4521 is 15 days overdue ($45,000)',
-    timestamp: '2 hours ago',
+    type: 'info',
+    title: '🚀 Launch Day!',
+    message: '21 Texas field service companies researched and ready for outreach',
+    timestamp: 'Today',
   },
   {
     id: '2',
-    type: 'warning',
-    title: 'At-Risk Account',
-    message: 'DataFlow Analytics health score dropped to 45%',
-    timestamp: '4 hours ago',
+    type: 'info',
+    title: '📧 Campaigns Ready',
+    message: '3 proven email sequences loaded and ready to deploy',
+    timestamp: 'Today',
   },
   {
     id: '3',
     type: 'info',
-    title: 'Deal Stalled',
-    message: 'CloudNine Solutions has been in Proposal stage for 21 days',
-    timestamp: '1 day ago',
+    title: '💰 Pipeline Potential',
+    message: '$750K in potential deals identified - time to execute!',
+    timestamp: 'Today',
   },
 ]
 
@@ -159,13 +104,13 @@ export const teamPerformance = [
   { name: 'Emma Davis', closed: 6, pipeline: 950000, quota: 65 },
 ]
 
+// Day 1: No revenue history yet - this is the beginning!
 export const revenueByMonth = [
-  { month: 'Aug', revenue: 1850000, target: 2000000 },
-  { month: 'Sep', revenue: 2100000, target: 2200000 },
-  { month: 'Oct', revenue: 2450000, target: 2400000 },
-  { month: 'Nov', revenue: 2280000, target: 2600000 },
-  { month: 'Dec', revenue: 2750000, target: 2800000 },
-  { month: 'Jan', revenue: 2847000, target: 3000000 },
+  { month: 'Feb', revenue: 0, target: 50000 },
+  { month: 'Mar', revenue: 0, target: 150000 },
+  { month: 'Apr', revenue: 0, target: 300000 },
+  { month: 'May', revenue: 0, target: 500000 },
+  { month: 'Jun', revenue: 0, target: 750000 },
 ]
 
 export const accountHealthDistribution = [

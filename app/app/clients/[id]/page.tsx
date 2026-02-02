@@ -62,13 +62,13 @@ export default async function ClientProjectDetailPage({ params }: ClientProjectD
       />
       <ClientProjectDetailView 
         project={result.project} 
-        intakePack={intakePackResult.success ? intakePackResult.intakePack || null : null}
-        dataSources={dataSourcesResult.success ? dataSourcesResult.dataSources || [] : []}
-        kpis={kpisResult.success ? kpisResult.kpis || [] : []}
-        alertRules={alertsResult.success ? alertsResult.alertRules || [] : []}
-        cadences={cadencesResult.success ? cadencesResult.cadences || [] : []}
-        meetings={meetingsResult.success ? meetingsResult.meetings || [] : []}
-        deliverables={deliverablesResult.success ? deliverablesResult.deliverables || [] : []}
+        intakePack={intakePackResult.success && 'intakePack' in intakePackResult ? intakePackResult.intakePack || null : null}
+        dataSources={dataSourcesResult.success && 'dataSources' in dataSourcesResult ? dataSourcesResult.dataSources || [] : []}
+        kpis={kpisResult.success && 'kpis' in kpisResult ? kpisResult.kpis || [] : []}
+        alertRules={alertsResult.success && 'alertRules' in alertsResult ? alertsResult.alertRules || [] : []}
+        cadences={cadencesResult.success && 'cadences' in cadencesResult ? cadencesResult.cadences || [] : []}
+        meetings={meetingsResult.success && 'meetings' in meetingsResult ? meetingsResult.meetings || [] : []}
+        deliverables={deliverablesResult.success && 'deliverables' in deliverablesResult ? deliverablesResult.deliverables || [] : []}
       />
     </div>
   )

@@ -56,14 +56,14 @@ export default function RevenuePage() {
         <HeroMetric
           label="30-Day Forecast"
           value={formatCurrency(forecast30)}
-          variant="pipeline"
+          variant="revenue"
           size="md"
           delay={0}
         />
         <HeroMetric
           label="60-Day Forecast"
           value={formatCurrency(forecast60)}
-          variant="pipeline"
+          variant="revenue"
           size="md"
           delay={0.1}
         />
