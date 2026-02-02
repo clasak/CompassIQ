@@ -9,7 +9,8 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-surface">
       <Sidebar />
       <main className="lg:ml-64 min-h-screen">
-        <div className="p-4 sm:p-6 lg:p-8">{children}</div>
+        {/* pt-16 on mobile to clear hamburger menu, normal padding on desktop */}
+        <div className="pt-16 px-4 pb-4 sm:px-6 sm:pb-6 lg:pt-8 lg:px-8 lg:pb-8">{children}</div>
       </main>
     </div>
   )
