@@ -98,7 +98,7 @@ export function Sidebar() {
         }}
         transition={{ duration: 0.3, type: 'tween' }}
         className={cn(
-          'w-full sm:w-80 lg:w-64 h-screen bg-surface-raised border-r border-border flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300',
+          'w-[85%] sm:w-80 lg:w-64 h-screen bg-surface-raised border-r border-border flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300',
           'lg:translate-x-0',
           !isMobileMenuOpen && 'max-lg:-translate-x-full'
         )}
@@ -124,10 +124,10 @@ export function Sidebar() {
           {/* Mobile Close Button */}
           <button
             onClick={() => setIsMobileMenuOpen(false)}
-            className="lg:hidden p-2 rounded-lg hover:bg-surface-overlay transition-colors"
+            className="lg:hidden p-3 -mr-2 rounded-lg bg-surface-overlay hover:bg-danger/20 transition-colors"
             aria-label="Close menu"
           >
-            <X className="w-5 h-5 text-text-secondary" />
+            <X className="w-6 h-6 text-text-primary" />
           </button>
         </div>
       </div>
@@ -140,6 +140,7 @@ export function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => setIsMobileMenuOpen(false)}
               className={cn(
                 'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200',
                 isActive
@@ -168,6 +169,7 @@ export function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => setIsMobileMenuOpen(false)}
               className={cn(
                 'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200',
                 isActive
