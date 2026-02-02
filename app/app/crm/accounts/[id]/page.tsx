@@ -1,4 +1,4 @@
-import { getAccount } from '@/lib/actions/crm-actions'
+import { getAccount, getQuotesByAccount } from '@/lib/actions/crm-actions'
 import { notFound } from 'next/navigation'
 import { AccountDetailView } from './account-detail-view'
 import { PageHeader } from '@/components/ui/page-header'
@@ -13,6 +13,7 @@ interface AccountDetailPageProps {
 export default async function AccountDetailPage({ params }: AccountDetailPageProps) {
   const { id } = await params
   const result = await getAccount(id)
+  const quotesResult = await getQuotesByAccount(id)
 
   if (!result.success || !result.account) {
     notFound()
@@ -32,7 +33,7 @@ export default async function AccountDetailPage({ params }: AccountDetailPagePro
         title={result.account.name}
         description={`Account details and information`}
       />
-      <AccountDetailView account={result.account} />
+      <AccountDetailView account={result.account} quotes={quotesResult.quotes || []} />
     </div>
   )
 }

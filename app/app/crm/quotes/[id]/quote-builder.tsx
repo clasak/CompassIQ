@@ -18,7 +18,7 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { isDemoOrgError } from '@/lib/errors'
 import { ActionButton } from '@/components/ui/action-button'
-import { Save, Plus, Trash2, Send, CheckCircle, XCircle } from 'lucide-react'
+import { Save, Plus, Trash2, Send, CheckCircle, XCircle, FileText, Download } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 interface QuoteBuilderProps {
@@ -58,43 +58,67 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
   const [saving, setSaving] = useState(false)
   const [quoteName, setQuoteName] = useState(quote.name)
   const [quoteStatus, setQuoteStatus] = useState(quote.status)
+  const [taxRate, setTaxRate] = useState(quote.tax_rate || 0)
+  const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>(quote.discount_type || 'percentage')
+  const [discountValue, setDiscountValue] = useState(quote.discount_value || 0)
+  const [template, setTemplate] = useState<'basic' | 'detailed'>(quote.template || 'basic')
 
-  // Recalculate totals when line items change
-  useEffect(() => {
-    const oneTimeTotal = lineItems
-      .filter((item) => item.type === 'one_time')
-      .reduce((sum, item) => sum + Number(item.total || 0), 0)
+  // Calculate totals based on approved formula
+  const calculateTotals = () => {
+    // Step 1: Subtotal = sum of all line items
+    const subtotal = lineItems.reduce((sum, item) => sum + Number(item.total || 0), 0)
+    
+    // Step 2: Apply discount
+    let discountAmount = 0
+    if (discountType === 'percentage') {
+      discountAmount = (subtotal * discountValue) / 100
+    } else {
+      discountAmount = discountValue
+    }
+    const afterDiscount = subtotal - discountAmount
+    
+    // Step 3: Apply tax on discounted amount
+    const taxAmount = (afterDiscount * taxRate) / 100
+    
+    // Step 4: Grand total
+    const grandTotal = afterDiscount + taxAmount
+    
+    return {
+      subtotal,
+      discountAmount,
+      afterDiscount,
+      taxAmount,
+      grandTotal,
+    }
+  }
 
-    const recurringTotal = lineItems
-      .filter((item) => item.type === 'recurring')
-      .reduce((sum, item) => sum + Number(item.total || 0), 0)
-
-    setQuote({
-      ...quote,
-      one_time_total: oneTimeTotal,
-      recurring_total: recurringTotal,
-    })
-  }, [lineItems])
+  const totals = calculateTotals()
 
   async function handleSave() {
     setSaving(true)
 
     try {
-      // Update quote name/status if changed
-      if (quoteName !== quote.name || quoteStatus !== quote.status) {
-        const updateResult = await updateQuote(quote.id, {
-          name: quoteName,
-          status: quoteStatus,
-        })
+      // Update quote with all fields including tax, discount, and calculated totals
+      const updateData = {
+        name: quoteName,
+        status: quoteStatus,
+        tax_rate: taxRate,
+        discount_type: discountType,
+        discount_value: discountValue,
+        subtotal: totals.subtotal,
+        grand_total: totals.grandTotal,
+        template: template,
+      }
 
-        if (updateResult.error) {
-          if (isDemoOrgError({ message: updateResult.error })) {
-            toast.error('Demo organization is read-only')
-          } else {
-            toast.error(updateResult.error)
-          }
-          return
+      const updateResult = await updateQuote(quote.id, updateData)
+
+      if (updateResult.error) {
+        if (isDemoOrgError({ message: updateResult.error })) {
+          toast.error('Demo organization is read-only')
+        } else {
+          toast.error(updateResult.error)
         }
+        return
       }
 
       // Save line items
@@ -198,6 +222,11 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
     }
   }
 
+  function handleExportPDF() {
+    // Simple browser print for PDF export
+    window.print()
+  }
+
   const oneTimeTotal = lineItems
     .filter((item) => item.type === 'one_time')
     .reduce((sum, item) => sum + Number(item.total || 0), 0)
@@ -208,12 +237,16 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between no-print">
         <div>
           <h1 className="text-3xl font-bold">Quote Builder</h1>
           <p className="text-muted-foreground">Build and manage your quote</p>
         </div>
         <div className="flex gap-2">
+          <ActionButton actionType="admin" onClick={handleExportPDF} variant="outline">
+            <Download className="h-4 w-4 mr-2" />
+            Export PDF
+          </ActionButton>
           <ActionButton actionType="admin" onClick={handleSave} disabled={saving}>
             <Save className="h-4 w-4 mr-2" />
             {saving ? 'Saving...' : 'Save Quote'}
@@ -256,7 +289,7 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
           <CardTitle>Quote Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Quote Name</Label>
               <Input
@@ -264,6 +297,18 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
                 value={quoteName}
                 onChange={(e) => setQuoteName(e.target.value)}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="template">Template</Label>
+              <Select value={template} onValueChange={(value: 'basic' | 'detailed') => setTemplate(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="basic">Basic</SelectItem>
+                  <SelectItem value="detailed">Detailed</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="status">Status</Label>
@@ -279,7 +324,7 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Line Items</CardTitle>
-            <div className="flex gap-2">
+            <div className="flex gap-2 no-print">
               <Select onValueChange={(value) => handleAddPackage(value as keyof typeof PACKAGE_TEMPLATES)}>
                 <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="Add Package" />
@@ -363,7 +408,7 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
                   </div>
                   <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-12 md:col-span-9">
-                      <Label>Description</Label>
+                      <Label>Description {template === 'detailed' ? '(shown in detailed view)' : ''}</Label>
                       <Input
                         value={item.description || ''}
                         onChange={(e) =>
@@ -380,7 +425,7 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
                         </div>
                       </div>
                     </div>
-                    <div className="col-span-12 md:col-span-1 flex items-end">
+                    <div className="col-span-12 md:col-span-1 flex items-end no-print">
                       <ActionButton
                         actionType="admin"
                         variant="ghost"
@@ -400,27 +445,104 @@ export function QuoteBuilder({ quote: initialQuote, accounts }: QuoteBuilderProp
 
       <Card>
         <CardHeader>
-          <CardTitle>Quote Summary</CardTitle>
+          <CardTitle>Tax & Discount</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span>One-Time Total:</span>
-              <span className="font-semibold">{formatCurrency(oneTimeTotal)}</span>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="discountType">Discount Type</Label>
+              <Select value={discountType} onValueChange={(value: 'percentage' | 'fixed') => setDiscountType(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="percentage">Percentage</SelectItem>
+                  <SelectItem value="fixed">Fixed Amount</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="flex justify-between">
-              <span>Recurring Total:</span>
-              <span className="font-semibold">{formatCurrency(recurringTotal)}</span>
+            <div className="space-y-2">
+              <Label htmlFor="discountValue">
+                Discount Value {discountType === 'percentage' ? '(%)' : '($)'}
+              </Label>
+              <Input
+                id="discountValue"
+                type="number"
+                step="0.01"
+                min="0"
+                value={discountValue}
+                onChange={(e) => setDiscountValue(parseFloat(e.target.value) || 0)}
+              />
             </div>
-            <div className="flex justify-between text-lg font-bold pt-2 border-t">
-              <span>Grand Total:</span>
-              <span>{formatCurrency(oneTimeTotal + recurringTotal)}</span>
+            <div className="space-y-2">
+              <Label htmlFor="taxRate">Tax Rate (%)</Label>
+              <Input
+                id="taxRate"
+                type="number"
+                step="0.01"
+                min="0"
+                max="100"
+                value={taxRate}
+                onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
+              />
             </div>
           </div>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Quote Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">One-Time Items:</span>
+              <span>{formatCurrency(oneTimeTotal)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Recurring Items:</span>
+              <span>{formatCurrency(recurringTotal)}</span>
+            </div>
+            <div className="flex justify-between font-medium pt-2 border-t">
+              <span>Subtotal:</span>
+              <span>{formatCurrency(totals.subtotal)}</span>
+            </div>
+            {totals.discountAmount > 0 && (
+              <div className="flex justify-between text-sm text-green-600">
+                <span>Discount ({discountType === 'percentage' ? `${discountValue}%` : formatCurrency(discountValue)}):</span>
+                <span>-{formatCurrency(totals.discountAmount)}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">After Discount:</span>
+              <span>{formatCurrency(totals.afterDiscount)}</span>
+            </div>
+            {taxRate > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Tax ({taxRate}%):</span>
+                <span>{formatCurrency(totals.taxAmount)}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-xl font-bold pt-2 border-t-2">
+              <span>Grand Total:</span>
+              <span>{formatCurrency(totals.grandTotal)}</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <style jsx global>{`
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+          body {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+        }
+      `}</style>
     </div>
   )
 }
-
-

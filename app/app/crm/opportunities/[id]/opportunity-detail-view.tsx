@@ -1,6 +1,6 @@
 'use client'
 
-import { Opportunity, Account } from '@/lib/actions/crm-actions'
+import { Opportunity, Account, createQuote } from '@/lib/actions/crm-actions'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
@@ -8,7 +8,7 @@ import { EditOpportunityDialog } from '../edit-opportunity-dialog'
 import { DeleteOpportunityDialog } from '../delete-opportunity-dialog'
 import { ActionButton } from '@/components/ui/action-button'
 import { Button } from '@/components/ui/button'
-import { Pencil, Trash2, ExternalLink, Building2 } from 'lucide-react'
+import { Pencil, Trash2, ExternalLink, Building2, FileText } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { createClientProjectFromOpportunity } from '@/lib/actions/client-project-actions'
 import { toast } from 'sonner'
@@ -24,6 +24,7 @@ export function OpportunityDetailView({ opportunity, accounts }: OpportunityDeta
   const router = useRouter()
   const account = accounts.find(a => a.id === opportunity.account_id)
   const [converting, setConverting] = useState(false)
+  const [creatingQuote, setCreatingQuote] = useState(false)
   const isWon = opportunity.stage === 'WON'
 
   async function handleConvertToClientProject() {
@@ -49,6 +50,34 @@ export function OpportunityDetailView({ opportunity, accounts }: OpportunityDeta
     }
   }
 
+  async function handleCreateQuote() {
+    setCreatingQuote(true)
+    try {
+      const result = await createQuote({
+        account_id: opportunity.account_id,
+        opportunity_id: opportunity.id,
+        name: `${opportunity.name} - Quote`,
+        status: 'draft',
+      })
+      if (result.error) {
+        if (isDemoOrgError({ message: result.error })) {
+          toast.error('Demo organization is read-only')
+        } else {
+          toast.error(result.error)
+        }
+        return
+      }
+      if (result.quote) {
+        toast.success('Quote created successfully!')
+        router.push(`/app/crm/quotes/${result.quote.id}`)
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to create quote')
+    } finally {
+      setCreatingQuote(false)
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -58,6 +87,15 @@ export function OpportunityDetailView({ opportunity, accounts }: OpportunityDeta
             <CardDescription>Opportunity ID: {opportunity.id}</CardDescription>
           </div>
           <div className="flex gap-2">
+            <ActionButton
+              actionType="admin"
+              onClick={handleCreateQuote}
+              disabled={creatingQuote}
+              size="sm"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              {creatingQuote ? 'Creating...' : 'Create Quote'}
+            </ActionButton>
             {isWon && (
               <ActionButton
                 actionType="admin"
