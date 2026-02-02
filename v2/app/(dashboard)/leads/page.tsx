@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { PageHeader } from '@/components/layout/page-header'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -21,10 +22,12 @@ import {
   DollarSign,
   Users,
   Briefcase,
-  Loader2
+  Loader2,
+  Eye
 } from 'lucide-react'
 
 export default function LeadsPage() {
+  const router = useRouter()
   const { leads, stats, isLoading, error } = useLeads()
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all')
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
@@ -108,7 +111,7 @@ export default function LeadsPage() {
         title="Prospect Pipeline"
         description={`${stats?.total || 0} researched Texas field service companies ready for outreach`}
         actions={
-          <Button variant="default">
+          <Button variant="default" onClick={() => router.push('/campaigns')}>
             <Zap className="w-4 h-4 mr-2" />
             Start Campaign
           </Button>
@@ -256,10 +259,10 @@ export default function LeadsPage() {
           <CardContent className="py-12 text-center">
             <Target className="w-12 h-12 text-text-tertiary mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-text-primary mb-2">No prospects yet</h3>
-            <p className="text-text-secondary mb-4">Start by adding prospects to your pipeline</p>
-            <Button variant="default">
+            <p className="text-text-secondary mb-4">Prospect import feature coming soon</p>
+            <Button variant="default" disabled className="opacity-50 cursor-not-allowed">
               <Target className="w-4 h-4 mr-2" />
-              Add First Prospect
+              Add First Prospect (Coming Soon)
             </Button>
           </CardContent>
         </Card>
@@ -325,12 +328,25 @@ export default function LeadsPage() {
 
                 {/* Actions */}
                 <div className="flex gap-2 pt-2">
-                  <Button variant="default" size="sm" className="flex-1">
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => {
+                      if (prospect.company) {
+                        window.open(`mailto:?subject=Reaching out to ${prospect.company}`)
+                      }
+                    }}
+                  >
                     <Mail className="w-4 h-4 mr-1.5" />
-                    Start Campaign
+                    Email
                   </Button>
-                  <Button variant="secondary" size="sm">
-                    <Briefcase className="w-4 h-4" />
+                  <Button 
+                    variant="secondary" 
+                    size="sm"
+                    onClick={() => console.log(`View details for ${prospect.company}`, prospect)}
+                  >
+                    <Eye className="w-4 h-4" />
                   </Button>
                 </div>
 

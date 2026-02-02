@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { PageHeader } from '@/components/layout/page-header'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -21,7 +22,10 @@ import {
   ArrowRight,
   ChevronRight,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  BarChart3,
+  LayoutGrid,
+  List
 } from 'lucide-react'
 
 type PipelineStage = 'research' | 'outreach' | 'call-scheduled' | 'proposal' | 'won' | 'lost'
@@ -44,6 +48,8 @@ const stages: StageConfig[] = [
 ]
 
 export default function PipelinePage() {
+  const router = useRouter()
+  const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban')
   const { leads, isLoading, error } = useLeads()
 
   // Loading state
@@ -109,9 +115,9 @@ export default function PipelinePage() {
           title="Pipeline Tracker"
           description="Track prospects through your sales process"
           actions={
-            <Button variant="default">
+            <Button variant="default" onClick={() => router.push('/leads')}>
               <Target className="w-4 h-4 mr-2" />
-              Add Prospect
+              Add New Lead
             </Button>
           }
         />
@@ -120,9 +126,9 @@ export default function PipelinePage() {
             <Target className="w-12 h-12 text-text-tertiary mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-text-primary mb-2">No prospects in pipeline</h3>
             <p className="text-text-secondary mb-4">Start by adding prospects to your pipeline</p>
-            <Button variant="default">
+            <Button variant="default" onClick={() => router.push('/leads')}>
               <Target className="w-4 h-4 mr-2" />
-              Add First Prospect
+              View Leads
             </Button>
           </CardContent>
         </Card>
@@ -146,14 +152,33 @@ export default function PipelinePage() {
         title="Pipeline Tracker"
         description="Track prospects through your sales process"
         actions={
-          <div className="flex gap-2">
-            <Button variant="secondary" size="sm">
-              <Mail className="w-4 h-4 mr-2" />
-              Send Follow-ups
+          <div className="flex gap-2 flex-wrap">
+            {/* View Toggle */}
+            <div className="flex gap-1 bg-surface-subtle rounded-lg p-1">
+              <Button 
+                variant={viewMode === 'kanban' ? 'default' : 'ghost'} 
+                size="sm"
+                onClick={() => setViewMode('kanban')}
+              >
+                <LayoutGrid className="w-4 h-4 mr-1.5" />
+                Kanban
+              </Button>
+              <Button 
+                variant={viewMode === 'list' ? 'default' : 'ghost'} 
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                <List className="w-4 h-4 mr-1.5" />
+                List
+              </Button>
+            </div>
+            <Button variant="secondary" size="sm" onClick={() => router.push('/analytics')}>
+              <BarChart3 className="w-4 h-4 mr-2" />
+              View Reports
             </Button>
-            <Button variant="default" size="sm">
+            <Button variant="default" size="sm" onClick={() => router.push('/leads')}>
               <Target className="w-4 h-4 mr-2" />
-              Add Prospect
+              Add New Lead
             </Button>
           </div>
         }
@@ -199,8 +224,22 @@ export default function PipelinePage() {
       </div>
 
       {/* Pipeline Stages */}
-      <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 min-w-max lg:min-w-0">
+      {viewMode === 'list' && (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <List className="w-12 h-12 text-text-tertiary mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-text-primary mb-2">List View Coming Soon</h3>
+            <p className="text-text-secondary mb-4">Switch to Kanban view to see your pipeline</p>
+            <Button variant="default" onClick={() => setViewMode('kanban')}>
+              <LayoutGrid className="w-4 h-4 mr-2" />
+              Switch to Kanban
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+      {viewMode === 'kanban' && (
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 min-w-max lg:min-w-0">
         {stages.map((stage, stageIndex) => {
           const stageProspects = prospectsByStage[stage.id]
           const stageValue = stageProspects.reduce((sum, p) => sum + p.estimated_value, 0)
@@ -264,8 +303,9 @@ export default function PipelinePage() {
             </motion.div>
           )
         })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Conversion Funnel */}
       <Card>

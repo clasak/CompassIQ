@@ -13,9 +13,9 @@ export default function AccountsPage() {
         title="Accounts"
         description="Customer portfolio and health management"
         actions={
-          <Button>
+          <Button disabled className="opacity-50 cursor-not-allowed">
             <Plus className="w-4 h-4 mr-2" />
-            Add Account
+            Add Account (Connect CRM in Settings)
           </Button>
         }
       />
@@ -24,10 +24,7 @@ export default function AccountsPage() {
         <EmptyState
           icon={Building2}
           title="No Accounts Yet"
-          description="Start adding your customer accounts to track ARR, health scores, renewal dates, and account ownership. Import from your CRM or add accounts manually to build your portfolio view."
-          action={{
-            label: "Add First Account",
-          }}
+          description="Connect your CRM in Settings to import customer accounts and track ARR, health scores, renewal dates, and account ownership. Import from your CRM or add accounts manually to build your portfolio view."
         />
       </Card>
     </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { PageHeader } from '@/components/layout/page-header'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -23,6 +24,7 @@ import {
 } from 'lucide-react'
 
 export default function CampaignsPage() {
+  const router = useRouter()
   const [selectedCampaign, setSelectedCampaign] = useState(campaigns[0].id)
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null)
 
@@ -32,6 +34,17 @@ export default function CampaignsPage() {
     navigator.clipboard.writeText(text)
     setCopiedEmail(emailId)
     setTimeout(() => setCopiedEmail(null), 2000)
+  }
+
+  const useCampaign = () => {
+    if (activeCampaign) {
+      const campaignText = activeCampaign.emails.map((email, i) => 
+        `--- Day ${email.day}: ${email.subject} ---\n${email.body}`
+      ).join('\n\n')
+      
+      navigator.clipboard.writeText(campaignText)
+      console.log(`✅ Campaign "${activeCampaign.name}" copied to clipboard`)
+    }
   }
 
   const getPersonalizedEmail = (template: string, sampleData = { COMPANY: 'Acme HVAC', FIRST_NAME: 'Sarah' }) => {
@@ -49,7 +62,7 @@ export default function CampaignsPage() {
         title="Outreach Campaigns"
         description="Ready-to-use email sequences for field service operations leaders"
         actions={
-          <Button variant="default">
+          <Button variant="default" onClick={() => router.push('/leads')}>
             <Send className="w-4 h-4 mr-2" />
             Launch Campaign
           </Button>
@@ -157,7 +170,7 @@ export default function CampaignsPage() {
               <h2 className="text-2xl font-bold text-text-primary">{activeCampaign.name}</h2>
               <p className="text-text-secondary mt-1">{activeCampaign.description}</p>
             </div>
-            <Button variant="default">
+            <Button variant="default" onClick={useCampaign}>
               <Zap className="w-4 h-4 mr-2" />
               Use This Campaign
             </Button>
