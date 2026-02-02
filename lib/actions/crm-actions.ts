@@ -659,6 +659,12 @@ export interface Quote {
   currency: string
   one_time_total: number
   recurring_total: number
+  tax_rate: number
+  discount_type: 'percentage' | 'fixed'
+  discount_value: number
+  subtotal: number
+  grand_total: number
+  template: 'basic' | 'detailed'
   created_at: string
   updated_at: string
   metadata?: Record<string, any>
@@ -739,6 +745,37 @@ export async function getQuote(id: string): Promise<GetQuoteResult> {
   }
 }
 
+export interface GetQuotesByAccountResult {
+  success: boolean
+  quotes?: Quote[]
+  error?: string
+}
+
+export async function getQuotesByAccount(accountId: string): Promise<GetQuotesByAccountResult> {
+  try {
+    const context = await requireOrgContext()
+    if (!context) {
+      return { success: false, error: 'No organization context' }
+    }
+
+    const supabase = await createClient()
+    const { data: quotes, error } = await supabase
+      .from('quotes')
+      .select('*')
+      .eq('account_id', accountId)
+      .eq('org_id', context.orgId)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      return { success: false, error: normalizeError(error) }
+    }
+
+    return { success: true, quotes: quotes || [] }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to get quotes for account' }
+  }
+}
+
 export interface CreateQuoteResult {
   success: boolean
   quote?: Quote
@@ -771,6 +808,12 @@ export async function createQuote(data: {
         currency: data.currency || 'USD',
         one_time_total: 0,
         recurring_total: 0,
+        tax_rate: 0,
+        discount_type: 'percentage',
+        discount_value: 0,
+        subtotal: 0,
+        grand_total: 0,
+        template: 'basic',
         metadata: { data_origin: 'manual' },
       })
       .select()
@@ -801,6 +844,12 @@ export async function updateQuote(
     name: string
     status: string
     currency: string
+    tax_rate: number
+    discount_type: 'percentage' | 'fixed'
+    discount_value: number
+    subtotal: number
+    grand_total: number
+    template: 'basic' | 'detailed'
   }>
 ): Promise<UpdateQuoteResult> {
   try {

@@ -8,8 +8,9 @@ import { formatDate, formatCurrency } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { EditOpportunityDialog } from './edit-opportunity-dialog'
 import { DeleteOpportunityDialog } from './delete-opportunity-dialog'
+import { CreateQuoteFromOpportunityDialog } from './create-quote-from-opportunity-dialog'
 import { Button } from '@/components/ui/button'
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { MoreHorizontal, Pencil, Trash2, FileText } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -99,6 +100,12 @@ export const OpportunitiesTable = memo(function OpportunitiesTable({ opportuniti
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <CreateQuoteFromOpportunityDialog opportunity={opportunity}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Create Quote
+                </DropdownMenuItem>
+              </CreateQuoteFromOpportunityDialog>
               <EditOpportunityDialog opportunity={opportunity} accounts={accounts}>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   <Pencil className="h-4 w-4 mr-2" />
