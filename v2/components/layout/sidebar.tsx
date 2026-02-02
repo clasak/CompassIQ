@@ -1,9 +1,10 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import {
   LayoutDashboard,
   TrendingUp,
@@ -17,11 +18,18 @@ import {
   Bell,
   Calculator,
   Wand2,
+  Mail,
+  DollarSign,
+  Menu,
+  X,
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Command Center', href: '/', icon: LayoutDashboard },
-  { name: 'Revenue Engine', href: '/revenue', icon: TrendingUp },
+  { name: 'Leads', href: '/leads', icon: Target },
+  { name: 'Campaigns', href: '/campaigns', icon: Mail },
+  { name: 'Pipeline', href: '/pipeline', icon: TrendingUp },
+  { name: 'Revenue Engine', href: '/revenue', icon: DollarSign },
   { name: 'Operations', href: '/ops', icon: Zap },
   { name: 'Accounts', href: '/accounts', icon: Users },
   { name: 'ROI Calculator', href: '/roi', icon: Calculator },
@@ -37,27 +45,86 @@ const bottomNav = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false)
+  }, [pathname])
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isMobileMenuOpen])
 
   return (
-    <motion.aside
-      initial={{ x: -20, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.4 }}
-      className="w-64 h-screen bg-surface-raised border-r border-border flex flex-col fixed left-0 top-0"
-    >
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-40 p-2 rounded-lg bg-surface-raised border border-border shadow-lg hover:bg-surface-overlay transition-colors"
+        aria-label="Open menu"
+      >
+        <Menu className="w-6 h-6 text-text-primary" />
+      </button>
+
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar */}
+      <motion.aside
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ 
+          x: 0,
+          opacity: 1 
+        }}
+        transition={{ duration: 0.3, type: 'tween' }}
+        className={cn(
+          'w-[80%] lg:w-64 h-screen bg-surface-raised border-r border-border flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300',
+          'lg:translate-x-0',
+          !isMobileMenuOpen && 'max-lg:-translate-x-full'
+        )}
+      >
       {/* Logo */}
       <div className="p-6 border-b border-border">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pipeline to-revenue flex items-center justify-center">
-            <Target className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <span className="font-display font-bold text-lg text-text-primary">
-              CompassIQ
-            </span>
-            <span className="block text-xs text-text-tertiary">Business OS</span>
-          </div>
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pipeline to-revenue flex items-center justify-center">
+              <Target className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <span className="font-display font-bold text-lg text-text-primary">
+                CompassIQ
+              </span>
+              <span className="block text-xs text-text-tertiary">Business OS</span>
+            </div>
+          </Link>
+          {/* Mobile Close Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="lg:hidden p-2 rounded-lg hover:bg-surface-overlay transition-colors"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5 text-text-secondary" />
+          </button>
+        </div>
       </div>
 
       {/* Main Navigation */}
@@ -124,6 +191,7 @@ export function Sidebar() {
           </div>
         </div>
       </div>
-    </motion.aside>
+      </motion.aside>
+    </>
   )
 }
