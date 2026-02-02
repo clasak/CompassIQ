@@ -98,7 +98,7 @@ export function Sidebar() {
         }}
         transition={{ duration: 0.3, type: 'tween' }}
         className={cn(
-          'w-[80%] lg:w-64 h-screen bg-surface-raised border-r border-border flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300',
+          'w-full sm:w-80 lg:w-64 h-screen bg-surface-raised border-r border-border flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300',
           'lg:translate-x-0',
           !isMobileMenuOpen && 'max-lg:-translate-x-full'
         )}
